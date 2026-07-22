@@ -1,0 +1,5 @@
+{
+  "status": "PLACEHOLDER",
+  "_note": "Per-population calibration targets are [TO BE DEFINED] in DEFINITIONS.md. Until a domain owner sets these, every result is stamped 'calibration_pending'.",
+  "per_population": {}
+}

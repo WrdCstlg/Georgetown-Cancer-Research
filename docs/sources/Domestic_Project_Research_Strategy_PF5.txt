@@ -1,0 +1,677 @@
+SIGNIFICANCE
+Role of this project within the African Colorectal CAncer Network and Disparities And Cancer
+Epidemiology (AfriCAN DANCE) Study: The Domestic Project of this application is the “translational engine”
+of AfriCAN DANCE. While the three foreign components operationalize case ascertainment and biospecimen
+collection across West and East Africa, the Domestic Project is where (1) the full complement of somatic and
+transcriptomic data will be integrated, (2) ancestry-enriched therapeutic vulnerabilities will be identified, and (3)
+candidate targets will be experimentally validated. The scientific rationale for ancestry-inclusive CRC genomics,
+the limitations of European-ancestry-focused reference databases, and evidence from other cancers
+establishing that African tumor genomes can uncover novel drivers are established in the Overall Research
+Strategy. This section focuses on the scientific opportunity that the DANCE cohort creates in the context of our
+multi-continental design and on why the translational pipeline from somatic discovery to organoid-based
+functional validation is essential to converting genomic findings into clinically actionable outcomes.
+The somatic mutational landscape of CRC is clinically informative but incompletely characterized,
+particularly across ancestries: The somatic mutational landscape of CRC has been extensively characterized
+in predominantly European-ancestry cohorts and has yielded clinically actionable insights that now directly guide
+treatment decisions. Approximately 80–85% of CRCs are microsatellite stable (MSS) with chromosomal
+instability, 10–16% are microsatellite instable (MSI) due to mismatch repair deficiency (MMRd), and 1–2% are
+ultramutated due to somatic POLE mutations12. MSI is associated with better response to immune checkpoint
+inhibitors, whereas KRAS, NRAS, and BRAF mutations predict poor response to EGFR-targeted therapies.
+Beyond these binary biomarkers, mutational signature analysis13 offers potential for stratifying CRC based on
+genetic and epigenetic alterations for precision oncology, identifying therapeutic vulnerabilities, and evaluating
+drug efficacy14. Mutations in WNT, EGFR, and TGFβ pathway genes, copy number variations, and the COSMIC
+SBS44 (MMR) signature have been linked to survival outcomes, underscoring that the clinical utility of mutational
+profiling in CRC extends well beyond the handful of biomarkers currently incorporated into standard-of-care 12.
+Ancestry-specific somatic and transcriptomic differences in CRC have direct and underexplored
+therapeutic implications: For nearly every common cancer where race has been studied, significant differences
+in tumor subtype and somatic mutation profile explain at least part of the documented racial disparities in
+prognosis6–11. The direct therapeutic consequences of these differences have now been demonstrated across
+multiple cancer types in ways that could not have been anticipated without ancestry-inclusive sequencing.
+Ancestry-stratified molecular profiling across multiple tumor types demonstrated that patients of African ancestry
+harbor distinct frequencies of actionable alterations, including enrichment of DNA repair pathway defects and
+immune pathway activation, that suggest divergent druggable target landscapes compared to patients of
+European ancestry, with direct implications for treatment selection 15. In prostate cancer, the identification of
+elevated homologous recombination deficiency and DNA repair gene mutations in African-ancestry tumors
+opened a clinically testable hypothesis that PARP inhibitors may disproportionately benefit men of African
+descent, a hypothesis that could not have been formulated without ancestry-inclusive sequencing and that is
+now being evaluated in prospective trials16. These examples establish a generalizable principle: ancestryinclusive genomics does not merely describe molecular differences, it generates testable therapeutic hypotheses
+that are directly actionable in the clinic.
+Emerging evidence demonstrates that the somatic mutational spectrum of CRC differs meaningfully by race in
+ways directly relevant to treatment selection and outcomes, yet these differences are incompletely characterized
+and their therapeutic implications remain largely unaddressed. The most consistent and clinically consequential
+finding is that tumors from African-ancestry cases are approximately 10% more likely to contain KRAS mutations,
+which confer elevated mortality and resistance to EGFR inhibition17,18, and a genomic profiling study of 324
+cancer-related genes among over 46,000 CRC tumors confirmed significantly higher rates of KRAS G12D, KRAS
+G13, APC, and PIK3CA alterations in patients of African descent compared with European descent19. This study
+was limited by a lack of any demographic, clinico-pathologic or survival data. Conversely, AA patients have
+approximately 50% lower odds of harboring BRAF V600E mutations, which define a clinically aggressive CRC
+subtype for which BRAF-targeted combination regimens are now standard of care, meaning that treatment
+algorithms developed around European-ancestry mutation prevalence may be less applicable to AA patients,
+while the therapeutic implications of elevated KRAS burden in this population remain inadequately studied.
+Lower prevalence of MSI-H tumors in AA patients is also supported by recent evidence, a finding of particular
+consequence given that MSI status is now the primary biomarker guiding immune checkpoint inhibitor use in
+CRC20. Critically, the evidence base for these racial differences derives almost entirely from targeted hotspot
+
+panels rather than systematic whole-exome or whole-genome characterization, meaning that ancestry-related
+differences in rare drivers, mutational signatures, structural variants, and copy number alterations remain
+essentially uncharacterized. The Domestic Project addresses this gap directly by analyzing whole-exome
+sequencing and transcriptomic profiling across AA, Ghanaian, Ethiopian, and NHW CRC patients, providing the
+first comprehensive, ancestry-aware somatic catalog capable of moving beyond the handful of hotspot mutations
+currently studied toward a complete picture of how ancestral background shapes the CRC mutational landscape
+and its clinical implications.
+Functional validation in ancestry-matched organoids is essential to distinguish drivers from passengers
+and predict drug response: The translational gap between genomic discovery and clinical application in CRC
+has been substantial. Patient-derived organoids (PDOs) have emerged as the gold standard platform for bridging
+this gap, faithfully recapitulating the genomic and phenotypic features of primary tumors and enabling direct drug
+sensitivity testing in a system that preserves inter-patient variability 21. Drug sensitivity testing in CRC PDO
+biobanks consistently reveals that somatic genotype partially explains inter-patient variability in response to both
+standard-of-care and targeted agents22–24 but this genotype-to-drug-response relationship is precisely where
+ancestry matters most. If ancestry-specific somatic variants that stratify drug response are systematically
+underrepresented in existing biobanks, then genotype-to-drug-response relationships derived from those
+biobanks will have unknown and potentially misleading applicability to AA patients. Critically, existing CRC PDO
+biobanks have been built almost entirely from tumors of European ancestry, meaning the functional validation
+infrastructure carries the same ancestry bias as the discovery datasets it was designed to interrogate. A global
+analysis of patient-derived cancer models (all sites) shows, for patient-derived models overall: 48.3% no
+race/ethnicity reported; of those reported, White 37.5%, Asian 10%, AA 3.8%, Hispanic 0.4% 25. This suggests
+under-reporting and white overrepresentation in PDO resources used for oncology generally. The Domestic
+Project directly addresses this by establishing the first PDO biobank derived from AA CRC tumors, enabling
+functional validation experiments, including drug sensitivity testing across a panel of candidate inhibitors in an
+ancestry-matched experimental system. This is a prerequisite for generating preclinical evidence that is
+scientifically credible and clinically translatable for the patient population bearing the greatest CRC burden in the
+United States. The precedent from breast and prostate cancer, where ancestry-inclusive sequencing generated
+therapeutic hypotheses now under prospective clinical evaluation, has demonstrated that closing this loop in
+CRC is both scientifically achievable and clinically urgent.
+INNOVATION
+This project advances the current state of the science in ways that are distinct from and additive to the
+innovations described in the Overall Research Strategy, which covers design-level and infrastructure-level
+innovations shared across all components.
+1. First integrated somatic and transcriptomic atlas of CRC across African-descendant populations.
+Prior studies of racial differences in CRC molecular profiles have examined somatic mutations or gene
+expression in isolation, in single populations, or in datasets not designed for cross-ancestry comparison. The
+Domestic Project will generate the first study to systematically integrate WES-derived somatic mutation data
+with transcriptomic profiles across AA, Ghanaian, Ethiopian, and NHW CRC patients in a single, comparably
+ascertained, carefully annotated cohort. Somatic mutations identify candidate drivers, but transcriptomic data
+are required to determine which mutations produce consequential downstream pathway dysregulation and
+which represent the expression-level vulnerabilities most amenable to pharmacological intervention. No
+existing dataset or analytical effort has attempted this integration across African-descendant populations at
+this scale or with this degree of epidemiologic annotation.
+2. A novel bioinformatic pipeline for ancestry-enriched druggable target nomination. The Domestic
+Project will develop and apply a purpose-built computational pipeline that combines statistical association
+testing, machine learning-based feature selection, pathway enrichment analysis, and computational
+druggability assessment to nominate and rank therapeutic targets enriched in African-descendant CRC. This
+pipeline is innovative in three respects: it operates across multiple ancestry groups simultaneously rather
+than within a single population; it integrates somatic and transcriptomic signals rather than treating them as
+independent discovery streams; and it incorporates clinical outcome data, including survival and treatment
+response to prioritize candidates with demonstrated prognostic and therapeutic relevance rather than
+statistical association alone. The output will not be a list of differentially expressed genes, but a ranked, multicriterion prioritization of candidates with the highest prior probability of functional validation and clinical
+actionability. This refined, data-driven computational approach allows for the repurposing of drugs already in
+
+development to provide an efficient strategy for therapeutic discovery aimed at rapid translation.
+3. First ancestry-matched CRC organoid biobank and drug sensitivity testing framework. The Domestic
+Project will establish the first PDO biobank derived from AA CRC tumors, filling a foundational gap in the
+CRC functional genomics infrastructure. This resource will be used to test the top candidate inhibitors
+nominated by the bioinformatic pipeline across paired AA and NHW PDOs, generating the first empirical,
+ancestry-matched genotype-to-drug-response data in CRC. The drug sensitivity testing framework is
+innovative in its comparative design, determining whether AA-derived PDOs are differentially sensitive to
+candidates relative to NHW-derived PDOs and directly testing the hypothesis that ancestry-enriched somatic
+and transcriptomic features translate into ancestry-enriched therapeutic vulnerabilities. This framework will
+serve as a replicable template for ancestry-aware functional validation in CRC and other cancer types. The
+organoid biobank will persist beyond the grant period as a shared scientific asset, enabling the research
+community to interrogate AA CRC biology, test emerging therapeutic hypotheses, and develop ancestrycalibrated predictive models in an experimental platform that currently does not exist.
+APPROACH
+Overall Design
+The proposed research will address critical
+gaps in our knowledge of CRC by
+answering these key questions: What is the
+ancestry-specific
+somatic
+mutational
+landscape of CRC across AfriCAN DANCE
+populations? Which oncogenic drivers
+represent actionable targets enriched in
+African-descendant tumors? Do these
+drivers
+confer
+functional
+growth
+advantages and distinct therapeutic
+vulnerabilities in patient-derived organoid
+models? To answer these questions, this
+proposal leverages the infrastructure,
+biospecimens,
+and
+bioinformatics
+resources of the ongoing DANCE
+Colorectal
+Cancer
+Study
+(NIH/NCI
+R01CA259420, MPI Rozek, Purrington). Using both banked formalin-fixed paraffin-embedded (FFPE) DANCE
+tumor specimens and prospectively collected samples from ongoing recruitment in Africa, we will conduct an
+integrated three-platform genomic study encompassing whole-exome sequencing, bulk RNA-seq, and patientderived organoid functional validation across four ancestry groups: AA, NHW, Ghanaian, and Ethiopian. Our
+preliminary work using targeted DNA sequencing of 290 genes in DANCE samples (described below in Aim 1
+Preliminary Data) demonstrates the feasibility of this approach and reveals biologically informative patterns of
+mutational profile similarities by genetic ancestry. Aim 1, led by Drs. Rozek, Purrington and Mabvakure, will
+define the ancestry-specific somatic mutational landscape using whole-exome sequencing. Aim 2a, led by Drs.
+Robbins and Wynn will identify druggable oncogenic drivers using bulk RNA-seq integrated with the expanded
+DANCE dataset augmented by public data, and Aim 2b, led by Dr. Tong, will functionally validate the highestpriority targets and assess therapeutic vulnerabilities using patient-derived and engineered organoid models.
+These aims form a fully integrated discovery-to-validation pipeline designed to produce an ancestry-aware,
+functionally validated map of druggable CRC targets across the spectrum of African-descendant populations.
+Specific Aim 1: Define the landscape of somatic mutations in CRC among African descendent populations
+using whole exome sequencing.
+Preliminary Studies
+The Disparities and Cancer Epidemiology (DANCE) cohort (R01CA259420, MPIs Rozek & Purrington) is a
+population-based cohort of 1,158 AA and NHW invasive CRC cases. All participants completed baseline
+questionnaires covering demographics, comorbid diagnoses, family history of cancer, lifestyle and health
+behaviors (smoking, physical activity, alcohol use), dietary factors, and medication use. Clinical data were
+obtained through the Metropolitan Detroit Cancer Surveillance System registry and the Louisiana Tumor
+Registry. ~71% provided blood/saliva and ~65% allowed access to tumor tissue. WES data (available & in
+
+progress) available for this project will
+include 300 AA and 100 NHW cases.
+Utilizing targeted DNA sequencing data
+from 150 tumors (21 Ghanaian, 33
+Ethiopian, 43 AA, and 53 NHW), we
+developed bioinformatics pipelines
+to characterize the mutational
+landscape of tumors using DNA
+sequencing
+data
+(manuscript
+submitted, under review). Overall,
+9% NHW, 15% AA, 33% Ghanaian,
+and 2% Ethiopian cases were MMRdeficient (dMMR). The BRAF V600E
+mutation, commonly associated with
+poor prognosis and MSI-high tumors,
+was absent in AA and Ethiopian cases
+but was detected in 4% (2/53) of NHW
+tumors and 10% (2/21) of Ghanaian
+tumors (Table 1). For KRAS mutations,
+43% of AA tumors carried mutations at codon 12/13, compared to 45% in Ethiopians, 37% in NHWs, and 5% in
+Ghanaians (Table 1). The somatic mutational landscape across study populations revealed significant
+differences, suggesting that the molecular drivers of oncogenesis vary considerably by population (Table 2).
+While APC mutations were nearly ubiquitous in the AA (93.0%) and NHW (92.5%) cohorts, their prevalence was
+significantly lower in the Ethiopian (60.6%) and Ghanaian (38.1%) groups (p < 0.001). Ghanaian and AA cohorts
+showed a higher frequency of CTNNB1 mutations (25.6% and 19.0%, respectively) compared to the NHW (1.9%)
+and Ethiopian (9.1%) groups (p = 0.0042). Similarly, RNF43 mutations showed significant variation (p = 0.0047),
+reaching their highest mutational frequency in the NHW cohort. RNF43 was mutated in 73.6% of NHW samples,
+a rate nearly double that seen in the other populations. PIK3CA and TP53 mutations showed significant variation
+(p = 0.0002 and p = 0.0057, respectively), with both genes reaching their highest mutational frequency in the AA
+and NHW cohorts, respectively. The AA cohort demonstrated a notably high PIK3CA mutational prevalence
+(39.5%) compared to the Ethiopian (3.0%) and Ghanaian (4.8%) cohorts, representing a highly significant
+distribution across the study groups (p = 0.0002). Characteristics were grouped based on geography (Africa:
+Ghana & Ethiopia, US: AA & NHW) or by genetic relatedness (Afro-centric: AA & Ghanaian, Eurocentric:
+NHW & Ethiopian), suggesting there might be a mix of geography and ancestry factors at play.
+The majority of variants across all populations and tumor mutation burden (TMB) statuses were classified as
+“unknown” (grey bars), ranging from 87% in ETH TMB-low (TMBL) to 92.4% in AA TMB-high (TMBH) (Figure
+1a). The most “unknowns” were identified among AA and GHA tumors compared to NHW and ETH samples
+across TMBL and TMBH groups. The proportion of pathogenic variants was notably higher among AA (4.5%
+and 1.5%) and NHW (5.1% and 1.6%) across TMBL and TMBH tumors, respectively. This pattern was also
+observed for variants with unknown clinical significance (VUS) among TMBH samples. In contrast, the proportion
+of pathogenic variants were 1.3% and 1.5% among Ethiopian and Ghanaian TMBL tumors respectively, and
+0.8% among Ethiopian TMBH tumors. Given the high prevalence of VUS, we utilized PolyPhen to predict
+functional impact (Figure 1b). While the majority of VUS were predicted to be benign (40.2%-59.8%), a
+substantial fraction was predicted to be deleterious. Interestingly, TMBH tumors displayed a shift in functional
+distribution; compared to their TMBL counterparts, they exhibited a reduction in the proportion of benign variants
+and an increase in variants with “unknown”, “possibly damaging”, and “probably damaging” functional
+predictions. Higher proportions of “possibly/ probably damaging” variants were identified in AA and NHW TMBH
+tumors, as well as the lowest proportions of unknown variants. Seventy-four percent (74%) of the variants
+predicted to be probably damaging were absent in COSMIC, and their potential impact on the tumor biology of
+the different populations remains unexplored. Taken together, these results suggest either distinct tumor
+biology in individuals of African descent compared with those of European descent or that variants in
+tumors from individuals of European descent are better characterized than those in other populations.
+Aim 1 methods
+Study population: We will use biospecimens and questionnaire/clinical data from 1,400 AfriCAN DANCE
+
+participants (AfriCAN: Ghana
+n=600,
+Ethiopia
+n=400;
+DANCE cases with paired
+tumor-normal WES available:
+US AA n=300, US NHW
+n=100). The US-based DANCE
+study is described above and in
+the Overall Research Strategy,
+and individual AfriCAN studies
+are described in Foreign
+Projects
+1-3
+Research
+Strategies. Samples obtained
+from studies include blood or
+saliva as a source of germline
+DNA and FFPE tumors.
+Biospecimen
+processing,
+histopathology, and WES: All
+AfriCAN blood samples, saliva
+kits, and tumors will be
+processed centrally in Dr.
+Rozek’s laboratory at GU for
+consistency
+with
+DANCE
+methodology,
+including
+histopathologic
+review,
+macrodissection of unstained
+tissue sections with >70%
+tumor cellularity, and DNA/RNA
+extraction. CRC tumors will
+undergo histopathologic review
+for well-established clinically
+relevant features such as
+differentiation, tumor necrosis,
+tumor infiltrating lymphocyte
+counts, mucinous composition,
+Crohn’s-like
+reaction,
+and
+tumor budding. DNA will be extracted using the QIAamp DNA FFPE Tissue kit (Qiagen, Germany) with the
+QIASymphony automated extraction system. WES will be performed using the same methodology as for the
+DANCE cohort. DNA will be assessed using Thermofisher Qubit 1x dsDNA High Sensitivity Assay and Agilent
+TapeStation genomic DNA reagents. Libraries will be prepared using Twist Library Preparation EF kit 2.0 per
+manufacturer's protocol with 50ng DNA input. Libraries were checked for quantity by Qubit hsDNA and LabChip,
+and pooled for capture as 16 samples per pool. Each pool will be hybridized to the Twist Exome 2.0, which
+covers 36.5 Mb of human protein coding regions, using manufacturer’s protocols. The purified captured DNA will
+then be PCR amplified. Final capture pools will be checked for quality and quantity by Qubit hsDNA and LabChip
+and sequenced on the Illumina NovaX Paired-end 150bp, according to manufacturer's recommended protocols.
+Target coverage is 300X for tumor DNA and 100x for germline DNA.
+Somatic variant calling and annotation: Fastq files of tumor-normal matched WES data for CRC tumors will be
+mapped to both the human reference genome (GRCh38) and the human pangenome reference26, which
+integrates 47 phased diploid assemblies representing diverse global ancestries and captures 119 million base
+pairs of sequence absent from GRCh38, directly addressing the reference bias introduced when calling variants
+in non-European populations using a predominantly European-ancestry reference. Somatic variant calls from
+both alignments will be compared to quantify reference-introduced bias, and pangenome-specific variants
+identified in African-ancestry samples will be prioritized as candidate ancestry-enriched drivers. Quality metrics
+(per-base sequence quality, GC content, sequence duplication levels, overrepresented sequences) will be
+assessed using FastQC (v0.11.9), and summary statistics (total read counts, mismatch rates, error rates,
+mapped/unmapped read proportions) will be assessed using SAMtools. Quality results will be aggregated using
+
+MultiQC (v1.28), which consolidates metrics into a single interactive report. Somatic variant calling on tumornormal matched pairs will be performed using GATK Mutect2 within the nf-core/sarek pipeline. Tumor purity and
+ploidy will be estimated using PURPLE to account for their influence on variant allele frequencies and tumor
+mutation burden (TMB) estimates, and variant calls will be adjusted accordingly. Resulting VCFs will be
+annotated using the Broad Institute's GATK Funcotator tool against gnomAD, ExAC, the 1000 Genomes Project,
+ClinVar, and COSMIC databases, generating mutation annotation files (MAFs). Functional impact scores will be
+estimated using SIFT and PolyPhen. Microsatellite instability (MSI) status will be estimated from WES data using
+MSISensor2, and MSI tumors will be analyzed separately given their characteristically elevated TMB. Tumors
+will be classified as MIS or microsatellite stable (MSS) based on the MSISensor2 score, where a score of 3.5 or
+above is classified as MSI-H and below 3.5 as MSS, consistent with established thresholds in the literature.
+Genetic ancestry estimation: VCFs for germline variant discovery will be generated from the nf-core/sarek
+pipeline using GATK HaplotypeCaller. PLINK2 will be used to filter for high-quality biallelic single-nucleotide
+polymorphisms and perform linkage disequilibrium pruning (r² < 0.1). Principal component analysis will be
+performed using PLINK2 to confirm population clustering and identify outliers prior to supervised ancestry
+estimation. The dataset will be merged with the 1000 Genomes Project Phase 3 reference panel. Population
+structure will be characterized using a maximum likelihood-based approach implemented in ADMIXTURE
+(v1.3.0). A supervised clustering model with K=5 ancestral populations (African, European, East Asian, South
+Asian, and Admixed American) will be used to estimate individual admixture proportions.
+Mutational signature analysis: Mutational signature analysis will be performed using SigProfilerExtractor to
+identify the COSMIC mutational signatures13 operative in CRC tumors across the Ghanaian and Ethiopian
+populations. This analysis will characterize the contribution of known signatures associated with environmental
+and lifestyle exposures, including those linked to diet, aflatoxin exposure, and defective DNA mismatch repair,
+enabling direct connections to be drawn between the genomic data and the exposure patterns relevant to each
+population. Signature activities will be compared across geographic and ancestry groups to identify populationspecific patterns of mutagenic exposure.
+Tumor mutation burden & subtyping: TMB and top mutated genes across all comparison categories will be
+estimated using MAFtools in R. TMB will be calculated by dividing the number of somatic non-synonymous
+mutations by the estimated size of the coding region of the genome. Tumors will be classified as TMB-high (TMBH, ≥10 mutations per megabase) or TMB-low (TMB-L, <10 mutations per megabase) based on established
+clinical guidelines. TMB classification will be integrated with MSI status to subtype tumors into four biologically
+distinct categories: TMB-H/MSI-H, TMB-H/MSS, TMB-L/MSI-H, and TMB-L/MSS. This combined classification
+will allow characterization of the distribution of biologically and clinically distinct tumor subtypes across Ghanaian
+and Ethiopian populations, and will inform analyses of how genetic ancestry and geographic factors influence
+tumor immunogenicity and potential responsiveness to immunotherapy.
+Analytic approach & driver gene identification: Mutational data will be integrated with race, geography, age, and
+sex to estimate associations between mutational signatures and these factors. Analyses will be performed in R
+using the Bioconductor MAFtools package27. Minor allele frequencies (MAFs) will be imported into R and variants
+will be filtered based on a minimum sequencing depth of 20x and a MAF<1% in each population database (ExAC,
+gnomAD, 1000 Genomes Project).
+Recent large-scale whole-genome sequencing studies have identified over 250 putative driver genes, many not
+previously implicated in CRC, but these analyses remain predominantly European in ancestry. In the AfriCAN
+DANCE cohort, we will systematically evaluate both well-established, frequently mutated CRC driver “mountains”
+(APC, BRAF, CTNNB1, FBXW7, KRAS, MLH1, MSH2, MSH6, NRAS, PIK3CA, PMS2, RNF43, SMAD4,
+TGFBR2, TP53) and the broader landscape of putative “hill” genes identified in contemporary genomic
+studies12,28,29, testing the hypothesis that the relative frequency and functional impact of hill genes differs by
+African ancestry. Critically, genes that appear as hills in TCGA-derived analyses may represent mountains in
+African-ancestry tumors, with implications for targeted therapy and risk stratification.
+WES data from AfriCAN DANCE participants (n=1,400 tumor-normal pairs: 300 US AA, 100 US Non-Hispanic
+White (NHW), 600 Ghanaian, 400 Ethiopian) will be processed through a driver gene identification pipeline
+modeled on the approach used in the UK 100,000 Genomes Project CRC analysis 11. Mutations will be analyzed
+using seven complementary driver identification methods implemented through the IntOGen pipeline: dNdScv,
+cBaSE, OncodriveCLUSTL, smRegions, HotMAPS, OncodriveFML, and MutPanning. These methods
+collectively test for orthogonal signals of positive selection, including excess non-synonymous mutation burden
+
+(corrected for trinucleotide context), spatial clustering of mutations
+along the protein sequence and in 3D structure, and enrichment of
+functionally impactful variants as scored by Combined Annotation
+Dependent Depletion (CADD). To account for the confounding
+effects of hypermutation on background rate estimation, all
+analyses will be stratified by microsatellite stability status (MSS,
+MSI, and POLE-mutant), with hypermutated samples handled via
+iterative subsampling as described by Nunes et al.12 A gene will be
+considered a putative driver if it achieves an FDR q-value < 0.05
+with support from at least two independent methods; genes in the
+COSMIC Cancer Gene Census will be evaluated at relaxed
+thresholds (CGC q-value < 0.25) to preserve sensitivity for known
+drivers present at lower frequencies in this population. Identified
+driver genes will be classified by mechanism of action (activating,
+loss-of-function, or ambiguous) using dNdScv mutation distribution
+patterns and cross-referenced against the established CRC driver
+landscape12,28,29 to distinguish confirmed mountains, candidate
+hills, and novel African ancestry-associated drivers.
+Statistical power for driver gene discovery: Power for somatic driver gene identification was assessed using a
+binomial detection framework, defining a gene as detectable when the probability of observing mutations in at
+least two independent tumor samples exceeds 80%. At N=1,400 tumor-normal pairs, we achieve 80% power to
+detect driver genes present at a true frequency as low as 0.2%, with expected mutation counts exceeding 6 at
+0.5% frequency and exceeding 13 at 1.0% frequency. For well-established CRC mountains [APC (~80%), TP53
+(~60%), KRAS (~45%)] detection power is effectively 100% in all subgroups including Ethiopia alone (N=400).
+For lower-frequency hill genes such as PIK3CA (~18%), BRAF (~10%), and SMAD4 (~10%), expected mutation
+counts in the full cohort are 233, 130, and 130, respectively, ensuring robust detection and stratified analysis by
+MSI status. Within-country subgroup analyses (Ghana N=600, Ethiopia N=400) remain powered to detect genes
+at frequencies as low as 0.5% and 0.9%, respectively.
+Statistical analyses & power for comparing variants across categories: As for discrete categories such as
+population/ geography, we will apply a generalized linear model (GLM) with a binomial family to identify variants
+with significantly different frequencies between the two comparison groups. Spearman correlation will be used
+for continuous genetic ancestry analyses. Multiple testing correction will be applied using the BenjaminiHochberg false discovery rate method, with a significance threshold of FDR < 0.05. Analyses will be structured
+across the following comparison categories:
+1. Within country/ geography: Mutations in CRC tumors will be characterized by geographic origin, including
+Ethiopia and Ghana separately.
+2. Between countries/ geography: Mutations will be compared across geographic groups to identify
+population-specific patterns, including Ghana vs. Ethiopia, Ghana vs. the United States, and Ethiopia vs. the
+United States.
+3. Genetic ancestry: Ancestry estimations from ADMIXTURE will be applied in two ways:
+a. Continuous AFR ancestry proportions: The proportion of African (AFR) ancestry in each tumor sample
+will be estimated using the 1000 Genomes Project reference panel, producing a continuous distribution
+ranging from 0 to 1 (0 to 100%).
+b. Categorical groups: Tumors will be stratified into three groups based on AFR ancestry proportion using
+a quantile-based approach: Low AFR (≤30%), Medium AFR (30% to 80%), and High AFR (≥80%).
+Power for pairwise comparisons of mutation frequencies was calculated using a two-sided two-proportion z-test
+(α=0.05, Benjamini-Hochberg FDR-corrected), with baseline frequencies derived from TCGA CRC estimates for
+six representative driver genes spanning the full frequency range: APC (80%), TP53 (60%), KRAS (45%),
+PIK3CA (18%), BRAF (10%), and SMAD4 (10%). For the three primary cross-population comparisons, we have
+≥80% power to detect the following minimum absolute differences: Ghana (N=600) vs. Ethiopia (N=400): 6.5–
+9.2%; Ghana vs. US AA (N=300): 7.5–10.7%; Ethiopia vs. US AA: 8.4–11.8%, depending on baseline frequency.
+For a 10 percentage-point difference, power exceeds 85% for all three primary comparisons, exceeding 93% for
+BRAF and SMAD4 in the Ethiopia vs. US AA comparison. For a 15 percentage-point difference, power exceeds
+94% for all primary comparisons. The US NHW group (N=100) is included as an ancestry reference; pairwise
+comparisons involving this group are treated as exploratory (power 31–61% for a 10pp difference). For
+
+continuous African ancestry proportion analyses using Spearman correlation (N=1,400), the study achieves 80%
+power to detect correlations as small as r=0.08 and 95% power at r=0.10, providing sensitivity for modest
+ancestry-associated effects on somatic mutation patterns.
+Potential problems and alternative solutions: FFPE specimens from African sites may have variable DNA quality
+due to differences in fixation protocols and tissue handling. We have addressed this by implementing preshipment H&E quality review at each site, requiring >70% tumor cellularity, and using the QIASymphony
+automated extraction system validated for degraded FFPE inputs. For samples with insufficient DNA yield for
+standard WES, we will apply low-input library preparation at reduced input, which has been validated in the
+Rozek laboratory. We address divergence of African-specific germline variation from GRCh38 by mapping all
+samples in parallel to both GRCh38 and the human pangenome reference, comparing variant calls across
+alignments to quantify and flag reference-introduced artifacts. For variants flagged as potential false positives
+due to reference bias, we will apply gnomAD African population allele frequency filters and cross-reference
+against the COSMIC misclassification database to systematically distinguish true somatic mutations from
+African-specific germline variants incorrectly called as somatic. All driver analyses will be stratified by MSI status
+with hypermutated samples handled via iterative subsampling, preventing inflation of apparent driver signals in
+these subgroups. If MSI-H prevalence in AfriCAN cohorts differs substantially from TCGA priors, we will
+recalibrate background mutation rate models using country-stratified trinucleotide context correction.
+Specific Aim 2. Identify therapeutic vulnerabilities in CRC patients with African ancestry.
+Overview: Our preliminary analysis suggests that distinct patterns of gene expression exist within CRC patients
+with African ancestry, a subset of which are driven by somatic mutations enriched in this CRC subpopulation.
+We will use RNA sequencing (RNAseq) to determine the transcriptomes of 400 Ghanaian and Ethiopian CRC
+tumor samples combined with existing RNAseq tumor data (100 AA, 100 NHW). We will apply a bioinformatic
+pipeline that employs a series of statistical and machine learning approaches to identify druggable therapeutic
+vulnerabilities. Candidate drug targets will be prioritized based on their association with clinical outcomes,
+enrichment of expression, machine learning metrics, and participation in African ancestry-enriched CRC
+pathways. Functional assessment of candidates will then be performed using patient-derived organoid (PDOs),
+which serves as a high-fidelity model system for studying the underlying mechanisms of CRC. We will then
+compare the response of 30 PDOs derived from AA patients with 20 PDOs derived from NHW (all with % African
+ancestry quantified) using a range of concentrations of each inhibitor. Collectively, these studies will identify
+small molecules capable of the selective attenuation of CRC tumor growth in patients with African ancestry.
+Preliminary data
+To address gaps in our knowledge of CRC11, we analyzed bulk RNAseq data using samples collected in the US,
+Ghana, and Ethiopia (Total n=77: AA=18, NHW=32, ETH=24, GHA=3). This preliminary analysis was
+underpowered to detect differences between each of the four populations (which is the focus of this PF5
+research project). These preliminary data demonstrate (1) feasibility of generating RNAseq data from
+samples from each country, (2) ability to detect ancestry-related differences in gene expression in these
+samples, and (3) successful implementation of our novel pipeline.
+Exploration of ancestry-related differences in the CRC transcriptome: Using the targeted DNA sequencing results
+discussed above, the proportion of African ancestry within each sample was quantified using ADMIXTURE 30,
+ranging from 5% to 85% (median=37%, IQR=26.5%). Our initial differential gene expression analysis models 31
+identified 156 differentially expressed mRNA transcripts between African ancestry (US AA, Ghana, Ethiopia) and
+NHW patients (Fig. 2). Gene Set Enrichment Analysis (GSEA) was used to quantify associated pathway activity,
+showing that E2F and MYC signaling as well as metabolic activity are correlated with African ancestry (Fig. 3).
+Conversely, our results suggest that epithelial mesenchymal transition is less prevalent in CRC patients with
+high degrees of African ancestry. Interestingly, MYC signaling is activated by the WNT and PI3K signaling
+cascades, which may be a function of the divergent frequency of mutations in these pathways discussed above
+(Table 2). To corroborate these results, we performed an analysis of the expression of regulons associated with
+specific transcription factors, using the DoRoTHEa database32 of transcription factor target genes and virtual
+inference of protein-activity by enriched regulon analysis33. This analysis revealed enhanced activity of the
+transcription factors CDX2 and MYB, both of which have been previously linked with MYC signaling activity 34–36.
+These findings further imply that transcriptional programs in CRC derived from patients of African ancestry are
+distinct as a result of signaling and metabolic activity.
+Prediction of therapeutic vulnerabilities: To demonstrate our ability to identify oncogenic drivers in CRC patients
+
+of African ancestry, we next
+employed our novel computational
+analysis. Elastic net regression37 and
+random forest modeling38 were used
+in an approach employing crossvalidation39. To ensure the rigor and
+reproducibility of our analysis, only
+features stable over >10 iterations
+were considered valid. The results of
+these two models were crossreferenced to produce a list of
+candidate
+oncogenic
+drivers.
+Consistent with Aim 1 preliminary
+data, gene products involved in
+immune signaling, particularly that
+cytokine
+signaling
+and
+the
+complement system, were enriched
+in CRC patients of African ancestry
+(Fig. 4). Interestingly, gene products
+involved in the activity of RHO family
+GTPases, which are frequently activated by PI3K signaling40–43, were also
+identified by both machine learning algorithms. Importantly, an analysis of CRC
+patient samples in the TCGA found that 41 of these
+candidate drivers are associated with survival in AA
+but not NHW patients. Furthermore, 12 of these
+drivers are druggable and represent actionable
+opportunities for therapeutic intervention.
+Generation of patient-derived CRC organoids: In a
+coordinated effort at HMH JTCC, we derived 120+
+matched CRC patient tumor and normal colon
+organoids. We assessed the sensitivity of PDOs to 5FU based frontline chemotherapies for CRC patients,
+which is still the current standard of care for CRC
+patients at HMH-JTCC. While normal, non-tumor
+organoids show no significant decrease in viability,
+CRC tumor organoids from the same patient show
+significant sensitivity to 5-FU based treatment with a
+50% decrease in cell viability following 7 days of
+treatment, supporting our previous publication that
+CRC PDOs can reflect drug sensitivity and potentially
+model patient response to targeted therapy44(Fig. 5).
+Consequently, we are currently following 5 patients
+undergoing 5-FU based treatment and reveal that
+PDO sensitivity to 5-FU treatments reflect CRC
+patient response. We have extended this workflow
+to GU (P30CA051008) to capture a diverse cohort
+of CRC patients where from 2021 - 2024, 44.8% of the CRC cases were self-described as AA. This collection
+will take advantage of an IRB-approved protocol at GU for cohort ascertainment and specimen collection.
+Aim 2a methods: Identify therapeutic vulnerabilities via a bioinformatic pipeline that employs a series of
+statistical and machine learning approaches
+RNA Sequencing: DNA/RNA co-extractions will be performed as described in Aim 1. RNA from 400 AfriCAN
+DANCE cases (200 Ghanaian and 200 Ethiopian, selected to represent the full range of clinical and pathologic
+characteristics in the cohort) will be processed and sequenced at the University of Maryland Sequencing Core.
+A minimum of 100 AA and 100 NHW DANCE participants with existing RNA-seq data will be included, selected
+
+to frequency match African cases on age of onset
+category (<50, 50+), stage, and sex. Raw fastq files
+will
+be
+processed
+using
+STAR
+45
+alignment/quantification software to produce a
+matrix containing quantified count values for all
+detected genes. As in Aim 1, alignment quality will
+be assessed using FastQC46. The presence of
+outliers and batch effects will be determined using
+several methods after count data are normalized
+using a variance stabilizing transformation, including
+principal component analysis, sample distance, and
+hierarchical clustering. To capture the full spectrum
+of African ancestry represented in our cohort rather
+than treating ancestry as a binary category, DNA
+sequencing data from Aim 1 will be used to estimate
+the proportion of African ancestry in each participant
+using ADMIXTURE30 and RFMix47, producing
+continuous ancestry proportion scores that will serve
+as the primary covariate in all transcriptomic analyses. These ancestryquantified, batch-corrected RNA-seq data will then enter the ancestryaware drug discovery pipeline described below (Fig. 6).
+Identification of the CRC transcriptomic features associated with African
+ancestry: We will evaluate differential expression using the same
+framework as described for Aim 1 (within/between country, by ancestry).
+Likelihood ratio tests will be performed before Benjamini-Hochberg
+multiple testing correction48 (statistically significant =p<0.05, log(fold
+change)>0.5). Log (fold change) values will be shrunk using Bayesian
+estimation49.We will use African ancestry estimates as continuous
+variables in GLMs using median-of-ratio transformed counts via DESeq231.
+Models will be adjusted for potential confounders (stage, site, MSI,
+collection site, batch). We will then evaluate the enrichment of pathway
+activity in CRC patients within subgroup using GSEA50 and the Molecular
+Signatures Database hallmark51, KEGG, REACTOME52, and Gene
+Ontology consortium gene set collections. These results will be
+corroborated by assessing transcription factor activity using virtual
+inference of protein-activity by enriched regulon analysis 33 and the
+DoRothEA database32. Associations between transcription factor activity and subgroup will then be assessed
+using linear regression controlling for appropriate confounders.
+Prioritization of druggable oncogenic drivers in CRC patients of African ancestry: To identify candidate
+therapeutic vulnerabilities, we will employ two machine learning algorithms that predict the highest probability of
+functioning as oncogenic drivers specific to this demographic group. This includes some of the most commonly
+used approaches for cancer biomarker discovery53–56, elastic net regression37, as well as random forest
+modeling38. These methods function through distinct processes with complementary sets of advantages and
+limitations, providing an orthogonal approach to candidate prioritization. Furthermore, cross-validation 39 will be
+used to ensure robustness. Model performance will be evaluated using the Jaccard similarity index 57 and the
+receiver operating characteristic58, gold standards for reproducibility and accuracy, respectively. Only candidates
+that are stable over > 10 iterations of each method will be prioritized to guarantee the rigor and reproducibility of
+our analysis. Genes significantly associated with a particular subgroup, predicted to be oncogenic drivers by
+machine learning algorithms, and upregulated in statistical models will be assessed for druggability using the
+Drug Gene Interaction Database59. MatrixEQTL60 analyses will allow us to identify candidate drug targets with
+expression driven by mutations enriched in a particular subgroup. Cox proportional hazard models 61 will be used
+to determine the association of the expression of this druggable subset of candidate molecular drivers with
+patient outcomes using data from the AfriCAN DANCE cohort. Publicly available datasets, including the TCGA 62,
+will be used as external validation of these findings, taking into account the lack of sequencing depth and variant
+misclassification commonly seen in African-ancestry samples in these datasets.
+
+Power calculations: RnaSeqSampleSize7 provides genome-wide FDR-corrected sample size estimates
+accounting for multiple testing across the full transcriptome (Table 3). We assumed a biological coefficient of
+variation of 0.4 (consistent with published estimates for heterogeneous CRC tumor bulk RNA-seq data), FDR of
+0.05, 20,000 genes tested, and a conservative estimate of 2,000 truly differentially expressed genes. Given the
+potential subtle regulatory influences rather than large binary shifts, we powered the study to detect a minimum
+1.5-fold change. At 80% power and a 1.5-fold minimum detectable change, 48 samples per group (192 total
+samples) across the four ancestry groups are required.
+Aim 2b methods: Functionally assess drug candidates using patient-derived organoid (PDOs)
+Target African-specific CRC drivers ex vivo using PDO cultures: Thirty AA-derived CRC PDO lines will be
+established from patients at HMH-JTCC and LCCC. De-identified CRC patient resections will be viably
+preserved. 10% will be fixed and paraffin-embedded for histological analysis and validation of oncogenic
+molecular drivers and ancestry-enriched markers identified in Aim 2a. The remainder will be enzymatically
+digested and embedded in Matrigel for organoid derivation. To account for an expected 20–30% derivation
+attrition rate, we will attempt derivation from 40 AA patient resections to yield 30 viable, expandable lines for the
+screen. Patients with hereditary CRC predisposition syndromes (Lynch Syndrome, FAP) will be excluded.
+Twenty NHW-derived PDO lines will be drawn from the existing HMH-JTCC PDO bank. All 50 PDO lines will
+undergo WES prior to drug sensitivity testing to estimate African ancestry proportion using ADMIXTURE as
+described in Aim 1, characterize the somatic mutational landscape of each line, and determine variant carrier
+status for each of the top candidate ancestry-enriched drivers from Aim 1.
+Variant-stratified primary drug sensitivity screen: All 50 PDO lines will be treated with the top 20 candidate
+inhibitors nominated by Aim 2a bioinformatic pipeline, plus vehicle control and current standard-of-care regimens
+(FOLFOX), across a range of concentrations spanning at least four orders of magnitude in 384-well plates.
+Treatment will continue for 14 days or until significant differences in organoid viability, growth rate, or morphology
+are observed, assessed by microscopy and CellTiter-Glo 3D Cell Viability Assay. Dose-response curves for each
+PDO-inhibitor combination will be generated using three-parameter non-linear regression, and potency (IC50)
+and efficacy (Emax) calculated for each line. All lines will be passaged to a standardized passage number before
+screening, Matrigel lots will be pre-tested and held consistent across the full screen, and a validated CRC
+reference line will be included across all screening batches as an internal control. The primary analysis for each
+candidate inhibitor will compare drug sensitivity between PDO lines carrying the matched ancestry-enriched
+driver variant and lines that do not, using a mixed effects model with variant carrier status as the primary predictor
+and African ancestry proportion as a continuous covariate to test whether the variant predicts sensitivity. We will
+also test whether African ancestry proportion predicts sensitivity independently of variant carrier status.
+CRISPR knock-in for
+low-frequency
+variant
+augmentation
+and
+isogenic validation: For
+low-frequency variants
+(n<4), CRISPR-based
+knock-in will be used to
+(1) augment the carrier
+group to at least 8 lines
+to increase statistical
+power and (2) provide
+isogenic
+mechanistic
+validation by introducing
+the variant into a
+controlled NHW genetic
+background.
+NHWderived
+PDO
+lines
+confirmed by WES to be
+wild-type at the locus of
+interest will be selected
+for editing. Organoids
+
+will be dissociated to single cells and nucleofected with Cas9-guide RNA ribonucleoprotein complexes together
+with a single-stranded oligodeoxynucleotide HDR template encoding the specific variant of interest. Edited
+organoids will be re-embedded in Matrigel, expanded, and screened by Sanger sequencing and targeted deep
+sequencing to confirm successful knock-in. Off-target editing will be assessed at the top five predicted off-target
+sites by amplicon sequencing. Lines with off-target edits will be excluded.
+Reciprocal loss-of-function confirmation: For candidate inhibitors demonstrating variant-dependent sensitivity,
+we will perform the reciprocal experiment in AA-derived PDO lines that endogenously carry the variant at the
+highest natural allele frequency. CRISPR-mediated knockout or reversion to wild-type will be performed using
+the same nucleofection and HDR approach, with reversion confirmed by sequencing.
+Mechanistic characterization of validated candidates: For candidates demonstrating bidirectionally confirmed
+variant-dependent sensitivity, PDO cultures will be treated with vehicle or one of two concentrations (IC50 or
+IC75) before assessing cell viability, proliferation (EdU incorporation), apoptosis (Annexin-V staining), and
+expression of established CRC markers (CDX2, CK20, LGR5). Drug-specific biomarkers corresponding to the
+targeted ancestry-enriched driver will be validated by RT-qPCR or Western immunoblotting to confirm on-target
+activity and distinguish specific pharmacological effects from generalized cytotoxicity.
+Future directions: While we do not formally propose organoid derivation from African-continent tumor tissue in
+the current application as we lack the preliminary feasibility data required to justify this as a formal aim, AfriCAN
+DANCE is designed to generate exactly the infrastructure needed to make this possible. Dr. Adjei and Dr. Adinku
+at KATH have demonstrated organoid derivation from fresh-frozen African tumor tissue in breast cancer 65,66,
+establishing proof of principle, and the prospective collection of fresh-frozen CRC specimens under AfriCAN
+DANCE will create the biospecimen resource from which African CRC organoids can be derived in a future
+application. Establishing African-continent-derived CRC PDO models is a high-priority next step that this study
+is specifically designed to enable.
+Anticipated Outcomes: From the variant-stratified drug sensitivity screen, we anticipate identifying a subset of
+candidate inhibitors from Aim 2a with differential sensitivity between variant-carrier and non-carrier PDO lines,
+particularly among targets linked to the MYC, WNT, and PI3K-AKT signaling pathways enriched in our
+preliminary transcriptomic data. For high- and moderate-frequency variants including KRAS G12D/G13, PIK3CA,
+and CTNNB1, natural carrier counts among the 50 PDO lines provide 80–94% power to detect a two-fold IC50
+difference, and we expect these tiers to yield the strongest primary screen signals. For low-frequency variants,
+CRISPR knock-in into NHW-background lines is expected to confer increased sensitivity to matched inhibitors
+relative to unedited isogenic controls, directly attributing differential sensitivity to the introduced variant.
+Reciprocal reversion experiments in AA-derived lines are expected to attenuate that sensitivity, providing
+bidirectional isogenic confirmation. The final output will be a set of variant-dependent druggable targets with ontarget mechanistic validation, which can feed into future biomarker-stratified early-phase trials enrolling patients
+carrying the relevant variant regardless of self-reported ancestry.
+Potential Pitfalls and Alternative Approaches: If the variant-stratified primary analysis yields weak differential
+sensitivity signals (e.g. top Aim 2a candidates reflect transcriptional rather than mutational drivers) we will shift
+the primary grouping variable from somatic variant carrier status to continuous African ancestry proportion, using
+the ADMIXTURE scores from Aim 1 to identify inhibitors whose activity tracks with ancestry proportion rather
+than any single variant. This approach sacrifices mechanistic specificity but preserves the ability to identify
+ancestry-associated therapeutic vulnerabilities from the same PDO dataset without additional experiments. If
+PDO lines do not endogenously express candidate drivers at sufficient levels to model functional impact, we will
+employ lentiviral overexpression to engineer expression of candidate genes in existing organoid lines, an
+approach previously validated in our laboratory67 and expected to demonstrate oncogenic activity. This strategy
+preserves the ability to generate functionally validated targets regardless of endogenous expression
+characteristics and does not require generation of new primary cultures. If CRISPR knock-in efficiency is
+insufficient for a specific target locus, we will use base editing as an alternative precision editing strategy, which
+achieves single-nucleotide substitutions without double-strand breaks and has demonstrated higher efficiency
+than HDR-based knock-in at difficult loci in organoid systems.
+Timeline: Shown in the Overall Research Strategy.
+
+

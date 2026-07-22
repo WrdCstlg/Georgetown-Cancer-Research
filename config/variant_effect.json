@@ -1,0 +1,10 @@
+{
+  "status": "PLACEHOLDER",
+  "_note": "Thresholds are PLACEHOLDERS pending domain-owner confirmation (DEFINITIONS.md). Code warns and stamps results 'calibration_pending'; run strict=True to hard-fail on placeholders.",
+  "consensus": {
+    "method_id": "consensus_v0_min_agree",
+    "min_agree": 2,
+    "_rule": "pathogenic if >=min_agree tools call pathogenic and none call benign; benign if >=min_agree call benign and none call pathogenic; else VUS"
+  },
+  "tool_versions": {"alphamissense": "TODO", "eve": "TODO", "polyphen": "TODO", "sift": "TODO"}
+}

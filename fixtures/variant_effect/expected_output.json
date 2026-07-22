@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "overall": {"n": 20, "vus_before": 20, "vus_after": 6, "pathogenic": 9, "benign": 5, "vus_before_pct": 100.0, "vus_after_pct": 30.0},
+    "per_population": {
+      "AA":  {"n": 5, "vus_before": 5, "vus_after": 2, "pathogenic": 2, "benign": 1, "vus_before_pct": 100.0, "vus_after_pct": 40.0},
+      "ETH": {"n": 5, "vus_before": 5, "vus_after": 2, "pathogenic": 1, "benign": 2, "vus_before_pct": 100.0, "vus_after_pct": 40.0},
+      "GHA": {"n": 5, "vus_before": 5, "vus_after": 1, "pathogenic": 3, "benign": 1, "vus_before_pct": 100.0, "vus_after_pct": 20.0},
+      "NHW": {"n": 5, "vus_before": 5, "vus_after": 1, "pathogenic": 3, "benign": 1, "vus_before_pct": 100.0, "vus_after_pct": 20.0}
+    }
+  },
+  "new_classification": {
+    "v01": "pathogenic", "v02": "pathogenic", "v03": "benign", "v04": "VUS", "v05": "VUS",
+    "v06": "pathogenic", "v07": "pathogenic", "v08": "benign", "v09": "pathogenic", "v10": "VUS",
+    "v11": "pathogenic", "v12": "benign", "v13": "benign", "v14": "VUS", "v15": "VUS",
+    "v16": "pathogenic", "v17": "benign", "v18": "pathogenic", "v19": "pathogenic", "v20": "VUS"
+  }
+}

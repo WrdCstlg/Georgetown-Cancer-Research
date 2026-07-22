@@ -1,0 +1,122 @@
+{
+  "v01": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "pathogenic",
+    "sift": "pathogenic"
+  },
+  "v02": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v03": {
+    "alphamissense": "benign",
+    "eve": "benign",
+    "polyphen": "benign",
+    "sift": "benign"
+  },
+  "v04": {
+    "alphamissense": "pathogenic",
+    "eve": "benign",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v05": {
+    "alphamissense": "uncertain",
+    "eve": "uncertain",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v06": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "pathogenic",
+    "sift": "uncertain"
+  },
+  "v07": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v08": {
+    "alphamissense": "benign",
+    "eve": "benign",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v09": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v10": {
+    "alphamissense": "benign",
+    "eve": "pathogenic",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v11": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "pathogenic",
+    "sift": "pathogenic"
+  },
+  "v12": {
+    "alphamissense": "benign",
+    "eve": "benign",
+    "polyphen": "benign",
+    "sift": "uncertain"
+  },
+  "v13": {
+    "alphamissense": "uncertain",
+    "eve": "uncertain",
+    "polyphen": "benign",
+    "sift": "benign"
+  },
+  "v14": {
+    "alphamissense": "pathogenic",
+    "eve": "uncertain",
+    "polyphen": "benign",
+    "sift": "uncertain"
+  },
+  "v15": {
+    "alphamissense": "uncertain",
+    "eve": "uncertain",
+    "polyphen": "uncertain",
+    "sift": "pathogenic"
+  },
+  "v16": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "uncertain",
+    "sift": "pathogenic"
+  },
+  "v17": {
+    "alphamissense": "benign",
+    "eve": "benign",
+    "polyphen": "benign",
+    "sift": "benign"
+  },
+  "v18": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "pathogenic",
+    "sift": "uncertain"
+  },
+  "v19": {
+    "alphamissense": "pathogenic",
+    "eve": "pathogenic",
+    "polyphen": "uncertain",
+    "sift": "uncertain"
+  },
+  "v20": {
+    "alphamissense": "benign",
+    "eve": "uncertain",
+    "polyphen": "uncertain",
+    "sift": "pathogenic"
+  }
+}
