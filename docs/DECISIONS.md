@@ -17,6 +17,22 @@ Options:
 Recommendation: (a). No code movement; the seam stays stable and the map documents both forms.
 Until approved, ARCHITECTURE.md §5 marks the flat form as PROPOSED (see D-002 reference there).
 
+## D-003 — Supported Python floor: keep 3.8 or raise to the dev version
+Status: **PROPOSED — pending owner approval.**
+Fork: AGENTS.md §Environment documents a Python floor of 3.8, derived from a single walrus
+operator in `producers/variant_effect/reclassify.py` — an accident of implementation, not a
+deliberate support decision. Development actually runs on 3.14, and 3.8 is past end-of-life,
+so a floor pin is fragile for reasons unrelated to this code.
+Options:
+  (a) Keep the 3.8 floor and test it in CI — the floor claim stays honest, but CI spends
+      cycles validating a version nobody runs, on an EOL interpreter.
+  (b) Raise the floor to the dev version (3.14) and drop the 3.8 claim — one supported
+      version, matching reality; the "runs anywhere ≥3.8" property is forfeited as a claim.
+Recommendation: (b). A documented support floor should be a decision, not an accident of one
+operator; if broad-version compatibility is ever needed, that is its own stated requirement.
+Until decided, CI tests BOTH versions (matrix in .github/workflows/tests.yml) so the docs are
+honest under either outcome.
+
 ## D1 — Ownership / IP of the substrate
 Status: **OPEN.**
 Question: who owns the fusion substrate?

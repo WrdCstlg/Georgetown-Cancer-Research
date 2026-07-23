@@ -3,24 +3,29 @@ name: tests
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+  pull_request:   # any base branch, so stacked PRs are gated too
 
 jobs:
   test:
-    name: test
+    name: test (py ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both versions from AGENTS.md §Environment: 3.8 = documented floor
+        # (walrus operator in producers/variant_effect/reclassify.py),
+        # 3.14 = the version development actually runs on.
+        # Whether the floor claim survives is decision D-003 (PROPOSED) —
+        # until the owner decides, CI covers both.
+        python-version: ["3.8", "3.14"]
     steps:
       - uses: actions/checkout@v4
 
-      # Python 3.8 = the code's actual floor (walrus operator in
-      # producers/variant_effect/reclassify.py; everything else 3.7-compatible),
-      # as documented in AGENTS.md §Environment. Testing the floor keeps the
-      # documented minimum honest. No install step: both suites are stdlib-only.
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: ${{ matrix.python-version }}
 
+      # No install step: both suites are standard-library only (AGENTS.md §Environment).
       - name: variant_effect golden fixtures + guardrails
         run: python tests/test_variant_effect.py
 
