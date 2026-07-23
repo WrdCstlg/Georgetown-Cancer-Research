@@ -24,6 +24,7 @@
 | SPEC-011 | Organoid imaging: CellPose segmentation + CNN morphological features | `producers/imaging/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED |
 | SPEC-012 | Causal layer: Double ML / causal forests, validated against CRISPR knock-in/reversion isogenics — NOVEL, strongest controls (G6) | `producers/causal/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED |
 | SPEC-013 | Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6) | `producers/multimodal_predictor/` | Aim 2b (Phase 5 — gated on D5 + wet-lab data) | SPECIFIED |
+| SPEC-014 | Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR | repo tooling (`.github/`) | Cross-cutting — the control protocol itself (docs/risk-and-agent-control.md Part 3) | FUNCTIONAL |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -40,6 +41,17 @@ Executable acceptance (all in `tests/test_variant_effect.py`, run per `AGENTS.md
 - every result is stamped `calibration_pending` while per-population calibration targets remain [TO BE DEFINED];
 - a clinical-DB-absent variant is still reclassified by structure/evolution tools (circularity break);
 - strict mode hard-fails on PLACEHOLDER config, so invented cutoffs can never silently ship (I3).
+
+### SPEC-014 — agent-control CI enforcement
+Executable acceptance (observed, not asserted):
+- both test suites run in CI on push to `main` and on every pull request, on both documented
+  Python versions (floor + dev version, per AGENTS.md §Environment / D-003);
+- a pull request whose body contains no `SPEC-NNN` reference FAILS the `spec-id` check, and the
+  failure message names the fix and points at SPEC.md;
+- the gate was observed failing on a SPEC-less PR body and passing after the body was corrected
+  (demonstrated on the PR that introduced it).
+Known gap (follow-up): the check matches the SPEC-NNN pattern only; it does not yet validate
+that the cited ID exists in SPEC.md.
 
 ## Acceptance criteria for SPECIFIED items
 

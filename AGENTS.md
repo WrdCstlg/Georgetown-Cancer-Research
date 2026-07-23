@@ -86,10 +86,12 @@ A unit of work is complete only when **all** hold:
 
 Otherwise it is **SPECIFIED, not FUNCTIONAL**.
 
+Item 2 is mechanically enforced: CI fails any pull request whose body contains no `SPEC-NNN` reference (job `spec-id` in `.github/workflows/tests.yml`) — enforced, not honor-system.
+
 ## 5 · Commit / PR conventions
 
 - **One concern per PR.** If it spans layers, it's too big — split it or it's a contract change (get review).
-- PR description states: the spec item it satisfies, its blast radius, and the execution artifact.
+- PR description states: the spec item it satisfies, its blast radius, and the execution artifact. Use `.github/pull_request_template.md`; the SPEC- id requirement is enforced in CI (job `spec-id`), not honor-system.
 - Contract changes (`contracts/`) are flagged explicitly and list every downstream layer they touch.
 - Decision records for any fork resolved (I4).
 
