@@ -17,6 +17,7 @@ The bottleneck to seeing clearly isn't a shortage of models — it's that every 
 | [`docs/risk-and-agent-control.md`](docs/risk-and-agent-control.md) | Risk register, second-order failure modes, the control protocol |
 | [`AGENTS.md`](AGENTS.md) | How to work in this repo (humans and coding agents) |
 | [`DEFINITIONS.md`](DEFINITIONS.md) | Domain criteria — **owned by domain experts; the agent must not author them** |
+| [`SPEC.md`](SPEC.md) | Spec-item registry (control I6) — every change cites a SPEC- ID; new work adds its item before code |
 | [`docs/sources/`](docs/sources/) | The R01 grant strategy and AI-integration source PDFs |
 
 ## Repository structure
@@ -35,11 +36,13 @@ Plus `contracts/` (the seams between layers), `DEFINITIONS.md` + `config/` (doma
 
 ## Getting started
 
-> Toolchain versions are pinned in `config/`. Specifics land as Phase 0/1 is implemented — this is the shape, not final commands.
+**Environment (Windows):** run Python from **PowerShell**, not Git Bash — `python` fails there with a Cygwin fork error. Keep the repo at a path with **no spaces**. The test suites are standard-library only, so there is **no install step**; floor is Python 3.8 (3.14.0 verified). Full details in `AGENTS.md` §Environment.
+
+> Toolchain versions are NOT yet pinned: `config/` currently holds only domain criteria (placeholders pending domain-owner sign-off). No lockfile exists yet — tracked as a follow-up.
 
 Prerequisites:
 - **Nextflow** + a container runtime (Singularity/Docker) for the pipeline
-- **Python** (pinned via lockfile) for producers, query, ML
+- **Python** (see `AGENTS.md` §Environment — no lockfile yet) for producers, query, ML
 - **R / Bioconductor** for statistical genomics
 - **PostgreSQL** (+ `pgvector`) for the fusion core
 

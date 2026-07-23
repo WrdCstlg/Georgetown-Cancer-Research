@@ -5,6 +5,8 @@
 > Producers and the query layer read these as **injected, fixed input** — never hardcode them (see `ARCHITECTURE.md` §4.4).
 >
 > Values marked **[from grant strategy]** are transcribed from `docs/sources/Domestic_Project_Research_Strategy_PF5.pdf` as candidate defaults and still need domain sign-off for the ancestry-aware context. Values marked **[TO BE DEFINED]** are not specified for this context and **block** any code that needs them until a domain owner fills them in.
+>
+> **Reciprocity rule:** any change to a domain value in `config/` requires updating this file in the SAME commit, and vice versa. The two never drift (AGENTS.md §1.8).
 
 ---
 
@@ -18,6 +20,7 @@
 | Multiple-testing correction | Benjamini-Hochberg, FDR `< 0.05` | [from grant strategy] — confirm |
 | Germline MAF filter (somatic calling) | `< 1%` in ExAC / gnomAD / 1000G | [from grant strategy] — confirm |
 | Minimum sequencing depth | `20x` | [from grant strategy] — confirm |
+| VUS consensus rule (`producers/variant_effect`) | A variant is called **pathogenic** if ≥ `2` tools call pathogenic and none call benign; **benign** if ≥ `2` call benign and none call pathogenic; otherwise it remains **VUS** (`method_id: consensus_v0_min_agree`, `min_agree: 2` — controls how the four tool calls are combined into a reclassification) | **AWAITING SIGN-OFF** — currently a PLACEHOLDER in `config/variant_effect.json`; authored during the Phase-2 build and transcribed here per the reciprocity rule. Domain owner must confirm or adjust |
 
 ## 2 · Tumor subtyping
 
