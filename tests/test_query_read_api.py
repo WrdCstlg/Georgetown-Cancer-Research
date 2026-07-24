@@ -8,7 +8,9 @@ consensus rule is pending domain sign-off and will change, and these tests must
 not break when it does. (The seed writes to a throwaway in-memory DB in test
 setup; the query layer itself never writes -- it reads v_variant_effect only.)
 
-Runnable: pytest tests/  OR  python tests/test_query_read_api.py
+Supported: python tests/test_query_read_api.py  (direct execution is the supported,
+CI-enforced path; pytest compatibility is UNVERIFIED — never executed end-to-end
+in this environment, SPEC-016)
 """
 import json
 import os

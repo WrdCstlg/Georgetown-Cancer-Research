@@ -20,7 +20,7 @@ Read before acting. Never contradict these; never reconstruct a missing one from
 - **Path: no spaces.** The repo must live at a path with no spaces (current: `C:\dev\Georgetown-Cancer-Research`).
 - **Python:** 3.14.0 is installed and is what the suites were verified on. The code's actual floor is **3.8** (the walrus operator in `producers/variant_effect/reclassify.py`; everything else is 3.7-compatible). *The floor claim is under review — decision D-003 (PROPOSED); CI currently tests both 3.8 and 3.14.*
 - **No install step.** The test suites are standard-library only; there is nothing to install to run them. No lockfile exists yet (tracked as a follow-up — G2).
-- **Installed but NOT pinned and NOT required by the tests:** pytest 9.0.2 (convenience runner; both suites also run as plain scripts) and pypdf 6.11.0 (only needed to read the PDFs in `docs/sources/`; the `.txt` copy above is the dependency-free path). A fresh machine may lack both; the tests depend on neither.
+- **Installed but NOT pinned and NOT required by the tests:** pytest 9.0.2 and pypdf 6.11.0 (only needed to read the PDFs in `docs/sources/`; the `.txt` copy above is the dependency-free path). A fresh machine may lack both; the tests depend on neither. **pytest is NOT a verified runner here** — the suites have never been executed under pytest end-to-end (the local shell cannot launch it); direct execution (`python tests\...`) is the supported, CI-enforced path (SPEC-016).
 
 ## 1 · Separation of concerns — boundaries you must not cross
 
@@ -63,7 +63,10 @@ Condensed from the control protocol; the full statements are in `docs/risk-and-a
 # quality gates (run before marking anything done)
 python tests\test_variant_effect.py   # golden fixtures (G4) + producer guardrails
 python tests\test_core_ingest.py      # core write path + provenance enforcement
-# equivalent convenience runner (NOT pinned, NOT required): python -m pytest tests\ -q
+python tests\test_query_read_api.py   # query read API (SPEC-015)
+# pytest: NOT a verified runner. `python -m pytest tests\ -q` has never executed
+# end-to-end in this environment (the local shell cannot launch it); compatibility
+# is UNVERIFIED (SPEC-016). Direct execution above is the supported path.
 
 # lint        — NOT CONFIGURED. Do not fabricate a command; if you need one, log a decision record and stop (I4).
 # typecheck   — NOT CONFIGURED. Do not fabricate a command; if you need one, log a decision record and stop (I4).

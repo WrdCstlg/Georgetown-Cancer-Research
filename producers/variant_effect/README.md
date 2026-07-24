@@ -38,7 +38,8 @@ tests/test_variant_effect.py              # the golden fixture test (G4)
 
 ## Run the golden fixture
 ```bash
-python tests/test_variant_effect.py       # or: pytest tests/test_variant_effect.py
+python tests/test_variant_effect.py       # direct execution is the supported path
+# (pytest compatibility UNVERIFIED — never executed end-to-end here, SPEC-016)
 ```
 
 ## Wiring real tools (deployment)

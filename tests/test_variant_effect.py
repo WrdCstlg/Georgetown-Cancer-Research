@@ -6,7 +6,9 @@ every result is calibration_pending, a clinical-DB-absent variant is still calle
 by structure/evolution tools (circularity break), and strict mode hard-fails on
 PLACEHOLDER config.
 
-Runnable two ways:  pytest tests/  OR  python tests/test_variant_effect.py
+Supported: python tests/test_variant_effect.py  (direct execution is the supported,
+CI-enforced path; pytest compatibility is UNVERIFIED — never executed end-to-end
+in this environment, SPEC-016)
 """
 import csv
 import json
