@@ -25,6 +25,7 @@
 | SPEC-012 | Causal layer: Double ML / causal forests, validated against CRISPR knock-in/reversion isogenics — NOVEL, strongest controls (G6) | `producers/causal/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED |
 | SPEC-013 | Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6) | `producers/multimodal_predictor/` | Aim 2b (Phase 5 — gated on D5 + wet-lab data) | SPECIFIED |
 | SPEC-014 | Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR | repo tooling (`.github/`) | Cross-cutting — the control protocol itself (docs/risk-and-agent-control.md Part 3) | FUNCTIONAL |
+| SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | The distillation deliverable (Phase 4 precursor — the deterministic layer SPEC-009's NL front-end must translate INTO, never around; docs/risk-and-agent-control.md S5) | FUNCTIONAL |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -52,6 +53,24 @@ Executable acceptance (observed, not asserted):
   (demonstrated on the PR that introduced it).
 Known gap (follow-up): the check matches the SPEC-NNN pattern only; it does not yet validate
 that the cited ID exists in SPEC.md.
+
+### SPEC-015 — query layer: deterministic structured read API
+Executable acceptance (all in `tests/test_query_read_api.py`, run per `AGENTS.md` §3):
+- each filter (population, classification, calibration status, gene) returns exactly the matching
+  `v_variant_effect` rows — and the population filter accepts ONLY `AA/GHA/ETH/NHW`, rejecting any
+  combined-ancestry grouping;
+- every result object carries, as first-class fields: the rows, the EXACT SQL executed with its
+  bound filter values, a provenance summary (producer, version, method, distinct-run count), a
+  result-level calibration flag, and the explicit population(s) covered;
+- the result-level calibration flag follows precedence `calibration_pending > out_of_calibration >
+  in_calibration`, including when a summary aggregates a MIX of row statuses — the caveat survives
+  aggregation (counts and percentages never render clean when any contributing row is caveated);
+- the per-population VUS summary reuses the producer's exact summary shape (n, vus_before/after
+  (+pct), pathogenic, benign; overall + per_population) — no second summary format exists;
+- a query requiring a `[TO BE DEFINED]` definition (ancestry-enriched, actionable/druggable,
+  disconfirmation criteria) raises a named error identifying the missing definition and stating a
+  domain owner must supply it — each refusal is tested;
+- the suite runs in CI like the others (`.github/workflows/tests.yml`).
 
 ## Acceptance criteria for SPECIFIED items
 
