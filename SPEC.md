@@ -26,6 +26,7 @@
 | SPEC-013 | Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6) | `producers/multimodal_predictor/` | Aim 2b (Phase 5 — gated on D5 + wet-lab data) | SPECIFIED |
 | SPEC-014 | Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR | repo tooling (`.github/`) | Cross-cutting — the control protocol itself (docs/risk-and-agent-control.md Part 3) | FUNCTIONAL |
 | SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | The distillation deliverable (Phase 4 precursor — the deterministic layer SPEC-009's NL front-end must translate INTO, never around; docs/risk-and-agent-control.md S5) | FUNCTIONAL |
+| SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | Cross-cutting — fixture integrity (G4) and execution-honesty (G3) | FUNCTIONAL |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -71,6 +72,16 @@ Executable acceptance (all in `tests/test_query_read_api.py`, run per `AGENTS.md
   disconfirmation criteria) raises a named error identifying the missing definition and stating a
   domain owner must supply it — each refusal is tested;
 - the suite runs in CI like the others (`.github/workflows/tests.yml`).
+
+### SPEC-016 — repo hygiene: fixture namespaces + run-documentation honesty
+Executable acceptance:
+- variant IDs in `fixtures/query/` are q-prefixed and share NO identifier with
+  `fixtures/variant_effect/` — checked by diffing the two fixtures' ID sets;
+- `tests/test_query_read_api.py` passes with identical semantics after the rename
+  (same test count, same assertions, same pass/fail behavior — before/after output
+  pasted on the PR);
+- every run-command claim in AGENTS.md §3 and test docstrings names a path that was
+  actually executed end-to-end; unverified paths are labelled unverified, not claimed.
 
 ## Acceptance criteria for SPECIFIED items
 

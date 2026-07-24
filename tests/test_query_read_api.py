@@ -64,13 +64,13 @@ def _ids(result):
 
 def test_filter_population_single():
     res = query_variant_effects(_db(), VariantEffectFilter(populations=("AA",)))
-    assert _ids(res) == ["v01", "v02"]
+    assert _ids(res) == ["q01", "q02"]
     assert res.populations == ["AA"]
 
 
 def test_filter_population_multiple():
     res = query_variant_effects(_db(), VariantEffectFilter(populations=("ETH", "NHW")))
-    assert _ids(res) == ["v05", "v06", "v07", "v08"]
+    assert _ids(res) == ["q05", "q06", "q07", "q08"]
     assert res.populations == ["ETH", "NHW"]
 
 
@@ -86,18 +86,18 @@ def test_filter_population_rejects_merged_grouping():
 
 def test_filter_classification():
     res = query_variant_effects(_db(), VariantEffectFilter(classification="VUS"))
-    assert _ids(res) == ["v03", "v05", "v08"]
+    assert _ids(res) == ["q03", "q05", "q08"]
 
 
 def test_filter_calibration_status():
     res = query_variant_effects(_db(), VariantEffectFilter(calibration_status="in_calibration"))
-    assert _ids(res) == ["v04", "v06", "v07"]
+    assert _ids(res) == ["q04", "q06", "q07"]
     assert res.calibration_status == "in_calibration"
 
 
 def test_filter_gene():
     res = query_variant_effects(_db(), VariantEffectFilter(gene="TP53"))
-    assert _ids(res) == ["v01", "v04", "v07"]
+    assert _ids(res) == ["q01", "q04", "q07"]
 
 
 # --- query echo (show your work) ---
@@ -108,7 +108,7 @@ def test_query_echo_exact_sql_and_bound_values():
     assert sql.startswith("SELECT") and " FROM v_variant_effect" in sql
     assert "population_code IN (:pop0)" in sql and "gene = :gene" in sql
     assert params == {"pop0": "AA", "gene": "TP53"}
-    assert _ids(res) == ["v01"]
+    assert _ids(res) == ["q01"]
 
 
 def test_read_is_select_on_view_only():
