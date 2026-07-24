@@ -1,0 +1,28 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Python 3.8 = the code's actual floor (walrus operator in
+      # producers/variant_effect/reclassify.py; everything else 3.7-compatible),
+      # as documented in AGENTS.md §Environment. Testing the floor keeps the
+      # documented minimum honest. No install step: both suites are stdlib-only.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+
+      - name: variant_effect golden fixtures + guardrails
+        run: python tests/test_variant_effect.py
+
+      - name: core ingest write path + provenance enforcement
+        run: python tests/test_core_ingest.py

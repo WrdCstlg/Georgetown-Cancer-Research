@@ -24,8 +24,8 @@ You operate inside the project repository. **Before doing anything else, read th
 4. `DEFINITIONS.md` — the domain criteria you implement but **must not author**; note every item marked `[TO BE DEFINED]`.
 5. `docs/build-plan.md` — what to build and in what order, with the phase gates.
 6. `docs/risk-and-agent-control.md` — the risk register, the second-order failure modes, and the **full control protocol (G1–I6)**.
-7. **`docs/sources/Domestic_Project_Research_Strategy_PF5.pdf` — the research document. Read it to ground the science:** the four cohorts (AA 300, NHW 100, Ghanaian 600, Ethiopian 400), the three aims, the wet-lab methods, the statistical design, the clinical endpoints. This is authoritative for the biology — you implement in service of it and never reinterpret it.
-8. Context only — `docs/sources/AfriCAN_DANCE_AI_Integration.pdf` and `docs/sources/AI_Scope_of_Work_Integration.pdf`. Both contain errors corrected in §4; where they conflict, **§4 and the build plan win.**
+7. **`docs/sources/Domestic_Project_Research_Strategy_PF5.pdf` — the research document. Read it to ground the science:** the four cohorts (AA 300, NHW 100, Ghanaian 600, Ethiopian 400), the three aims, the wet-lab methods, the statistical design, the clinical endpoints. This is authoritative for the biology — you implement in service of it and never reinterpret it. **Readable copy:** `docs/sources/Domestic_Project_Research_Strategy_PF5.txt` is a text transcription — use it for grounding. The PDF remains canonical; note that reading any PDF requires a PDF library (e.g. pypdf) that is **not pinned** in this repo, so the `.txt` is the dependency-free path.
+8. Context only — `docs/sources/AfriCAN_DANCE_AI_Integration.pdf` and `docs/sources/AI_Scope_of_Work_Integration.pdf`. Both contain errors corrected in §4; where they conflict, **§4 and the build plan win.** (Same caveat: PDFs need an unpinned PDF library to read.)
 
 ### Then begin the work like this — after ingestion, before writing any code:
 

@@ -118,42 +118,54 @@ flowchart LR
 
 ## 5 · Module map
 
+> Entries are marked **BUILT** (exists on disk) or **PLANNED** (documented target, not yet created).
+> Do not read an unmarked historical copy of this map as current state.
+
 ```
-africandance/
-├── README.md
-├── ARCHITECTURE.md              # this file
-├── AGENTS.md                    # agent working rules for this repo
-├── DEFINITIONS.md               # domain criteria — owned by domain experts, agent MUST NOT author
-├── docs/
-│   ├── build-plan.md
-│   ├── risk-and-agent-control.md
-│   └── sources/                 # canonical PDFs: grant strategy, AI integration, scope of work
-├── contracts/                   # the seams — schemas & interfaces between layers
-│   ├── core-schema/             # fusion-core data model (DDL, provenance + calibration fields)
-│   └── io-contracts/            # Parquet/Arrow schemas exchanged R <-> Python <-> pipeline
-├── pipeline/                    # 1 · data production (Nextflow / nf-core)
-│   ├── alignment/               # BWA-MEM2 · GRCh38 + human pangenome
-│   ├── calling/                 # Mutect2 + DeepSomatic (concordance logic)
-│   ├── annotation/              # Funcotator
-│   └── ancestry/                # ADMIXTURE + RFMix (continuous AFR)
-├── core/                        # 2 · persistence + provenance
-│   ├── schema/                  # DDL, migrations
-│   ├── ingest/                  # adapters: producer/pipeline output -> core (WRITE path)
-│   └── provenance/              # calibration-status + lineage model (cross-cutting, centralized)
-├── producers/                   # 3 · analysis — each an ISOLATED plugin, composes only via core
-│   ├── variant_effect/          # AlphaMissense + EVE consensus (calibration-flagged)
-│   ├── drivers/                 # IntOGen
-│   ├── expression/              # DESeq2 / GSEA / DoRothEA (R)
-│   ├── target_nomination/       # elastic net + random forest
-│   ├── gnn/                     # network GNN            (NOVEL — strongest controls)
-│   ├── causal/                  # Double ML              (NOVEL — strongest controls)
-│   ├── imaging/                 # CellPose + CNN
-│   └── multimodal_predictor/    # custom predictor       (NOVEL — strongest controls)
-├── query/                       # 4a · read path — grounded NL to SQL (never writes)
-├── interface/                   # 4b · presentation (reads via query; no logic)
-├── fixtures/                    # golden known-input -> known-output (control G4)
-├── tests/
-└── config/                      # pinned deps, pipeline versions, reproducibility contract
+africandance/                        # repo root (checkout dir may differ, e.g. Georgetown-Cancer-Research)
+├── README.md                        # BUILT
+├── ARCHITECTURE.md                  # BUILT — this file
+├── AGENTS.md                        # BUILT — agent working rules for this repo
+├── DEFINITIONS.md                   # BUILT — domain criteria — owned by domain experts, agent MUST NOT author
+├── SPEC.md                          # BUILT — spec-item registry (control I6); new work adds its item BEFORE code
+├── AfriCAN_DANCE_Coding_Agent_System_Prompt.md   # BUILT — the operating contract this repo enforces
+├── docs/                            # BUILT
+│   ├── build-plan.md                # BUILT
+│   ├── risk-and-agent-control.md    # BUILT
+│   ├── DECISIONS.md                 # BUILT — decision-record log (I4)
+│   ├── DEFINITIONS_QUESTIONNAIRE.md # BUILT — domain-owner sign-off instrument for DEFINITIONS.md
+│   ├── build-graphs.pdf             # BUILT — design figures (context)
+│   ├── map-redrawn.pdf              # BUILT — design figures (context)
+│   └── sources/                     # BUILT — canonical PDFs: grant strategy, AI integration, scope of work
+│       └── Domestic_Project_Research_Strategy_PF5.txt  # BUILT — dependency-free readable copy of the grant PDF
+├── contracts/                       # the seams — schemas & interfaces between layers
+│   ├── variant_effect.py            # BUILT — flat contract module (form PROPOSED — see docs/DECISIONS.md D-002)
+│   ├── core-schema/                 # PLANNED — fusion-core data model (DDL, provenance + calibration fields)
+│   └── io-contracts/                # PLANNED — Parquet/Arrow schemas exchanged R <-> Python <-> pipeline
+├── pipeline/                        # 1 · data production (Nextflow / nf-core) — layer dir BUILT (stub), subdirs PLANNED
+│   ├── alignment/                   # PLANNED — BWA-MEM2 · GRCh38 + human pangenome
+│   ├── calling/                     # PLANNED — Mutect2 + DeepSomatic (concordance logic)
+│   ├── annotation/                  # PLANNED — Funcotator
+│   └── ancestry/                    # PLANNED — ADMIXTURE + RFMix (continuous AFR)
+├── core/                            # 2 · persistence + provenance
+│   ├── schema/                      # BUILT — DDL (core/schema/schema.sql); migrations PLANNED
+│   ├── ingest/                      # BUILT — adapter: variant_effect output -> core (WRITE path)
+│   └── provenance/                  # BUILT — calibration-status + lineage enforcement (cross-cutting, centralized)
+├── producers/                       # 3 · analysis — each an ISOLATED plugin, composes only via core
+│   ├── variant_effect/              # BUILT — multi-tool consensus VUS reclassification (calibration-flagged; SPEC-002)
+│   ├── drivers/                     # PLANNED — IntOGen
+│   ├── expression/                  # PLANNED — DESeq2 / GSEA / DoRothEA (R)
+│   ├── target_nomination/           # PLANNED — elastic net + random forest
+│   ├── gnn/                         # PLANNED — network GNN            (NOVEL — strongest controls)
+│   ├── causal/                      # PLANNED — Double ML              (NOVEL — strongest controls)
+│   ├── imaging/                     # PLANNED — CellPose + CNN
+│   └── multimodal_predictor/        # PLANNED — custom predictor       (NOVEL — strongest controls)
+├── query/                           # BUILT (stub README only) — 4a · read path — grounded NL to SQL (never writes)
+├── interface/                       # BUILT (stub README only) — 4b · presentation (reads via query; no logic)
+├── fixtures/                        # BUILT — golden known-input -> known-output (control G4); variant_effect only so far
+├── tests/                           # BUILT — both suites run per AGENTS.md §3
+└── config/                          # BUILT — domain criteria JSON (PLACEHOLDER, pending domain sign-off);
+                                     #   pinned deps / pipeline versions / reproducibility contract PLANNED
 ```
 
 **Placement rule:** code goes in the layer that owns its concern, full stop. A variant-calling tweak is `pipeline/calling/`, not wherever it's convenient. Orphan code (no owning layer) fails review.

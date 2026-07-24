@@ -12,6 +12,15 @@ Read before acting. Never contradict these; never reconstruct a missing one from
 - `docs/build-plan.md` — what to build and in what order.
 - `docs/risk-and-agent-control.md` — the risk register and control protocol (G1–I6).
 - `docs/sources/` — the R01 grant strategy and AI-integration PDFs (grant strategy is authoritative for the science).
+  **Readable copy:** `docs/sources/Domestic_Project_Research_Strategy_PF5.txt` is the dependency-free text transcription of the grant strategy — use it for grounding. The PDF remains canonical; reading any PDF requires a PDF library (e.g. pypdf) that is **not pinned** in this repo.
+
+## Environment — read this before running anything
+
+- **Shell: PowerShell.** On Windows, `python` fails under Git Bash with a Cygwin fork error (exit 0xC0000142). Run all Python from PowerShell, from the repo root — e.g. `python tests\test_variant_effect.py`.
+- **Path: no spaces.** The repo must live at a path with no spaces (current: `C:\dev\Georgetown-Cancer-Research`).
+- **Python:** 3.14.0 is installed and is what the suites were verified on. The code's actual floor is **3.8** (the walrus operator in `producers/variant_effect/reclassify.py`; everything else is 3.7-compatible).
+- **No install step.** The test suites are standard-library only; there is nothing to install to run them. No lockfile exists yet (tracked as a follow-up — G2).
+- **Installed but NOT pinned and NOT required by the tests:** pytest 9.0.2 (convenience runner; both suites also run as plain scripts) and pypdf 6.11.0 (only needed to read the PDFs in `docs/sources/`; the `.txt` copy above is the dependency-free path). A fresh machine may lack both; the tests depend on neither.
 
 ## 1 · Separation of concerns — boundaries you must not cross
 
@@ -24,6 +33,7 @@ The repo is organized by concern (`ARCHITECTURE.md` §3–§5). These boundaries
 5. **Domain criteria are injected, never hardcoded.** Thresholds, "ancestry-enriched", "actionable", calibration targets come from `DEFINITIONS.md`/`config`. A hardcoded domain constant in a producer is a rejected change.
 6. **Provenance is centralized.** Every write emits lineage + model version + `n` + method + **per-population calibration status** through `core/provenance/`. No producer invents its own provenance format.
 7. **Language boundaries are file contracts.** R / Python / Nextflow / SQL exchange data only via `contracts/io-contracts/` (Parquet/Arrow). No reaching into another runtime.
+8. **Definitions/config reciprocity.** Any change to a domain value in `config/` requires updating `DEFINITIONS.md` in the SAME commit, and vice versa. The two never drift.
 
 ## 2 · How you work (the gates)
 
@@ -43,33 +53,32 @@ Condensed from the control protocol; the full statements are in `docs/risk-and-a
 - **I3 · Implement definitions, never author them** — see §1.5. Missing definition ⇒ stop and request it.
 - **I4 · Surface at forks** — unspecified decision ⇒ log a decision record and stop; never bury "I assumed X".
 - **I5 · Adversarial review** — a separate pass hunts spec divergence; write so divergence is easy to see. Don't grade your own homework.
-- **I6 · Traceability** — every module → spec item → aim → R01 objective. Orphan code or orphan spec fails review.
+- **I6 · Traceability** — every module → spec item → aim → R01 objective. The registry of spec items is `SPEC.md` (repo root): every change cites a SPEC- ID from it, and new work adds its spec item to `SPEC.md` BEFORE code. Orphan code or orphan spec fails review.
 
 ## 3 · Commands
 
-> Placeholders until pinned in `config/`. Once defined, **you must run them and paste output — never claim done without it (G3).**
+> Run from the repo root, in **PowerShell** (see §Environment). Run them and paste output — never claim done without it (G3).
 
-```bash
-# environment
-<install-python-locked>          # e.g. uv/pip-tools from lockfile
-<r-restore>                      # e.g. renv::restore()
-
+```powershell
 # quality gates (run before marking anything done)
-<lint>                           # linter
-<typecheck>                      # type-checker — invented symbols fail here
-<test>                           # unit/integration tests
-<fixtures>                       # golden fixtures (G4)
+python tests\test_variant_effect.py   # golden fixtures (G4) + producer guardrails
+python tests\test_core_ingest.py      # core write path + provenance enforcement
+# equivalent convenience runner (NOT pinned, NOT required): python -m pytest tests\ -q
 
-# pipeline / core
-<nextflow-run>                   # pipeline
-<db-migrate>                     # apply core/schema migrations
+# lint        — NOT CONFIGURED. Do not fabricate a command; if you need one, log a decision record and stop (I4).
+# typecheck   — NOT CONFIGURED. Do not fabricate a command; if you need one, log a decision record and stop (I4).
+# install     — NOT NEEDED: the test suites are standard-library only. No lockfile exists yet (follow-up — G2).
+
+# pipeline / db / R
+# NOT APPLICABLE YET — pipeline/, query/, and interface/ are empty layers; the core dev target is
+# embedded SQLite exercised by the tests above; no R code exists in the repo.
 ```
 
 ## 4 · Definition of done
 
 A unit of work is complete only when **all** hold:
 1. it lives in the correct concern/layer (§1);
-2. it traces to a confirmed spec item (I6);
+2. it traces to a confirmed spec item in `SPEC.md` (I6);
 3. its executable acceptance criteria pass (I2);
 4. an execution artifact is attached — test / type-check / run (G3);
 5. golden fixtures still pass, or the change is justified (G4);

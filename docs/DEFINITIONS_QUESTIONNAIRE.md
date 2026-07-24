@@ -21,6 +21,7 @@ Do these hold for the ancestry-aware analysis, or would you adjust any?
 | A5 | MSI status: MSISensor2 **≥ 3.5 = MSI-H**, else MSS | |
 | A6 | Tumor mutation burden: **≥ 10 mut/Mb = TMB-high** | |
 | A7 | Discrete AFR strata (if used): **Low ≤30% · Medium 30–80% · High ≥80%** — note we default to *continuous* AFR proportion; is a discrete cut ever needed, and if so are these the right bins? | |
+| A8 | VUS reclassification consensus rule (currently a placeholder, written during the Phase-2 build): a variant is called **pathogenic if ≥2 of the 4 tools** (AlphaMissense, EVE, PolyPhen, SIFT) call pathogenic and none call benign; **benign if ≥2 call benign** and none call pathogenic; **otherwise it stays VUS**. Confirm or adjust — including whether all four tools should count equally | |
 
 ---
 
