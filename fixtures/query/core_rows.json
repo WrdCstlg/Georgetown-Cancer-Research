@@ -1,0 +1,29 @@
+{
+  "_note": "Static core-shaped seed for the query-layer tests. Derived ONCE from the variant_effect golden fixture (v01.. classifications, producer/version/method from config/variant_effect.json), then FROZEN. The query layer's contract is with the core's read views, not with producer behavior -- this fixture must NOT be regenerated from producer output, so the tests survive consensus-rule changes. Calibration statuses are deliberately varied (the producer currently stamps everything calibration_pending) so result-level aggregation over a MIX of statuses is testable. Two distinct generated_at values = two producer runs.",
+  "populations": [
+    {"code": "AA",  "description": "African American (US)"},
+    {"code": "GHA", "description": "Ghanaian"},
+    {"code": "ETH", "description": "Ethiopian"},
+    {"code": "NHW", "description": "Non-Hispanic White (US)"}
+  ],
+  "variants": [
+    {"variant_id": "v01", "gene": "TP53", "protein_change": "p.R175H", "reference": "grch38", "population_code": "AA",  "clinical_db_absent": 0},
+    {"variant_id": "v02", "gene": "KRAS", "protein_change": "p.G12D",  "reference": "grch38", "population_code": "AA",  "clinical_db_absent": 0},
+    {"variant_id": "v03", "gene": "APC",  "protein_change": "p.R1450*", "reference": "grch38", "population_code": "GHA", "clinical_db_absent": 1},
+    {"variant_id": "v04", "gene": "TP53", "protein_change": "p.R248Q", "reference": "grch38", "population_code": "GHA", "clinical_db_absent": 0},
+    {"variant_id": "v05", "gene": "KRAS", "protein_change": "p.G13D",  "reference": "grch38", "population_code": "ETH", "clinical_db_absent": 1},
+    {"variant_id": "v06", "gene": "APC",  "protein_change": "p.T1556Nfs*3", "reference": "grch38", "population_code": "ETH", "clinical_db_absent": 0},
+    {"variant_id": "v07", "gene": "TP53", "protein_change": "p.R273H", "reference": "grch38", "population_code": "NHW", "clinical_db_absent": 0},
+    {"variant_id": "v08", "gene": "KRAS", "protein_change": "p.A146T", "reference": "grch38", "population_code": "NHW", "clinical_db_absent": 0}
+  ],
+  "results": [
+    {"variant_id": "v01", "original_classification": "VUS", "new_classification": "pathogenic", "calibration_status": "calibration_pending",  "calibration_pending": 1, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "AA",  "generated_at": "2026-01-01T00:00:00+00:00"},
+    {"variant_id": "v02", "original_classification": "VUS", "new_classification": "benign",     "calibration_status": "out_of_calibration",   "calibration_pending": 1, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "AA",  "generated_at": "2026-01-01T00:00:00+00:00"},
+    {"variant_id": "v03", "original_classification": "VUS", "new_classification": "VUS",        "calibration_status": "calibration_pending",  "calibration_pending": 1, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "GHA", "generated_at": "2026-01-01T00:00:00+00:00"},
+    {"variant_id": "v04", "original_classification": "VUS", "new_classification": "pathogenic", "calibration_status": "in_calibration",       "calibration_pending": 0, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "GHA", "generated_at": "2026-01-02T00:00:00+00:00"},
+    {"variant_id": "v05", "original_classification": "VUS", "new_classification": "VUS",        "calibration_status": "out_of_calibration",   "calibration_pending": 1, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "ETH", "generated_at": "2026-01-02T00:00:00+00:00"},
+    {"variant_id": "v06", "original_classification": "VUS", "new_classification": "benign",     "calibration_status": "in_calibration",       "calibration_pending": 0, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "ETH", "generated_at": "2026-01-02T00:00:00+00:00"},
+    {"variant_id": "v07", "original_classification": "VUS", "new_classification": "pathogenic", "calibration_status": "in_calibration",       "calibration_pending": 0, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "NHW", "generated_at": "2026-01-02T00:00:00+00:00"},
+    {"variant_id": "v08", "original_classification": "VUS", "new_classification": "VUS",        "calibration_status": "out_of_calibration",   "calibration_pending": 1, "producer": "variant_effect", "producer_version": "0.1.0", "method": "consensus_v0_min_agree", "reference": "grch38", "population_code": "NHW", "generated_at": "2026-01-01T00:00:00+00:00"}
+  ]
+}

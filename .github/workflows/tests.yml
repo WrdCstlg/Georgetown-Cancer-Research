@@ -33,6 +33,9 @@ jobs:
       - name: core ingest write path + provenance enforcement
         run: python tests/test_core_ingest.py
 
+      - name: query read API (SPEC-015)
+        run: python tests/test_query_read_api.py
+
   # I6 made mechanical: every PR body must reference a spec item (SPEC-NNN).
   # Same workflow file as the tests on purpose — one CI surface, one place to
   # look; the job-level `if` keeps it off push events.
