@@ -15,4 +15,5 @@ analysis, ML, or presentation logic (ARCHITECTURE.md §3).
 Dev/CI runs on SQLite (embedded). Production is PostgreSQL (+ pgvector); the
 schema is portable modulo the deltas noted in `schema/schema.sql`.
 
-Run:  python tests/test_core_ingest.py   (or pytest tests/)
+Run:  python tests/test_core_ingest.py   (direct execution is the supported path;
+pytest compatibility UNVERIFIED — never executed end-to-end here, SPEC-016)

@@ -5,7 +5,9 @@ asserts: every result persists with provenance readable via the query view;
 calibration_pending survives the round-trip; and the core REFUSES a record whose
 provenance has been stripped (no bare facts).
 
-Runnable: pytest tests/  OR  python tests/test_core_ingest.py
+Supported: python tests/test_core_ingest.py  (direct execution is the supported,
+CI-enforced path; pytest compatibility is UNVERIFIED — never executed end-to-end
+in this environment, SPEC-016)
 """
 import copy
 import csv
