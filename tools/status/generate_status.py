@@ -54,7 +54,10 @@ def spec_items():
 
 
 def open_decisions():
-    """Transcribe docs/DECISIONS.md sections that carry a Status line."""
+    """Transcribe docs/DECISIONS.md sections that carry a Status line.
+    Owner is a deterministic transcription rule, not an inference:
+    PROPOSED statuses say 'pending (owner) approval' -> project owner;
+    D1-D6 say 'awaiting the parties named in docs/build-plan.md §1/§5'."""
     text = _read(os.path.join("docs", "DECISIONS.md"))
     out = []
     current = None
@@ -67,18 +70,32 @@ def open_decisions():
         s = re.match(r"^Status:\s*\*\*(.+?)\*\*", line)
         if s and current is not None and current["status"] is None:
             current["status"] = s.group(1).strip().rstrip(".")
-    return [d for d in out if d["status"] and
-            (d["status"].startswith("OPEN") or d["status"].startswith("PROPOSED"))]
+    result = []
+    for d in out:
+        if not d["status"]:
+            continue
+        if d["status"].startswith("PROPOSED"):
+            d["owner"] = "project owner (status: pending approval — docs/DECISIONS.md)"
+        elif d["status"].startswith("OPEN"):
+            d["owner"] = "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
+        else:
+            continue
+        result.append(d)
+    return result
 
 
 def undefined_definitions():
-    """First cell of every DEFINITIONS.md table row marked [TO BE DEFINED]."""
+    """First cell of every DEFINITIONS.md table row marked [TO BE DEFINED].
+    Owner is stated by DEFINITIONS.md's own header: owned by the domain experts."""
     out = []
     for line in _read("DEFINITIONS.md").splitlines():
         if "[TO BE DEFINED]" in line and line.startswith("|"):
             first = line.strip().strip("|").split("|")[0].strip()
             first = re.sub(r"\*\*", "", first)
-            out.append(first)
+            out.append({
+                "definition": first,
+                "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)",
+            })
     return out
 
 
@@ -291,14 +308,13 @@ def render_md(s):
       "D1–D6 await the parties named in docs/build-plan.md §1/§5):")
     A("")
     for d in s["open_decisions"]:
-        A(f"- **{d['id']}** — {d['title']}: {d['status']}")
+        A(f"- **{d['id']}** — {d['title']}: {d['status']} — owner: {d['owner']}")
     A("")
-    A("Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]) — "
-      "owner: **domain experts (the professor and collaborators)**. The query "
+    A("Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]). The query "
       "layer refuses these by name rather than inventing values:")
     A("")
     for d in s["undefined_definitions"]:
-        A(f"- {d}")
+        A(f"- {d['definition']} — owner: {d['owner']}")
     A("")
     di = s["data_inventory"]
     A(f"**Data inventory (F3):** `{di['source']}` (human-owned) tracks "
