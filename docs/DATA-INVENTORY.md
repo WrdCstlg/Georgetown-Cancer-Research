@@ -1,0 +1,49 @@
+# DATA INVENTORY — what the system needs, and what we actually know
+
+> **HUMAN-OWNED. A HUMAN OWNER MUST FILL THIS IN.**
+> The agent may only transcribe from repo artifacts (with citation) — it must never
+> assert that data exists, where it lives, or who controls it. Every field is
+> **UNKNOWN** unless a repo artifact states otherwise; the artifact is then cited.
+> The grant strategy describes *intent*, not current custody — nothing here is
+> inferred from it. A page of honest UNKNOWNs is the correct current state and is
+> itself the finding: custody, location, and access for every dataset are
+> undetermined as of this writing.
+
+Statuses: **AVAILABLE** (a repo artifact states the data is in hand) /
+**PENDING** (a repo artifact states it is expected but not in hand) /
+**UNKNOWN** (no repo artifact says either).
+
+## Study datasets
+
+| Dataset | Status | Location | Owner | Access constraint | Evidence |
+|---------|--------|----------|-------|-------------------|----------|
+| 150-tumor preliminary set (the Phase 2 target) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Mentioned as intent in SPEC.md (SPEC-002/005 acceptance) and docs/build-plan.md §3; docs/STATUS.md §4 confirms it "has never touched this code". No artifact states existence, location, or custody. |
+| WES tumor-normal pairs (four cohorts: AA 300, NHW 100, Ghanaian 600, Ethiopian 400) | UNKNOWN | UNKNOWN | UNKNOWN | Cross-site (Ghana/Ethiopia) specimens "may carry data-use constraints" — docs/DECISIONS.md D2 (OPEN) | Cohort sizes are grant *intent* (docs/sources/); no artifact states the data exists locally. |
+| RNA-seq / transcriptomes (DESeq2 tables) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Named as an ingestion-adapter input (SPEC-003; build plan §3 Phase 1). No custody stated. |
+| Organoid drug-screen readouts (~50 lines) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Phase 5 "cannot start until organoid specimens/drug-screen data exist" (build plan §6) — i.e. the repo states they do NOT exist yet. |
+| Organoid imaging (brightfield Day 0/7/14) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Same Phase 5 wet-lab gate (build plan §6). |
+| CRISPR knock-in/reversion isogenics | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Same Phase 5 wet-lab gate (build plan §6). |
+| Clinical data (SES, collection-site, environment confounders) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Required wherever causal/association claims are made (system prompt §7). No custody stated. |
+| MSISensor2 / ADMIXTURE / RFMix / IntOGen / sarek MAF outputs | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Named as adapter inputs (SPEC-003). No custody stated. |
+
+## Public reference resources
+
+| Dataset | Status | Location | Owner | Access constraint | Evidence |
+|---------|--------|----------|-------|-------------------|----------|
+| AlphaMissense pre-scored DB (~71M missense variants) | UNKNOWN (locally) | Public resource per build plan §3 Phase 2 ("Pre-computed scores"); local copy UNKNOWN | Public (DeepMind); local custodian UNKNOWN | UNKNOWN | `producers/variant_effect/providers.py` — "Wire the AlphaMissense pre-scored DB. TODO." Not wired (SPEC-005). |
+| EVE score set | UNKNOWN (locally) | Public resource per build plan §3 Phase 2; local copy UNKNOWN | Public; local custodian UNKNOWN | UNKNOWN | `providers.py` — "Wire the EVE score set. TODO." Not wired (SPEC-005). |
+| PolyPhen / SIFT outputs | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | `providers.py` TODOs. Not wired. |
+| GDSC / CCLE / DepMap | UNKNOWN | Public resources; local copies UNKNOWN | Public; local custodian UNKNOWN | UNKNOWN | Named as pre-screen training data (SPEC-010; build plan §3 Phase 5). |
+| STRING / BioGRID PPI | UNKNOWN | Public resources; local copies UNKNOWN | Public; local custodian UNKNOWN | UNKNOWN | Named for the GNN (SPEC-008; build plan §3 Phase 3). |
+| ClinVar / COSMIC / CIViC / DGIdb / PubMed | UNKNOWN | Public resources; local copies UNKNOWN | Public; local custodian UNKNOWN | **COSMIC and some resources are license-gated for commercial use** — docs/DECISIONS.md D3 (OPEN); relevant if D1 lands on "owned infra" | Licensing constraint is the only access fact any artifact states. |
+
+## Governance items that gate every row above
+
+- **D2** (OPEN) — compute & data residency; cross-site data-use constraints unknown.
+- **D3** (OPEN) — IRB scope, de-identification, DUAs, DB licensing.
+- Build plan §7 lists "exact data location and cross-site governance constraints"
+  and "IRB scope" as open questions.
+
+*Fill protocol: a human owner edits this file directly (or dictates values); the
+agent transcribes. Each filled cell should name its source (who confirmed it,
+when). This file is read by `tools/status/` and summarized into `docs/STATUS.md`.*
