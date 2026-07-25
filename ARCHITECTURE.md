@@ -168,6 +168,9 @@ africandance/                        # repo root (checkout dir may differ, e.g. 
                                      #   pinned deps / pipeline versions / reproducibility contract PLANNED
 └── tools/                           # DEV TOOLING — outside the five-layer model (like .github/, tests/, fixtures/);
                                      #   not a producer; must not import producers/, core/, or query/
+                                     #   (exception: tools/status-ui/'s read-only shim MAY import query/ + core/db.py).
+                                     #   tools/status-ui/ is a local dev dashboard — it is NOT the interface/ layer,
+                                     #   which stays empty and reserved for the future researcher-facing product.
 ```
 
 **Placement rule:** code goes in the layer that owns its concern, full stop. A variant-calling tweak is `pipeline/calling/`, not wherever it's convenient. Orphan code (no owning layer) fails review.

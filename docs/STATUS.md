@@ -37,6 +37,7 @@ Test suites (standard-library only, direct execution — the supported path):
 
 - `python tests/test_core_ingest.py` — 4 tests
 - `python tests/test_query_read_api.py` — 16 tests
+- `python tests/test_status_ui_shim.py` — 5 tests
 - `python tests/test_variant_effect.py` — 4 tests
 
 CI checks (from `.github/workflows/tests.yml`): `spec-id`, `status-drift`, `test (py 3.14)`, `test (py 3.8)`. Suites are standard-library only and run by direct execution (the supported path; pytest compatibility UNVERIFIED — SPEC-016). This file does not run them: CI is the source of truth for pass/fail.

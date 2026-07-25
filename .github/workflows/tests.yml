@@ -36,6 +36,9 @@ jobs:
       - name: query read API (SPEC-015)
         run: python tests/test_query_read_api.py
 
+      - name: status-ui shim (SPEC-018)
+        run: python tests/test_status_ui_shim.py
+
   # SPEC-017: the STATUS artifacts must match a fresh regeneration — generated
   # docs cannot drift from repo state. Deterministic by contract (no timestamps,
   # no absolute paths, no commit hashes in the output).

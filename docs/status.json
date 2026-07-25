@@ -159,6 +159,11 @@
         "test_count": 16
       },
       {
+        "file": "tests/test_status_ui_shim.py",
+        "command": "python tests/test_status_ui_shim.py",
+        "test_count": 5
+      },
+      {
         "file": "tests/test_variant_effect.py",
         "command": "python tests/test_variant_effect.py",
         "test_count": 4
