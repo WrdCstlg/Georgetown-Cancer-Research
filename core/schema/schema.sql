@@ -1,5 +1,6 @@
 -- Fusion core schema.  Dev/target: SQLite (embedded, runnable in fixtures/CI).
--- Production: PostgreSQL (+ pgvector).  Deltas noted inline.
+-- Production substrate: PENDING decision D4 (PostgreSQL + pgvector proposed).
+-- Deltas noted inline are for the proposed target.
 --
 -- Design invariant (ARCHITECTURE.md 4.5): a prediction is NEVER stored as a bare
 -- fact.  Provenance and per-population calibration are FIRST-CLASS, NOT NULL

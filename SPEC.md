@@ -8,25 +8,31 @@
 > **FUNCTIONAL** (runs end-to-end, acceptance met). Acceptance criteria are executable — each maps
 > to a check that runs, not narration (I2). Scope below is taken from `docs/build-plan.md`; nothing
 > here invents scope beyond it.
+>
+> **Readiness is a second, independent axis** (orthogonal to Status — an item can be SPECIFIED and
+> AVAILABLE, or SPECIFIED and GATED): **AVAILABLE** = could be started now, no external dependency;
+> **GATED** = cannot start regardless of effort, gate named; **UNKNOWN** = the repo states no basis
+> either way (never guessed). Gates are cited, not invented.
 
-| ID | Title | Owning layer | Aim / R01 objective | Status |
-|----|-------|--------------|---------------------|--------|
-| SPEC-001 | Fusion-core slice: schema + provenance/calibration enforcement + variant_effect ingest & read view | `core/` | Substrate precondition for all aims (build plan Phase 1) | FUNCTIONAL |
-| SPEC-002 | variant_effect producer: multi-tool consensus VUS reclassification with per-population calibration flags | `producers/variant_effect/` | Aim 1 assist (build plan Phase 2 — first shippable win) | FUNCTIONAL |
-| SPEC-003 | Ingestion adapters from existing pipeline outputs (sarek MAFs, DESeq2 tables, IntOGen, MSISensor2, ADMIXTURE/RFMix, drug-screen readouts) | `core/ingest/` | Substrate for all aims (Phase 1) | SPECIFIED |
-| SPEC-004 | Reference reconciliation: key variants by (locus, ref-context); reconcile GRCh38 vs. pangenome callsets; flag pangenome-only-in-African-ancestry candidates | `pipeline/` + `core/` | Aim 1 (Phase 1; load-bearing against reference bias) | SPECIFIED |
-| SPEC-005 | Wire real score providers (AlphaMissense + EVE pre-computed scores; retain PolyPhen/SIFT) behind the existing provider interface | `producers/variant_effect/` | Aim 1 (Phase 2) | SPECIFIED |
-| SPEC-006 | DeepSomatic added at the calling step, run in parallel with Mutect2; callset comparison to quantify reference/caller bias | `pipeline/calling/` | Aim 1 (Phase 2) | SPECIFIED |
-| SPEC-007 | Target nomination: elastic-net + random-forest ensemble; DGIdb (druggability), MatrixEQTL (eQTL), Cox (survival) as edges on target nodes | `producers/target_nomination/` | Aim 2a (Phase 3) | SPECIFIED |
-| SPEC-008 | GNN over the PPI graph (STRING/BioGRID tagged with study mutation + expression data) — NOVEL, strongest controls (G6) | `producers/gnn/` | Aim 2a (Phase 3) | SPECIFIED |
-| SPEC-009 | Query layer: grounded text-to-SQL with schema validation + literature retrieval; interface views (cohort explorer, evidence-chain viewer, target dashboard) | `query/` + `interface/` | The distillation deliverable (Phase 4) | SPECIFIED |
-| SPEC-010 | Drug-response pre-screen (GDSC/CCLE/DepMap-trained) as triage that only adds, never subtracts | `producers/` (Phase 5) | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED |
-| SPEC-011 | Organoid imaging: CellPose segmentation + CNN morphological features | `producers/imaging/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED |
-| SPEC-012 | Causal layer: Double ML / causal forests, validated against CRISPR knock-in/reversion isogenics — NOVEL, strongest controls (G6) | `producers/causal/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED |
-| SPEC-013 | Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6) | `producers/multimodal_predictor/` | Aim 2b (Phase 5 — gated on D5 + wet-lab data) | SPECIFIED |
-| SPEC-014 | Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR | repo tooling (`.github/`) | Cross-cutting — the control protocol itself (docs/risk-and-agent-control.md Part 3) | FUNCTIONAL |
-| SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | The distillation deliverable (Phase 4 precursor — the deterministic layer SPEC-009's NL front-end must translate INTO, never around; docs/risk-and-agent-control.md S5) | FUNCTIONAL |
-| SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | Cross-cutting — fixture integrity (G4) and execution-honesty (G3) | FUNCTIONAL |
+| ID | Title | Owning layer | Aim / R01 objective | Status | Readiness |
+|----|-------|--------------|---------------------|--------|-----------|
+| SPEC-001 | Fusion-core slice: schema + provenance/calibration enforcement + variant_effect ingest & read view | `core/` | Substrate precondition for all aims (build plan Phase 1) | FUNCTIONAL | AVAILABLE |
+| SPEC-002 | variant_effect producer: multi-tool consensus VUS reclassification with per-population calibration flags | `producers/variant_effect/` | Aim 1 assist (build plan Phase 2 — first shippable win) | FUNCTIONAL | AVAILABLE |
+| SPEC-003 | Ingestion adapters from existing pipeline outputs (sarek MAFs, DESeq2 tables, IntOGen, MSISensor2, ADMIXTURE/RFMix, drug-screen readouts) | `core/ingest/` | Substrate for all aims (Phase 1) | SPECIFIED | AVAILABLE (Phase 1 is "Now" per build plan §6) |
+| SPEC-004 | Reference reconciliation: key variants by (locus, ref-context); reconcile GRCh38 vs. pangenome callsets; flag pangenome-only-in-African-ancestry candidates | `pipeline/` + `core/` | Aim 1 (Phase 1; load-bearing against reference bias) | SPECIFIED | AVAILABLE (Phase 1 is "Now" per build plan §6) |
+| SPEC-005 | Wire real score providers (AlphaMissense + EVE pre-computed scores; retain PolyPhen/SIFT) behind the existing provider interface | `producers/variant_effect/` | Aim 1 (Phase 2) | SPECIFIED | AVAILABLE (Phase 2 "quick win" per build plan §6) |
+| SPEC-006 | DeepSomatic added at the calling step, run in parallel with Mutect2; callset comparison to quantify reference/caller bias | `pipeline/calling/` | Aim 1 (Phase 2) | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
+| SPEC-007 | Target nomination: elastic-net + random-forest ensemble; DGIdb (druggability), MatrixEQTL (eQTL), Cox (survival) as edges on target nodes | `producers/target_nomination/` | Aim 2a (Phase 3) | SPECIFIED | UNKNOWN (build plan §6: "once the substrate is FUNCTIONAL" — substrate = Phase 1, whose SPEC-003/004 are still SPECIFIED; whether the precondition is met is ambiguous) |
+| SPEC-008 | GNN over the PPI graph (STRING/BioGRID tagged with study mutation + expression data) — NOVEL, strongest controls (G6) | `producers/gnn/` | Aim 2a (Phase 3) | SPECIFIED | UNKNOWN (same §6 precondition as SPEC-007) |
+| SPEC-009 | Query layer: grounded text-to-SQL with schema validation + literature retrieval; interface views (cohort explorer, evidence-chain viewer, target dashboard) | `query/` + `interface/` | The distillation deliverable (Phase 4) | SPECIFIED | UNKNOWN (same §6 precondition as SPEC-007) |
+| SPEC-010 | Drug-response pre-screen (GDSC/CCLE/DepMap-trained) as triage that only adds, never subtracts | `producers/` (Phase 5) | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED | GATED — organoid specimens / drug-screen data do not exist yet (build plan §6: "Phase 5 cannot start until organoid specimens/drug-screen data exist") |
+| SPEC-011 | Organoid imaging: CellPose segmentation + CNN morphological features | `producers/imaging/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED | GATED — same wet-lab data gate (build plan §6) |
+| SPEC-012 | Causal layer: Double ML / causal forests, validated against CRISPR knock-in/reversion isogenics — NOVEL, strongest controls (G6) | `producers/causal/` | Aim 2b (Phase 5 — gated on wet-lab data) | SPECIFIED | GATED — same wet-lab data gate (build plan §6) |
+| SPEC-013 | Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6) | `producers/multimodal_predictor/` | Aim 2b (Phase 5 — gated on D5 + wet-lab data) | SPECIFIED | GATED — decision D5 (OPEN, after Phase 2 data) + wet-lab data (build plan §6) |
+| SPEC-014 | Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR | repo tooling (`.github/`) | Cross-cutting — the control protocol itself (docs/risk-and-agent-control.md Part 3) | FUNCTIONAL | AVAILABLE |
+| SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | The distillation deliverable (Phase 4 precursor — the deterministic layer SPEC-009's NL front-end must translate INTO, never around; docs/risk-and-agent-control.md S5) | FUNCTIONAL | AVAILABLE |
+| SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | Cross-cutting — fixture integrity (G4) and execution-honesty (G3) | FUNCTIONAL | AVAILABLE |
+| SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md) | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -82,6 +88,19 @@ Executable acceptance:
   pasted on the PR);
 - every run-command claim in AGENTS.md §3 and test docstrings names a path that was
   actually executed end-to-end; unverified paths are labelled unverified, not claimed.
+
+### SPEC-017 — status truthfulness
+Executable acceptance:
+- no doc asserts PostgreSQL (or any D4 option) as the decided production substrate while D4 is
+  OPEN — grep `postgres|pgvector` shows only proposed/pending-D4 framings or option lists;
+- every SPEC item carries a Readiness value (AVAILABLE / GATED-with-named-gate / UNKNOWN) in the
+  registry table, and Status values are unchanged by its introduction;
+- `docs/DATA-INVENTORY.md` exists, is human-owned, and asserts no custody the repo does not state
+  (UNKNOWN by default);
+- `python tools/status/generate_status.py` regenerates `docs/status.json` and `docs/STATUS.md`
+  deterministically from repo state (no timestamps, no absolute paths);
+- the CI `status-drift` job fails when the committed artifacts differ from a fresh regeneration,
+  and passes after regeneration — observed failing once on a deliberate edit.
 
 ## Acceptance criteria for SPECIFIED items
 

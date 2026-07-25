@@ -26,7 +26,7 @@ Organized strictly by **concern** (see `ARCHITECTURE.md` §5). The five layers:
 
 ```
 pipeline/    1 · data production        (Nextflow / nf-core)
-core/        2 · persistence + provenance (Postgres — the substrate)
+core/        2 · persistence + provenance (SQLite dev; production pending D4 — Postgres proposed)
 producers/   3 · analysis — isolated plugins, compose only via the core
 query/       4a · read path — grounded NL to SQL (never writes)
 interface/   4b · presentation
@@ -44,7 +44,7 @@ Prerequisites:
 - **Nextflow** + a container runtime (Singularity/Docker) for the pipeline
 - **Python** (see `AGENTS.md` §Environment — no lockfile yet) for producers, query, ML
 - **R / Bioconductor** for statistical genomics
-- **PostgreSQL** (+ `pgvector`) for the fusion core
+- **PostgreSQL** (+ `pgvector`) for the fusion core — PROPOSED production substrate; pending decision D4
 
 ```bash
 # 1 · clone and enter
@@ -54,7 +54,7 @@ git clone <repo> && cd africandance
 #     python: <locked install>      r: <renv restore>      db: <migrations>
 
 # 3 · bring up the core schema
-#     apply core/schema migrations against a local Postgres
+#     apply core/schema migrations (target DB pending D4; Postgres proposed)
 
 # 4 · run the golden fixtures (must pass before anything else is trusted)
 #     <fixture command>   # see fixtures/ and AGENTS.md §Commands

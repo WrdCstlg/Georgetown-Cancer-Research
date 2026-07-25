@@ -38,7 +38,7 @@ These gate the build. Each is a decision record — question, options, why it ma
 ### Layers
 
 - **Ingestion / pipeline** — Nextflow + nf-core/sarek, containerized (Singularity on HPC). Keep what the team has. Two corrections at the calling step (see Phase 2): DeepSomatic (not DeepVariant) for somatic tumor-normal; a graph-genome toolchain (vg/Giraffe) for the pangenome arm.
-- **Fusion core** — the spine. Postgres + pgvector as the shared, persistent asset; graph modeled *logically* on top; a PPI-annotated graph export materialized only where the GNN needs it. DuckDB for local analytical work.
+- **Fusion core** — the spine. Postgres + pgvector (proposed — pending D4, §1) as the shared, persistent asset; graph modeled *logically* on top; a PPI-annotated graph export materialized only where the GNN needs it. DuckDB for local analytical work.
 - **Producers** — R/Bioconductor for statistical genomics (DESeq2, MAFtools, fgsea, limma); Python for everything new (PyTorch, PyTorch Geometric, scikit-learn, CellPose); EconML/DoubleML for causal.
 - **Reasoning / query** — grounded text-to-SQL/Cypher over the substrate + a literature vector index, every claim linked to a provenance edge.
 - **Interface** — Streamlit/Dash for an internal tool (fast), or FastAPI + React/Next for the durable shared asset.
@@ -85,7 +85,7 @@ Each phase carries a maturity gate: **SPECIFIED** (reasoned, decision-recorded, 
 - **Acceptance (FUNCTIONAL):** a ranked druggable-target list that reproduces/extends the "12 candidates," each with its full evidence chain visible.
 
 ### Phase 4 — Reasoning / query layer *(the "distill" deliverable)*
-- Grounded NL query: text-to-SQL/Cypher with schema validation; retrieval over the graph + literature (ClinVar/COSMIC/CIViC/DGIdb/PubMed via pgvector); every claim linked to a provenance edge; the query is shown. Lean orchestration (LangGraph or direct API calls — skip the heavy framework). **Guardrail:** no ungrounded clinical claims — an ungrounded model that invents a survival association is worse than no tool.
+- Grounded NL query: text-to-SQL/Cypher with schema validation; retrieval over the graph + literature (ClinVar/COSMIC/CIViC/DGIdb/PubMed via pgvector, if D4 selects Postgres); every claim linked to a provenance edge; the query is shown. Lean orchestration (LangGraph or direct API calls — skip the heavy framework). **Guardrail:** no ungrounded clinical claims — an ungrounded model that invents a survival association is worse than no tool.
 - Interface views: cohort explorer, per-variant evidence-chain viewer, target dashboard — all sliceable by continuous AFR proportion, with robust-vs-exploratory visually encoded (the grant already flags NHW N=100 comparisons as exploratory; the UI should make over-reading a thin cell hard).
 - **Acceptance (FUNCTIONAL):** a cross-modal NL question ("which druggable, ancestry-enriched drivers have both a survival association in high-AFR patients and organoid evidence?") returns a cited, query-backed answer.
 

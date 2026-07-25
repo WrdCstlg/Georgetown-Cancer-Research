@@ -36,6 +36,28 @@ jobs:
       - name: query read API (SPEC-015)
         run: python tests/test_query_read_api.py
 
+  # SPEC-017: the STATUS artifacts must match a fresh regeneration — generated
+  # docs cannot drift from repo state. Deterministic by contract (no timestamps,
+  # no absolute paths, no commit hashes in the output).
+  status-drift:
+    name: status-drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Regenerate STATUS artifacts and fail on any diff
+        run: |
+          python tools/status/generate_status.py
+          if ! git diff --exit-code -- docs/status.json docs/STATUS.md; then
+            echo "::error::docs/status.json or docs/STATUS.md is stale: run the generator and commit the result (python tools/status/generate_status.py)."
+            exit 1
+          fi
+          echo "STATUS artifacts are in sync with repo state."
+
   # I6 made mechanical: every PR body must reference a spec item (SPEC-NNN).
   # Same workflow file as the tests on purpose — one CI surface, one place to
   # look; the job-level `if` keeps it off push events.
