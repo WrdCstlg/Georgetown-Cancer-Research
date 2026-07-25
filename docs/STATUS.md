@@ -9,7 +9,7 @@ and fix this file, not the truth.
 
 This is the computational layer for an ancestry-aware colorectal-cancer genomics
 project: a fusion core (a schema + provenance/calibration enforcement, SQLite in
-dev, Postgres in production), one analysis producer (multi-tool VUS
+dev; production substrate pending D4 — Postgres proposed), one analysis producer (multi-tool VUS
 reclassification), and a deterministic read API over the core's views. What runs
 today runs **on toy fixtures only**: 20 synthetic variants with mock tool scores,
 and an 8-row static seed for the read API. Three standard-library test suites

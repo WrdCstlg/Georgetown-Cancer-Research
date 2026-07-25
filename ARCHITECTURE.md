@@ -34,7 +34,7 @@ flowchart TB
     MM["multimodal · novel"]:::novel
   end
 
-  CORE[("2 · Fusion core — concern: persistence + provenance<br/>Postgres · one provenance-tagged object · the read/write seam")]:::core
+  CORE[("2 · Fusion core — concern: persistence + provenance<br/>SQLite dev · production pending D4 (Postgres proposed) · one provenance-tagged object · the read/write seam")]:::core
 
   subgraph READ["4 · Read path — never writes"]
     direction LR
