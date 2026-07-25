@@ -146,6 +146,72 @@
       "readiness": "AVAILABLE"
     }
   ],
+  "layers": [
+    {
+      "name": "pipeline",
+      "state": "EMPTY",
+      "evidence": "README only on disk"
+    },
+    {
+      "name": "core",
+      "state": "BUILT",
+      "evidence": "schema.sql + db.py + ingest/ + provenance/ on disk; SPEC-001 FUNCTIONAL (SPEC.md)"
+    },
+    {
+      "name": "producers",
+      "state": "PARTIAL",
+      "evidence": "1 of 8 planned slots have code (variant_effect; slot list from ARCHITECTURE.md §5)"
+    },
+    {
+      "name": "query",
+      "state": "PARTIAL",
+      "evidence": "read_api.py on disk; SPEC-015 FUNCTIONAL, SPEC-009 (NL) SPECIFIED (SPEC.md)"
+    },
+    {
+      "name": "interface",
+      "state": "EMPTY",
+      "evidence": "README only on disk; reserved for the future researcher-facing product"
+    },
+    {
+      "name": "tools",
+      "state": "BUILT",
+      "evidence": "dev tooling on disk (status generator + status-ui shim); outside the five-layer model (ARCHITECTURE.md §5)"
+    }
+  ],
+  "producer_slots": [
+    {
+      "name": "variant_effect",
+      "state": "BUILT"
+    },
+    {
+      "name": "drivers",
+      "state": "PLANNED"
+    },
+    {
+      "name": "expression",
+      "state": "PLANNED"
+    },
+    {
+      "name": "target_nomination",
+      "state": "PLANNED"
+    },
+    {
+      "name": "gnn",
+      "state": "PLANNED"
+    },
+    {
+      "name": "causal",
+      "state": "PLANNED"
+    },
+    {
+      "name": "imaging",
+      "state": "PLANNED"
+    },
+    {
+      "name": "multimodal_predictor",
+      "state": "PLANNED"
+    }
+  ],
   "runs_today": {
     "suites": [
       {

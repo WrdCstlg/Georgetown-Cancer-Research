@@ -23,6 +23,8 @@ changes only within a schema version; bump `schema_version` for anything else.
 |-----|------|---------|
 | `schema_version` | int | Contract version (currently 1). |
 | `spec_items` | array | Transcribed verbatim from SPEC.md: `{id, title, layer, aim, status, readiness}`. Status/Readiness are never assessed by the generator. |
+| `layers` | array | `{name, state, evidence}` per layer (pipeline, core, producers, query, interface, tools); state = EMPTY/BUILT/PARTIAL computed from the filesystem + SPEC.md (rules in the generator docstring), evidence stated. |
+| `producer_slots` | array | `{name, state}` for every producer slot in the ARCHITECTURE.md §5 map (BUILT/PLANNED transcribed). |
 | `runs_today.suites` | array | `{file, command, test_count}` per suite; `test_count` is counted statically, never executed. |
 | `runs_today.ci_checks` | array | CI job display names from `.github/workflows/tests.yml` (matrix expanded). CI is the source of truth for pass/fail. |
 | `runs_today.pass_fail_source` | string | Always `"CI"`. |

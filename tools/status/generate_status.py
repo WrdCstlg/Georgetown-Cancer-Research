@@ -197,6 +197,67 @@ def producer_dirs():
                   if os.path.isdir(os.path.join(d, x)) and x != "__pycache__")
 
 
+def producer_slots():
+    """Every producer slot from the ARCHITECTURE.md §5 module map with its
+    BUILT/PLANNED mark, transcribed — the dashboard renders slots, not just
+    dirs that happen to exist."""
+    lines = _read("ARCHITECTURE.md").splitlines()
+    slots, in_section = [], False
+    for line in lines:
+        if line.startswith("├── producers/"):
+            in_section = True
+            continue
+        if in_section:
+            m = re.match(r"^│\s+[├└]── (\w+)/\s+#\s*(BUILT|PLANNED)", line)
+            if m:
+                slots.append({"name": m.group(1), "state": m.group(2)})
+            elif not line.startswith("│"):
+                break
+    return slots
+
+
+def layers():
+    """Build state per layer, computed HERE (never in the browser) from the
+    filesystem + SPEC.md, with the evidence stated. Rules:
+    EMPTY = README only on disk; BUILT = owning code on disk; PARTIAL = some
+    but not all of the layer's planned contents exist."""
+    out = []
+
+    def readme_only(rel):
+        return _only_readme(rel)
+
+    def has(rel):
+        return os.path.exists(os.path.join(ROOT, rel))
+
+    out.append({"name": "pipeline", "state": "EMPTY" if readme_only("pipeline") else "BUILT",
+                "evidence": "README only on disk" if readme_only("pipeline")
+                            else "code on disk"})
+    core_built = has(os.path.join("core", "schema", "schema.sql")) and has(os.path.join("core", "db.py"))
+    out.append({"name": "core", "state": "BUILT" if core_built else "EMPTY",
+                "evidence": "schema.sql + db.py + ingest/ + provenance/ on disk; SPEC-001 FUNCTIONAL (SPEC.md)"
+                if core_built else "no core code on disk"})
+    slots = producer_slots()
+    present = producer_dirs()
+    n_built = sum(1 for s in slots if s["state"] == "BUILT")
+    state = "EMPTY" if n_built == 0 else ("BUILT" if n_built == len(slots) else "PARTIAL")
+    out.append({"name": "producers", "state": state,
+                "evidence": f"{n_built} of {len(slots)} planned slots have code "
+                            f"({', '.join(present) or 'none'}; slot list from ARCHITECTURE.md §5)"})
+    q = has(os.path.join("query", "read_api.py"))
+    out.append({"name": "query", "state": "PARTIAL" if q else "EMPTY",
+                "evidence": "read_api.py on disk; SPEC-015 FUNCTIONAL, SPEC-009 (NL) SPECIFIED (SPEC.md)"
+                if q else "README only on disk"})
+    out.append({"name": "interface", "state": "EMPTY" if readme_only("interface") else "BUILT",
+                "evidence": "README only on disk; reserved for the future researcher-facing product"
+                if readme_only("interface") else "code on disk"})
+    t = has(os.path.join("tools", "status", "generate_status.py"))
+    out.append({"name": "tools", "state": "BUILT" if t else "EMPTY",
+                "evidence": "dev tooling on disk (status generator + status-ui shim); "
+                            "outside the five-layer model (ARCHITECTURE.md §5)"
+                if t else "no tools/ on disk"})
+    return out
+
+
 # --- assembly -----------------------------------------------------------------
 
 def build_status():
@@ -204,6 +265,8 @@ def build_status():
     return {
         "schema_version": SCHEMA_VERSION,
         "spec_items": spec_items(),
+        "layers": layers(),
+        "producer_slots": producer_slots(),
         "runs_today": {
             "suites": suites(),
             "ci_checks": ci_checks(),
