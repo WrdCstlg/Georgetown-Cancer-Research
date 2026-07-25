@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "spec_items": [
+    {
+      "id": "SPEC-001",
+      "title": "Fusion-core slice: schema + provenance/calibration enforcement + variant_effect ingest & read view",
+      "layer": "`core/`",
+      "aim": "Substrate precondition for all aims (build plan Phase 1)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-002",
+      "title": "variant_effect producer: multi-tool consensus VUS reclassification with per-population calibration flags",
+      "layer": "`producers/variant_effect/`",
+      "aim": "Aim 1 assist (build plan Phase 2 — first shippable win)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-003",
+      "title": "Ingestion adapters from existing pipeline outputs (sarek MAFs, DESeq2 tables, IntOGen, MSISensor2, ADMIXTURE/RFMix, drug-screen readouts)",
+      "layer": "`core/ingest/`",
+      "aim": "Substrate for all aims (Phase 1)",
+      "status": "SPECIFIED",
+      "readiness": "AVAILABLE (Phase 1 is \"Now\" per build plan §6)"
+    },
+    {
+      "id": "SPEC-004",
+      "title": "Reference reconciliation: key variants by (locus, ref-context); reconcile GRCh38 vs. pangenome callsets; flag pangenome-only-in-African-ancestry candidates",
+      "layer": "`pipeline/` + `core/`",
+      "aim": "Aim 1 (Phase 1; load-bearing against reference bias)",
+      "status": "SPECIFIED",
+      "readiness": "AVAILABLE (Phase 1 is \"Now\" per build plan §6)"
+    },
+    {
+      "id": "SPEC-005",
+      "title": "Wire real score providers (AlphaMissense + EVE pre-computed scores; retain PolyPhen/SIFT) behind the existing provider interface",
+      "layer": "`producers/variant_effect/`",
+      "aim": "Aim 1 (Phase 2)",
+      "status": "SPECIFIED",
+      "readiness": "AVAILABLE (Phase 2 \"quick win\" per build plan §6)"
+    },
+    {
+      "id": "SPEC-006",
+      "title": "DeepSomatic added at the calling step, run in parallel with Mutect2; callset comparison to quantify reference/caller bias",
+      "layer": "`pipeline/calling/`",
+      "aim": "Aim 1 (Phase 2)",
+      "status": "SPECIFIED",
+      "readiness": "AVAILABLE (Phase 2 per build plan §6)"
+    },
+    {
+      "id": "SPEC-007",
+      "title": "Target nomination: elastic-net + random-forest ensemble; DGIdb (druggability), MatrixEQTL (eQTL), Cox (survival) as edges on target nodes",
+      "layer": "`producers/target_nomination/`",
+      "aim": "Aim 2a (Phase 3)",
+      "status": "SPECIFIED",
+      "readiness": "UNKNOWN (build plan §6: \"once the substrate is FUNCTIONAL\" — substrate = Phase 1, whose SPEC-003/004 are still SPECIFIED; whether the precondition is met is ambiguous)"
+    },
+    {
+      "id": "SPEC-008",
+      "title": "GNN over the PPI graph (STRING/BioGRID tagged with study mutation + expression data) — NOVEL, strongest controls (G6)",
+      "layer": "`producers/gnn/`",
+      "aim": "Aim 2a (Phase 3)",
+      "status": "SPECIFIED",
+      "readiness": "UNKNOWN (same §6 precondition as SPEC-007)"
+    },
+    {
+      "id": "SPEC-009",
+      "title": "Query layer: grounded text-to-SQL with schema validation + literature retrieval; interface views (cohort explorer, evidence-chain viewer, target dashboard)",
+      "layer": "`query/` + `interface/`",
+      "aim": "The distillation deliverable (Phase 4)",
+      "status": "SPECIFIED",
+      "readiness": "UNKNOWN (same §6 precondition as SPEC-007)"
+    },
+    {
+      "id": "SPEC-010",
+      "title": "Drug-response pre-screen (GDSC/CCLE/DepMap-trained) as triage that only adds, never subtracts",
+      "layer": "`producers/` (Phase 5)",
+      "aim": "Aim 2b (Phase 5 — gated on wet-lab data)",
+      "status": "SPECIFIED",
+      "readiness": "GATED — organoid specimens / drug-screen data do not exist yet (build plan §6: \"Phase 5 cannot start until organoid specimens/drug-screen data exist\")"
+    },
+    {
+      "id": "SPEC-011",
+      "title": "Organoid imaging: CellPose segmentation + CNN morphological features",
+      "layer": "`producers/imaging/`",
+      "aim": "Aim 2b (Phase 5 — gated on wet-lab data)",
+      "status": "SPECIFIED",
+      "readiness": "GATED — same wet-lab data gate (build plan §6)"
+    },
+    {
+      "id": "SPEC-012",
+      "title": "Causal layer: Double ML / causal forests, validated against CRISPR knock-in/reversion isogenics — NOVEL, strongest controls (G6)",
+      "layer": "`producers/causal/`",
+      "aim": "Aim 2b (Phase 5 — gated on wet-lab data)",
+      "status": "SPECIFIED",
+      "readiness": "GATED — same wet-lab data gate (build plan §6)"
+    },
+    {
+      "id": "SPEC-013",
+      "title": "Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6)",
+      "layer": "`producers/multimodal_predictor/`",
+      "aim": "Aim 2b (Phase 5 — gated on D5 + wet-lab data)",
+      "status": "SPECIFIED",
+      "readiness": "GATED — decision D5 (OPEN, after Phase 2 data) + wet-lab data (build plan §6)"
+    },
+    {
+      "id": "SPEC-014",
+      "title": "Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR",
+      "layer": "repo tooling (`.github/`)",
+      "aim": "Cross-cutting — the control protocol itself (docs/risk-and-agent-control.md Part 3)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-015",
+      "title": "Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria",
+      "layer": "`query/`",
+      "aim": "The distillation deliverable (Phase 4 precursor — the deterministic layer SPEC-009's NL front-end must translate INTO, never around; docs/risk-and-agent-control.md S5)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-016",
+      "title": "Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed)",
+      "layer": "repo tooling (`fixtures/`, docs)",
+      "aim": "Cross-cutting — fixture integrity (G4) and execution-honesty (G3)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-017",
+      "title": "Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate",
+      "layer": "repo tooling (`docs/`, `tools/status/`)",
+      "aim": "Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    }
+  ],
+  "runs_today": {
+    "suites": [
+      {
+        "file": "tests/test_core_ingest.py",
+        "command": "python tests/test_core_ingest.py",
+        "test_count": 4
+      },
+      {
+        "file": "tests/test_query_read_api.py",
+        "command": "python tests/test_query_read_api.py",
+        "test_count": 16
+      },
+      {
+        "file": "tests/test_variant_effect.py",
+        "command": "python tests/test_variant_effect.py",
+        "test_count": 4
+      }
+    ],
+    "ci_checks": [
+      "spec-id",
+      "test (py 3.14)",
+      "test (py 3.8)"
+    ],
+    "pass_fail_source": "CI",
+    "note": "Suites are standard-library only and run by direct execution (the supported path; pytest compatibility UNVERIFIED — SPEC-016). This file does not run them: CI is the source of truth for pass/fail."
+  },
+  "not_built": {
+    "empty_layers": [
+      "pipeline",
+      "interface"
+    ],
+    "producer_dirs_present": [
+      "variant_effect"
+    ],
+    "unwired_providers": [
+      "AlphaMissenseProvider",
+      "EVEProvider",
+      "PolyPhenProvider",
+      "SIFTProvider"
+    ],
+    "placeholder_configs": [
+      "config/calibration.json",
+      "config/variant_effect.json"
+    ],
+    "real_data_processed": {
+      "value": false,
+      "basis": "No data/ directory exists; only toy fixtures/ have ever run"
+    },
+    "production_database": {
+      "value": false,
+      "basis": "Dev/CI is embedded SQLite; production substrate pending D4 (Postgres proposed, not decided)"
+    },
+    "nl_query": {
+      "value": false,
+      "basis": "SPEC-009 is SPECIFIED, unbuilt"
+    }
+  },
+  "open_decisions": [
+    {
+      "id": "D-002",
+      "title": "contracts/ layout: flat contract modules vs. subdirectories only",
+      "status": "PROPOSED — pending approval"
+    },
+    {
+      "id": "D-003",
+      "title": "Supported Python floor: keep 3.8 or raise to the dev version",
+      "status": "PROPOSED — pending owner approval"
+    },
+    {
+      "id": "D1",
+      "title": "Ownership / IP of the substrate",
+      "status": "OPEN"
+    },
+    {
+      "id": "D2",
+      "title": "Compute & data residency",
+      "status": "OPEN"
+    },
+    {
+      "id": "D3",
+      "title": "Data governance",
+      "status": "OPEN"
+    },
+    {
+      "id": "D4",
+      "title": "Substrate DB: build vs. buy",
+      "status": "OPEN"
+    },
+    {
+      "id": "D5",
+      "title": "Custom multi-modal predictor: commit or gate",
+      "status": "OPEN"
+    },
+    {
+      "id": "D6",
+      "title": "Reproducibility contract",
+      "status": "OPEN"
+    }
+  ],
+  "undefined_definitions": [
+    "Per-population calibration targets",
+    "What makes a variant \"ancestry-enriched\" (effect size, frequency-delta, significance, per-population)",
+    "What makes a target \"actionable\" / \"druggable\" (DGIdb evidence tier, druggability score cutoff)",
+    "Calibration adequacy — when a European-trained tool is \"in-\" vs \"out-of-calibration\" for a population",
+    "Drug-response endpoint for differential sensitivity (IC50 fold-change, Emax delta, significance)",
+    "Disconfirmation criteria — what counts as \"ancestry effect smaller than the pilot suggested\""
+  ],
+  "data_inventory": {
+    "source": "docs/DATA-INVENTORY.md",
+    "study_datasets": 8,
+    "public_resources": 6,
+    "rows_fully_unknown": 8,
+    "note": "Human-owned, agent-transcribed-only. Every field is UNKNOWN unless a repo artifact states otherwise (cited in the file)."
+  }
+}

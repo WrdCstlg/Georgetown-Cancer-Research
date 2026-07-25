@@ -160,12 +160,14 @@ africandance/                        # repo root (checkout dir may differ, e.g. 
 │   ├── causal/                      # PLANNED — Double ML              (NOVEL — strongest controls)
 │   ├── imaging/                     # PLANNED — CellPose + CNN
 │   └── multimodal_predictor/        # PLANNED — custom predictor       (NOVEL — strongest controls)
-├── query/                           # BUILT (stub README only) — 4a · read path — grounded NL to SQL (never writes)
+├── query/                           # BUILT — 4a · read path — deterministic structured read API (SPEC-015); NL grounded SQL PLANNED (SPEC-009)
 ├── interface/                       # BUILT (stub README only) — 4b · presentation (reads via query; no logic)
 ├── fixtures/                        # BUILT — golden known-input -> known-output (control G4); variant_effect only so far
 ├── tests/                           # BUILT — both suites run per AGENTS.md §3
-└── config/                          # BUILT — domain criteria JSON (PLACEHOLDER, pending domain sign-off);
+├── config/                          # BUILT — domain criteria JSON (PLACEHOLDER, pending domain sign-off);
                                      #   pinned deps / pipeline versions / reproducibility contract PLANNED
+└── tools/                           # DEV TOOLING — outside the five-layer model (like .github/, tests/, fixtures/);
+                                     #   not a producer; must not import producers/, core/, or query/
 ```
 
 **Placement rule:** code goes in the layer that owns its concern, full stop. A variant-calling tweak is `pipeline/calling/`, not wherever it's convenient. Orphan code (no owning layer) fails review.

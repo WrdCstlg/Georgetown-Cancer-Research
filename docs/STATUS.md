@@ -1,151 +1,79 @@
 # STATUS — AfriCAN DANCE computational layer
 
-Generated 2026-07-24 from `main` @ `a0dd9e6`. Every claim below is grounded in a
-repo artifact: SPEC.md statuses, git history, the CI workflow, or a live test run
-(pasted in §3). Where this file and the code ever disagree, the code wins — say so
-and fix this file, not the truth.
+> GENERATED FILE — do not edit by hand. Regenerate with `python tools/status/generate_status.py` and commit both artifacts. CI fails on drift (job `status-drift`). Prose lives in the generator; every fact is transcribed from repo state. Grounding: SPEC.md statuses verbatim, docs/DECISIONS.md, DEFINITIONS.md, docs/DATA-INVENTORY.md, .github/workflows/tests.yml, and filesystem checks — never assessed.
 
 ## 1 · What this is, and what runs today
 
-This is the computational layer for an ancestry-aware colorectal-cancer genomics
-project: a fusion core (a schema + provenance/calibration enforcement, SQLite in
-dev; production substrate pending D4 — Postgres proposed), one analysis producer (multi-tool VUS
-reclassification), and a deterministic read API over the core's views. What runs
-today runs **on toy fixtures only**: 20 synthetic variants with mock tool scores,
-and an 8-row static seed for the read API. Three standard-library test suites
-(24 tests total) pass on every push and PR, in CI, on Python 3.8 and 3.14. No real
-patient data has touched this system.
+This is the computational layer for an ancestry-aware colorectal-cancer genomics project: a fusion core (a schema + provenance/calibration enforcement, SQLite in dev; production substrate pending D4 — Postgres proposed), one analysis producer (multi-tool VUS reclassification), and a deterministic read API over the core's views. What runs today runs **on toy fixtures only**: synthetic variants with mock tool scores, and a small static seed for the read API. The test suites pass in CI on every push and PR, on Python 3.8 and 3.14. No real patient data has touched this system.
 
 ## 2 · SPEC items (statuses taken verbatim from SPEC.md, not assessed here)
 
-| ID | Title | Layer | Status | Blocker (per SPEC.md) |
-|----|-------|-------|--------|------------------------|
-| SPEC-001 | Fusion-core slice: schema + provenance/calibration enforcement + ingest & read view | `core/` | FUNCTIONAL | — |
-| SPEC-002 | variant_effect producer: consensus VUS reclassification + calibration flags | `producers/variant_effect/` | FUNCTIONAL | — |
-| SPEC-003 | Ingestion adapters from pipeline outputs (sarek MAFs, DESeq2, IntOGen, MSISensor2, ADMIXTURE/RFMix, drug screens) | `core/ingest/` | SPECIFIED | unbuilt |
-| SPEC-004 | Reference reconciliation (GRCh38 vs pangenome) | `pipeline/` + `core/` | SPECIFIED | unbuilt |
-| SPEC-005 | Wire real score providers (AlphaMissense + EVE) | `producers/variant_effect/` | SPECIFIED | unbuilt; providers currently raise `NotImplementedError` |
-| SPEC-006 | DeepSomatic alongside Mutect2; callset comparison | `pipeline/calling/` | SPECIFIED | unbuilt |
-| SPEC-007 | Target nomination (elastic net + random forest) | `producers/target_nomination/` | SPECIFIED | unbuilt |
-| SPEC-008 | GNN over PPI graph — NOVEL (G6) | `producers/gnn/` | SPECIFIED | unbuilt |
-| SPEC-009 | Grounded text-to-SQL + interface views | `query/` + `interface/` | SPECIFIED | unbuilt; SPEC-015 is its deterministic prerequisite |
-| SPEC-010 | Drug-response pre-screen (adds, never subtracts) | `producers/` | SPECIFIED | gated on wet-lab data |
-| SPEC-011 | Organoid imaging (CellPose + CNN) | `producers/imaging/` | SPECIFIED | gated on wet-lab data |
-| SPEC-012 | Causal layer (Double ML) — NOVEL (G6) | `producers/causal/` | SPECIFIED | gated on wet-lab data |
-| SPEC-013 | Custom multimodal predictor — NOVEL (G6) | `producers/multimodal_predictor/` | SPECIFIED | gated on D5 + wet-lab data |
-| SPEC-014 | CI enforcement: test gates + SPEC-id check on PRs | `.github/` | FUNCTIONAL | — |
-| SPEC-015 | Query layer: deterministic structured read API over core views | `query/` | FUNCTIONAL | — |
-| SPEC-016 | Repo hygiene: fixture namespaces + run-documentation honesty | `fixtures/`, docs | FUNCTIONAL | — |
+Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it can start now (AVAILABLE / GATED with named gate / UNKNOWN) — the two axes are orthogonal.
 
-Filesystem check at generation time: every FUNCTIONAL item's code exists;
-`pipeline/` and `interface/` contain READMEs only; no SPEC item claims them built.
-No disagreements found.
+| ID | Title | Layer | Status | Readiness |
+|----|-------|-------|--------|-----------|
+| SPEC-001 | Fusion-core slice: schema + provenance/calibration enforcement + variant_effect ingest & read view | `core/` | FUNCTIONAL | AVAILABLE |
+| SPEC-002 | variant_effect producer: multi-tool consensus VUS reclassification with per-population calibration flags | `producers/variant_effect/` | FUNCTIONAL | AVAILABLE |
+| SPEC-003 | Ingestion adapters from existing pipeline outputs (sarek MAFs, DESeq2 tables, IntOGen, MSISensor2, ADMIXTURE/RFMix, drug-screen readouts) | `core/ingest/` | SPECIFIED | AVAILABLE (Phase 1 is "Now" per build plan §6) |
+| SPEC-004 | Reference reconciliation: key variants by (locus, ref-context); reconcile GRCh38 vs. pangenome callsets; flag pangenome-only-in-African-ancestry candidates | `pipeline/` + `core/` | SPECIFIED | AVAILABLE (Phase 1 is "Now" per build plan §6) |
+| SPEC-005 | Wire real score providers (AlphaMissense + EVE pre-computed scores; retain PolyPhen/SIFT) behind the existing provider interface | `producers/variant_effect/` | SPECIFIED | AVAILABLE (Phase 2 "quick win" per build plan §6) |
+| SPEC-006 | DeepSomatic added at the calling step, run in parallel with Mutect2; callset comparison to quantify reference/caller bias | `pipeline/calling/` | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
+| SPEC-007 | Target nomination: elastic-net + random-forest ensemble; DGIdb (druggability), MatrixEQTL (eQTL), Cox (survival) as edges on target nodes | `producers/target_nomination/` | SPECIFIED | UNKNOWN (build plan §6: "once the substrate is FUNCTIONAL" — substrate = Phase 1, whose SPEC-003/004 are still SPECIFIED; whether the precondition is met is ambiguous) |
+| SPEC-008 | GNN over the PPI graph (STRING/BioGRID tagged with study mutation + expression data) — NOVEL, strongest controls (G6) | `producers/gnn/` | SPECIFIED | UNKNOWN (same §6 precondition as SPEC-007) |
+| SPEC-009 | Query layer: grounded text-to-SQL with schema validation + literature retrieval; interface views (cohort explorer, evidence-chain viewer, target dashboard) | `query/` + `interface/` | SPECIFIED | UNKNOWN (same §6 precondition as SPEC-007) |
+| SPEC-010 | Drug-response pre-screen (GDSC/CCLE/DepMap-trained) as triage that only adds, never subtracts | `producers/` (Phase 5) | SPECIFIED | GATED — organoid specimens / drug-screen data do not exist yet (build plan §6: "Phase 5 cannot start until organoid specimens/drug-screen data exist") |
+| SPEC-011 | Organoid imaging: CellPose segmentation + CNN morphological features | `producers/imaging/` | SPECIFIED | GATED — same wet-lab data gate (build plan §6) |
+| SPEC-012 | Causal layer: Double ML / causal forests, validated against CRISPR knock-in/reversion isogenics — NOVEL, strongest controls (G6) | `producers/causal/` | SPECIFIED | GATED — same wet-lab data gate (build plan §6) |
+| SPEC-013 | Custom multi-modal variant predictor (decision D5: commit only if Phase 2 leaves meaningful residual VUS) — NOVEL, strongest controls (G6) | `producers/multimodal_predictor/` | SPECIFIED | GATED — decision D5 (OPEN, after Phase 2 data) + wet-lab data (build plan §6) |
+| SPEC-014 | Agent-control CI enforcement: test gates on push/PR + mechanical SPEC-id check on every PR | repo tooling (`.github/`) | FUNCTIONAL | AVAILABLE |
+| SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | FUNCTIONAL | AVAILABLE |
+| SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | FUNCTIONAL | AVAILABLE |
+| SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 
-## 3 · What runs today (verbatim)
+## 3 · What runs today
 
-Local run on `main` @ `a0dd9e6`, 2026-07-24, direct execution (the supported path):
+Test suites (standard-library only, direct execution — the supported path):
 
-```
-$ python tests/test_variant_effect.py
-PASS test_matches_golden
-PASS test_calibration_pending_on_every_result
-PASS test_circularity_break_novel_variant_still_called
-PASS test_strict_mode_hard_fails_on_placeholder
-ALL TESTS PASSED
+- `python tests/test_core_ingest.py` — 4 tests
+- `python tests/test_query_read_api.py` — 16 tests
+- `python tests/test_variant_effect.py` — 4 tests
 
-$ python tests/test_core_ingest.py
-PASS test_ingest_writes_all_with_provenance
-PASS test_calibration_pending_persisted
-PASS test_core_rejects_bare_fact
-PASS test_read_view_exposes_calibration_and_provenance
-ALL CORE TESTS PASSED
-
-$ python tests/test_query_read_api.py
-PASS test_filter_population_single
-PASS test_filter_population_multiple
-PASS test_filter_population_rejects_merged_grouping
-PASS test_filter_classification
-PASS test_filter_calibration_status
-PASS test_filter_gene
-PASS test_query_echo_exact_sql_and_bound_values
-PASS test_read_is_select_on_view_only
-PASS test_provenance_summary_full_set
-PASS test_provenance_summary_distinct_runs_subset
-PASS test_summary_matches_producer_shape_and_values
-PASS test_summary_carries_query_echo_and_populations
-PASS test_calibration_survives_aggregation_mixed_statuses
-PASS test_calibration_precedence_out_over_in
-PASS test_calibration_clean_only_when_all_clean
-PASS test_refusals_raise_named_error
-ALL QUERY TESTS PASSED
-```
-
-CI (`.github/workflows/tests.yml`) runs all three suites on push to `main` and on
-every PR, on Python 3.8 and 3.14, plus a mechanical SPEC-id gate on PR bodies.
-Required checks as of the last observed run (PR #4): `test (py 3.8)` pass,
-`test (py 3.14)` pass, `spec-id` pass. Suites are standard-library only; pytest
-compatibility is UNVERIFIED (SPEC-016) — direct execution is the supported path.
+CI checks (from `.github/workflows/tests.yml`): `spec-id`, `test (py 3.14)`, `test (py 3.8)`. Suites are standard-library only and run by direct execution (the supported path; pytest compatibility UNVERIFIED — SPEC-016). This file does not run them: CI is the source of truth for pass/fail.
 
 ## 4 · What is NOT built
 
-- **No real data has been processed.** Everything above runs on two toy fixtures:
-  20 synthetic variants with mock scores, and an 8-row static seed. The 150-tumor
-  preliminary set has never touched this code.
-- **`pipeline/` and `interface/` are empty layers** — READMEs only.
-- **The real score providers do not exist.** `AlphaMissenseProvider`, `EVEProvider`,
-  `PolyPhenProvider`, and `SIFTProvider` all `raise NotImplementedError`
-  (`producers/variant_effect/providers.py`). AlphaMissense and EVE are not wired
-  (SPEC-005). The producer has only ever seen mock scores.
-- **All thresholds are PLACEHOLDER.** `config/variant_effect.json` is marked
-  `"status": "PLACEHOLDER"`; strict mode hard-fails on it by design. Per-population
-  calibration targets are undefined, so **every** producer result is stamped
-  `calibration_pending` — correctly, but it means no result is yet a clean call.
-- **The query layer reads exactly one view** (`v_variant_effect`) and has no
-  natural-language anything. SPEC-009 (NL-to-SQL) is unbuilt.
-- **No production database.** Dev/CI is embedded SQLite; Postgres is a schema
-  target, not a running system. No lockfile, no lint, no typecheck configured
-  (AGENTS.md §3 says so plainly).
+- **No real data has been processed.** No data/ directory exists; only toy fixtures/ have ever run.
+- **Empty layers (README only):** `pipeline/`, `interface/`.
+- **Producers present:** `variant_effect/` — every other producer slot is unbuilt.
+- **Real score providers are not wired** — `raise NotImplementedError`: `AlphaMissenseProvider`, `EVEProvider`, `PolyPhenProvider`, `SIFTProvider`. The producer has only ever seen mock scores.
+- **All thresholds are PLACEHOLDER:** `config/calibration.json`, `config/variant_effect.json`. Strict mode hard-fails on them by design; every producer result is stamped `calibration_pending` — correctly, but no result is yet a clean call.
+- **No natural-language query.** SPEC-009 is SPECIFIED, unbuilt; the query layer reads exactly one view (`v_variant_effect`).
+- **No production database.** Dev/CI is embedded SQLite; production substrate pending D4 (Postgres proposed, not decided). No lockfile, no lint, no typecheck configured (AGENTS.md §3).
 
 ## 5 · What unblocks the next step
 
-Open decisions (docs/DECISIONS.md) — owner: **project owner** (D1–D6 await the
-parties named in docs/build-plan.md §1/§5):
+Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–D6 await the parties named in docs/build-plan.md §1/§5):
 
-- **D-002** (PROPOSED): flat contract modules under `contracts/` — pending owner approval.
-- **D-003** (PROPOSED): supported Python floor 3.8 vs 3.14 — pending owner approval; CI tests both meanwhile.
-- **D1** ownership/IP of the substrate; **D2** compute & data residency; **D3** data
-  governance (IRB/DUA/licensing); **D4** substrate DB build-vs-buy; **D5** custom
-  predictor commit-or-gate (after Phase 2 data); **D6** reproducibility stack.
+- **D-002** — contracts/ layout: flat contract modules vs. subdirectories only: PROPOSED — pending approval
+- **D-003** — Supported Python floor: keep 3.8 or raise to the dev version: PROPOSED — pending owner approval
+- **D1** — Ownership / IP of the substrate: OPEN
+- **D2** — Compute & data residency: OPEN
+- **D3** — Data governance: OPEN
+- **D4** — Substrate DB: build vs. buy: OPEN
+- **D5** — Custom multi-modal predictor: commit or gate: OPEN
+- **D6** — Reproducibility contract: OPEN
 
-Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]) — owner:
-**domain experts (the professor and collaborators)**. Each blocks the code that
-needs it; the query layer refuses these by name rather than inventing values:
+Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]) — owner: **domain experts (the professor and collaborators)**. The query layer refuses these by name rather than inventing values:
 
-- per-population calibration targets (DEFINITIONS.md §3) — blocks any clean
-  (non-`calibration_pending`) result;
-- what makes a variant "ancestry-enriched";
-- what makes a target "actionable/druggable";
-- calibration adequacy — when a European-trained tool is in- vs out-of-calibration;
-- the drug-response endpoint for differential sensitivity;
-- disconfirmation criteria.
+- Per-population calibration targets
+- What makes a variant "ancestry-enriched" (effect size, frequency-delta, significance, per-population)
+- What makes a target "actionable" / "druggable" (DGIdb evidence tier, druggability score cutoff)
+- Calibration adequacy — when a European-trained tool is "in-" vs "out-of-calibration" for a population
+- Drug-response endpoint for differential sensitivity (IC50 fold-change, Emax delta, significance)
+- Disconfirmation criteria — what counts as "ancestry effect smaller than the pilot suggested"
+
+**Data inventory (F3):** `docs/DATA-INVENTORY.md` (human-owned) tracks 8 study datasets + 6 public reference resources; 8 rows are UNKNOWN in every field. Custody, location, and access are undetermined for everything the system needs — a human owner must fill it before any real-data claim can be made.
 
 ## 6 · Where a collaborator plugs in
 
-Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent:
-each producer is a plugin that reads a core view and writes a provenance-tagged
-result via the ingest contract, and **never imports another producer, the query
-layer, or the interface**. So these can proceed in parallel without colliding:
-
-- **`producers/target_nomination/`, `producers/gnn/`, `producers/causal/`,
-  `producers/imaging/`** — empty slots, one analytical job each, compose only via
-  the core. (G6: the three NOVEL ones carry the strongest controls — fixtures +
-  execution evidence + expert-pinned criteria, no exceptions.)
-- **`pipeline/`** — empty layer; owns data production only, writes to the core via
-  the ingest contract.
-- **`core/ingest/` adapters** (SPEC-003) — one adapter per upstream output format.
-- **`interface/`** — open, but downstream: it reads via `query/` only, and nothing
-  may depend on it.
-
-Not parallel-safe without review: changes to `contracts/` (a reviewed act with
-stated blast radius), the core schema, and any domain definition (DEFINITIONS.md is
-expert-owned — implement, never author).
+Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent: each producer is a plugin that reads a core view and writes a provenance-tagged result via the ingest contract, and **never imports another producer, the query layer, or the interface**. Parallel-safe: the empty producer slots (`target_nomination/`, `gnn/`, `causal/`, `imaging/`), `pipeline/`, `core/ingest/` adapters (SPEC-003), and `interface/` (downstream of `query/`). Not parallel-safe without review: `contracts/`, the core schema, and DEFINITIONS.md (expert-owned).
