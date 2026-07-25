@@ -158,6 +158,7 @@
     ],
     "ci_checks": [
       "spec-id",
+      "status-drift",
       "test (py 3.14)",
       "test (py 3.8)"
     ],
