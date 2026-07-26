@@ -1,7 +1,8 @@
 """Thin DB abstraction for the fusion core.
 
-SQLite for local/dev and fixtures/CI; PostgreSQL (+ pgvector) is the production
-target -- same schema, minor DDL deltas noted in core/schema/schema.sql. Nothing
+SQLite for local/dev and fixtures/CI; production substrate is PENDING decision
+D4 (PostgreSQL + pgvector proposed) -- same schema, minor DDL deltas for the
+proposed target noted in core/schema/schema.sql. Nothing
 here is analysis logic; this is the persistence concern only (ARCHITECTURE.md 3).
 """
 from __future__ import annotations
