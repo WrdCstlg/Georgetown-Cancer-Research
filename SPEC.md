@@ -35,6 +35,9 @@
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md) | FUNCTIONAL | AVAILABLE |
 | SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | Cross-cutting — developer ergonomics only; NOT the researcher UI (R7 — interface/ stays empty and reserved) | FUNCTIONAL | AVAILABLE |
 | SPEC-019 | Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists | repo tooling (`tools/status/`) | Cross-cutting — no-drift discipline (G3) + I6 traceability | FUNCTIONAL | AVAILABLE |
+| SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table | `producers/drivers/` | Aim 1 (build plan Phase 2 — "reclassified variant table feeds the IntOGen driver-identification step") | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
+| SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | Aim 2a (build plan §2 producers layer; Phase 3) | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
+| SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | Cross-cutting — I6 traceability + decision-state honesty (SPEC-017) | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -132,6 +135,15 @@ Executable acceptance:
   then enforces committing the regeneration) — demonstrated by the four-vs-seven fix itself;
 - artifacts regenerated; `status-drift` green.
 
+### SPEC-022 — close loose ends
+Executable acceptance:
+- `producers/drivers/` and `producers/expression/` each trace to a registry item (SPEC-020,
+  SPEC-021) — STATUS.md §6 no longer renders them as orphan slots;
+- no file in the repo asserts PostgreSQL as the decided production substrate while D4 is OPEN —
+  `core/db.py` and `core/README.md` carry the same pending-D4 wording as commit 21a7d74
+  (comments/prose only; no code, DDL, or behavior change);
+- artifacts regenerated; `status-drift` green; all four suites unchanged (29 PASS).
+
 ## Acceptance criteria for SPECIFIED items
 
 Taken from the phase gates in `docs/build-plan.md`; to be decomposed into executable checks when the
@@ -144,3 +156,7 @@ work starts (I2), before any code:
 - SPEC-009 (Phase 4): a cross-modal NL question returns a cited, query-backed answer.
 - SPEC-010/011/012/013 (Phase 5): imaging pipeline quantifies morphology; causal estimates bidirectionally
   validated against CRISPR isogenics. Phase 5 does not start until organoid/drug-screen data exist.
+- SPEC-020 (Phase 2): IntOGen driver identification runs on the reclassified variant table (build plan
+  §3 Phase 2); driver thresholds per DEFINITIONS.md §1 (grant-strategy values pending domain confirmation).
+- SPEC-021 (Phase 3): the DESeq2 / GSEA / DoRothEA transcriptomic path runs and feeds target nomination;
+  prerequisite gap — no R tooling, renv.lock, or R CI exists in the repo yet (flagged, not solved).

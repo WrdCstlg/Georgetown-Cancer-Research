@@ -31,6 +31,9 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-019 | Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists | repo tooling (`tools/status/`) | FUNCTIONAL | AVAILABLE |
+| SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table | `producers/drivers/` | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
+| SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
+| SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
 
@@ -84,8 +87,8 @@ Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent:
 Producer slots — derived from the ARCHITECTURE.md §5 map (the single source of truth; `producer_slots[]` in status.json parses the same map, so this list cannot diverge from it). Each slot carries its SPEC Readiness, so GATED slots are not presented as available work:
 
 - `variant_effect/` — **BUILT** (SPEC-002 FUNCTIONAL)
-- `drivers/` — PLANNED, **no SPEC item** — orphan slot (I6): must be registered in SPEC.md before anyone starts it
-- `expression/` — PLANNED, **no SPEC item** — orphan slot (I6): must be registered in SPEC.md before anyone starts it
+- `drivers/` — PLANNED, SPEC-020 — Readiness: **AVAILABLE (Phase 2 per build plan §6)**
+- `expression/` — PLANNED, SPEC-021 — Readiness: **UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap)**
 - `target_nomination/` — PLANNED, SPEC-007 — Readiness: **UNKNOWN (build plan §6: "once the substrate is FUNCTIONAL" — substrate = Phase 1, whose SPEC-003/004 are still SPECIFIED; whether the precondition is met is ambiguous)**
 - `gnn/` — PLANNED, SPEC-008 — Readiness: **UNKNOWN (same §6 precondition as SPEC-007)**
 - `causal/` — PLANNED, SPEC-012 — Readiness: **GATED — same wet-lab data gate (build plan §6)**
