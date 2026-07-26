@@ -184,6 +184,14 @@
       "aim": "Cross-cutting — a gate that cries wolf gets ignored (G3 discipline)",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-024",
+      "title": "Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet",
+      "layer": "dev tooling (`tools/status-ui/`, `tools/status/`)",
+      "aim": "Cross-cutting — developer ergonomics (R7: still not the researcher UI)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
     }
   ],
   "layers": [
@@ -293,26 +301,26 @@
       "variant_effect"
     ],
     "unwired_providers": [
-      "AlphaMissenseProvider",
-      "EVEProvider",
-      "PolyPhenProvider",
-      "SIFTProvider"
+      "AlphaMissenseProvider (producers/variant_effect/providers.py:53)",
+      "EVEProvider (producers/variant_effect/providers.py:65)",
+      "PolyPhenProvider (producers/variant_effect/providers.py:72)",
+      "SIFTProvider (producers/variant_effect/providers.py:79)"
     ],
     "placeholder_configs": [
-      "config/calibration.json",
-      "config/variant_effect.json"
+      "config/calibration.json:2 (\"status\": \"PLACEHOLDER\")",
+      "config/variant_effect.json:2 (\"status\": \"PLACEHOLDER\")"
     ],
     "real_data_processed": {
       "value": false,
-      "basis": "No data/ directory exists; only toy fixtures/ have ever run"
+      "basis": "No data/ directory exists; only fixtures/variant_effect/ and fixtures/query/ have ever run"
     },
     "production_database": {
       "value": false,
-      "basis": "Dev/CI is embedded SQLite; production substrate pending D4 (Postgres proposed, not decided)"
+      "basis": "Dev/CI is embedded SQLite (core/db.py); production substrate pending D4 (docs/DECISIONS.md D4) — Postgres proposed, not decided (core/db.py:3-4)"
     },
     "nl_query": {
       "value": false,
-      "basis": "SPEC-009 is SPECIFIED, unbuilt"
+      "basis": "SPEC-009 is SPECIFIED (SPEC.md registry); the query layer reads one view (query/read_api.py: _VIEW = v_variant_effect)"
     }
   },
   "open_decisions": [

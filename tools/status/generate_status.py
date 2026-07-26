@@ -171,13 +171,17 @@ def _only_readme(rel):
 
 def unwired_providers():
     """Provider classes in producers/variant_effect/providers.py whose class
-    body raises NotImplementedError (real tools not wired)."""
-    text = _read(os.path.join("producers", "variant_effect", "providers.py"))
-    out = []
-    for block in re.split(r"(?m)^(?=class )", text):
-        m = re.match(r"class (\w+)", block)
-        if m and "raise NotImplementedError" in block:
-            out.append(m.group(1))
+    body raises NotImplementedError (real tools not wired), each with a
+    checkable file:line citation."""
+    lines = _read(os.path.join("producers", "variant_effect", "providers.py")).splitlines()
+    out, current = [], None
+    for i, line in enumerate(lines, start=1):
+        m = re.match(r"class (\w+)", line)
+        if m:
+            current = m.group(1)
+        elif "raise NotImplementedError" in line and current:
+            out.append(f"{current} (producers/variant_effect/providers.py:{i})")
+            current = None
     return out
 
 
@@ -187,7 +191,10 @@ def placeholder_configs():
         if fn.endswith(".json"):
             with open(os.path.join(ROOT, "config", fn), encoding="utf-8") as f:
                 if json.load(f).get("status") == "PLACEHOLDER":
-                    out.append(f"config/{fn}")
+                    marker = next(i for i, l in enumerate(
+                        _read(os.path.join("config", fn)).splitlines(), start=1)
+                        if '"status": "PLACEHOLDER"' in l)
+                    out.append(f'config/{fn}:{marker} ("status": "PLACEHOLDER")')
     return out
 
 
@@ -282,14 +289,17 @@ def build_status():
             "placeholder_configs": placeholder_configs(),
             "real_data_processed": {
                 "value": False,
-                "basis": "No data/ directory exists; only toy fixtures/ have ever run",
+                "basis": "No data/ directory exists; only fixtures/variant_effect/ and "
+                         "fixtures/query/ have ever run",
             },
             "production_database": {
                 "value": False,
-                "basis": "Dev/CI is embedded SQLite; production substrate pending D4 "
-                         "(Postgres proposed, not decided)",
+                "basis": "Dev/CI is embedded SQLite (core/db.py); production substrate pending "
+                         "D4 (docs/DECISIONS.md D4) — Postgres proposed, not decided (core/db.py:3-4)",
             },
-            "nl_query": {"value": False, "basis": "SPEC-009 is SPECIFIED, unbuilt"},
+            "nl_query": {"value": False,
+                         "basis": "SPEC-009 is SPECIFIED (SPEC.md registry); the query layer reads "
+                                  "one view (query/read_api.py: _VIEW = v_variant_effect)"},
         },
         "open_decisions": open_decisions(),
         "undefined_definitions": undefined_definitions(),
