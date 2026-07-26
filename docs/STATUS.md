@@ -34,6 +34,7 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table | `producers/drivers/` | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
 | SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | FUNCTIONAL | AVAILABLE |
+| SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
 
