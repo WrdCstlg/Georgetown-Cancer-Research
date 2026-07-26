@@ -1,0 +1,8 @@
+# The STATUS artifacts are machine-regenerated on every platform and gated by
+# the CI status-drift job (regenerate + git diff). Pin them to LF so a Windows
+# checkout (core.autocrlf=true) is byte-identical to CI (LF) — otherwise
+# regeneration produces git-status noise with an empty diff (SPEC-023).
+# Deliberately narrow: pinning only these two files avoids renormalizing the
+# rest of the repo's CRLF working tree.
+docs/STATUS.md  text eol=lf
+docs/status.json text eol=lf

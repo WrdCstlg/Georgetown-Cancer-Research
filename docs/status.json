@@ -176,6 +176,14 @@
       "aim": "Cross-cutting — I6 traceability + decision-state honesty (SPEC-017)",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-023",
+      "title": "Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift",
+      "layer": "repo tooling (`.gitattributes`, `tools/status/`)",
+      "aim": "Cross-cutting — a gate that cries wolf gets ignored (G3 discipline)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
     }
   ],
   "layers": [

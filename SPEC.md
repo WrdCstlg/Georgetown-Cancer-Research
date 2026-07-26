@@ -38,6 +38,7 @@
 | SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table | `producers/drivers/` | Aim 1 (build plan Phase 2 — "reclassified variant table feeds the IntOGen driver-identification step") | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
 | SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | Aim 2a (build plan §2 producers layer; Phase 3) | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | Cross-cutting — I6 traceability + decision-state honesty (SPEC-017) | FUNCTIONAL | AVAILABLE |
+| SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | Cross-cutting — a gate that cries wolf gets ignored (G3 discipline) | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -143,6 +144,17 @@ Executable acceptance:
   `core/db.py` and `core/README.md` carry the same pending-D4 wording as commit 21a7d74
   (comments/prose only; no code, DDL, or behavior change);
 - artifacts regenerated; `status-drift` green; all four suites unchanged (29 PASS).
+
+### SPEC-023 — drift-gate determinism
+Executable acceptance (observed on the PR):
+- mechanism diagnosed and stated: `core.autocrlf=true`, no `.gitattributes`, index blobs LF;
+  the generator writes LF (`newline="\n"`) into a CRLF-normalized checkout, so `git status`
+  flags the artifacts while `git diff` is empty;
+- after the fix, regeneration on Windows leaves BOTH `git status --porcelain` and
+  `git diff --exit-code` clean;
+- the gate still fails on a deliberate content edit to an artifact and passes after
+  regeneration — the fix must not weaken it into always-passing;
+- `.gitattributes` pins only the two generated artifacts (no repo-wide renormalization).
 
 ## Acceptance criteria for SPECIFIED items
 
