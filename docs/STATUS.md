@@ -30,6 +30,7 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | FUNCTIONAL | AVAILABLE |
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | FUNCTIONAL | AVAILABLE |
+| SPEC-019 | Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists | repo tooling (`tools/status/`) | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
 
@@ -78,4 +79,17 @@ Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]). The que
 
 ## 6 · Where a collaborator plugs in
 
-Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent: each producer is a plugin that reads a core view and writes a provenance-tagged result via the ingest contract, and **never imports another producer, the query layer, or the interface**. Parallel-safe: the empty producer slots (`target_nomination/`, `gnn/`, `causal/`, `imaging/`), `pipeline/`, `core/ingest/` adapters (SPEC-003), and `interface/` (downstream of `query/`). Not parallel-safe without review: `contracts/`, the core schema, and DEFINITIONS.md (expert-owned).
+Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent: each producer is a plugin that reads a core view and writes a provenance-tagged result via the ingest contract, and **never imports another producer, the query layer, or the interface**.
+
+Producer slots — derived from the ARCHITECTURE.md §5 map (the single source of truth; `producer_slots[]` in status.json parses the same map, so this list cannot diverge from it). Each slot carries its SPEC Readiness, so GATED slots are not presented as available work:
+
+- `variant_effect/` — **BUILT** (SPEC-002 FUNCTIONAL)
+- `drivers/` — PLANNED, **no SPEC item** — orphan slot (I6): must be registered in SPEC.md before anyone starts it
+- `expression/` — PLANNED, **no SPEC item** — orphan slot (I6): must be registered in SPEC.md before anyone starts it
+- `target_nomination/` — PLANNED, SPEC-007 — Readiness: **UNKNOWN (build plan §6: "once the substrate is FUNCTIONAL" — substrate = Phase 1, whose SPEC-003/004 are still SPECIFIED; whether the precondition is met is ambiguous)**
+- `gnn/` — PLANNED, SPEC-008 — Readiness: **UNKNOWN (same §6 precondition as SPEC-007)**
+- `causal/` — PLANNED, SPEC-012 — Readiness: **GATED — same wet-lab data gate (build plan §6)**
+- `imaging/` — PLANNED, SPEC-011 — Readiness: **GATED — same wet-lab data gate (build plan §6)**
+- `multimodal_predictor/` — PLANNED, SPEC-013 — Readiness: **GATED — decision D5 (OPEN, after Phase 2 data) + wet-lab data (build plan §6)**
+
+Also parallel-safe: `pipeline/`, `core/ingest/` adapters (SPEC-003), and `interface/` (downstream of `query/`). Not parallel-safe without review: `contracts/`, the core schema, and DEFINITIONS.md (expert-owned).

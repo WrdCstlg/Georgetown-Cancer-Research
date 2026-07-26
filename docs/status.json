@@ -144,6 +144,14 @@
       "aim": "Cross-cutting — developer ergonomics only; NOT the researcher UI (R7 — interface/ stays empty and reserved)",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-019",
+      "title": "Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists",
+      "layer": "repo tooling (`tools/status/`)",
+      "aim": "Cross-cutting — no-drift discipline (G3) + I6 traceability",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
     }
   ],
   "layers": [

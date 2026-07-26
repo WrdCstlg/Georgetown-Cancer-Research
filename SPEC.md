@@ -34,6 +34,7 @@
 | SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | Cross-cutting — fixture integrity (G4) and execution-honesty (G3) | FUNCTIONAL | AVAILABLE |
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md) | FUNCTIONAL | AVAILABLE |
 | SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | Cross-cutting — developer ergonomics only; NOT the researcher UI (R7 — interface/ stays empty and reserved) | FUNCTIONAL | AVAILABLE |
+| SPEC-019 | Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists | repo tooling (`tools/status/`) | Cross-cutting — no-drift discipline (G3) + I6 traceability | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -120,6 +121,16 @@ running the shim and exercising the page — commands in `tools/status-ui/README
   definition, not a stack trace;
 - the data source is visibly labelled as the toy fixture;
 - the suite runs in CI like the others; the drift check stays green after regenerating.
+
+### SPEC-019 — collaborator-map correctness
+Executable acceptance:
+- no hand-maintained producer-slot list exists in `tools/status/generate_status.py` — §6 is
+  generated from `producer_slots[]`, which parses the ARCHITECTURE.md §5 map (single source);
+- every slot in STATUS.md §6 renders with its SPEC Readiness (or "no SPEC item" for orphans),
+  so GATED slots are never presented as available work;
+- a slot added or renamed in ARCHITECTURE.md §5 changes §6 on regeneration (and the drift gate
+  then enforces committing the regeneration) — demonstrated by the four-vs-seven fix itself;
+- artifacts regenerated; `status-drift` green.
 
 ## Acceptance criteria for SPECIFIED items
 

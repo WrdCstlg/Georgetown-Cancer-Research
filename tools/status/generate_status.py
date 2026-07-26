@@ -391,12 +391,40 @@ def render_md(s):
     A("Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent: "
       "each producer is a plugin that reads a core view and writes a provenance-tagged "
       "result via the ingest contract, and **never imports another producer, the query "
-      "layer, or the interface**. Parallel-safe: the empty producer slots "
-      "(`target_nomination/`, `gnn/`, `causal/`, `imaging/`), `pipeline/`, `core/ingest/` "
-      "adapters (SPEC-003), and `interface/` (downstream of `query/`). Not parallel-safe "
-      "without review: `contracts/`, the core schema, and DEFINITIONS.md (expert-owned).")
+      "layer, or the interface**.")
+    A("")
+    A("Producer slots — derived from the ARCHITECTURE.md §5 map (the single source of "
+      "truth; `producer_slots[]` in status.json parses the same map, so this list cannot "
+      "diverge from it). Each slot carries its SPEC Readiness, so GATED slots are not "
+      "presented as available work:")
+    A("")
+    for line in _slot_lines(s):
+        A(line)
+    A("")
+    A("Also parallel-safe: `pipeline/`, `core/ingest/` adapters (SPEC-003), and "
+      "`interface/` (downstream of `query/`). Not parallel-safe without review: "
+      "`contracts/`, the core schema, and DEFINITIONS.md (expert-owned).")
     A("")
     return "\n".join(L)
+
+
+def _slot_lines(s):
+    """One line per producer slot, with its SPEC Readiness. A PLANNED slot with no
+    SPEC item is an orphan (I6) — say so rather than present it as ready work."""
+    out = []
+    for slot in s["producer_slots"]:
+        name = slot["name"]
+        if slot["state"] == "BUILT":
+            out.append(f"- `{name}/` — **BUILT** (SPEC-002 FUNCTIONAL)")
+            continue
+        spec = next((it for it in s["spec_items"]
+                     if f"producers/{name}/" in it["layer"]), None)
+        if spec is None:
+            out.append(f"- `{name}/` — PLANNED, **no SPEC item** — orphan slot (I6): "
+                       "must be registered in SPEC.md before anyone starts it")
+        else:
+            out.append(f"- `{name}/` — PLANNED, {spec['id']} — Readiness: **{spec['readiness']}**")
+    return out
 
 
 def main():
