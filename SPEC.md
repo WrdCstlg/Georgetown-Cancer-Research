@@ -33,6 +33,7 @@
 | SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | The distillation deliverable (Phase 4 precursor — the deterministic layer SPEC-009's NL front-end must translate INTO, never around; docs/risk-and-agent-control.md S5) | FUNCTIONAL | AVAILABLE |
 | SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | Cross-cutting — fixture integrity (G4) and execution-honesty (G3) | FUNCTIONAL | AVAILABLE |
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md) | FUNCTIONAL | AVAILABLE |
+| SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | Cross-cutting — developer ergonomics only; NOT the researcher UI (R7 — interface/ stays empty and reserved) | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -101,6 +102,24 @@ Executable acceptance:
   deterministically from repo state (no timestamps, no absolute paths);
 - the CI `status-drift` job fails when the committed artifacts differ from a fresh regeneration,
   and passes after regeneration — observed failing once on a deliberate edit.
+
+### SPEC-018 — local dev dashboard
+Executable acceptance (shim checks in `tests/test_status_ui_shim.py`; UI checks verified by
+running the shim and exercising the page — commands in `tools/status-ui/README.md`):
+- the page renders every Section-1 fact from `docs/status.json` only — no state is computed in
+  the browser (View A node states and View B rows both trace to status.json fields);
+- View B shows Status AND Readiness for all 17 items, with UNKNOWN visually distinct from GATED,
+  and filters by Readiness;
+- Section 2 renders each `not_built` entry as fact + basis, unsoftened; Section 3 renders
+  decisions and undefined definitions with owners, marked human-owned;
+- the shim is stdlib-only, localhost-bound, GET-only (non-GET → 405), never writes, imports
+  `query/` but never `producers/` or `core/ingest`;
+- a summary response carries the result-level calibration flag and the UI renders it as a
+  top-of-panel banner, not a footer;
+- a refusal (undefined criterion) returns and renders as an explanation naming the missing
+  definition, not a stack trace;
+- the data source is visibly labelled as the toy fixture;
+- the suite runs in CI like the others; the drift check stays green after regenerating.
 
 ## Acceptance criteria for SPECIFIED items
 

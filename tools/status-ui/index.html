@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AfriCAN DANCE — dev status dashboard</title>
+<style>
+  :root {
+    --built: #2e7d32; --partial: #c77800; --empty: #757575;
+    --gated: #b71c1c; --unknown: #8a6d00; --avail: #2e7d32;
+    --ink: #1a1a2e; --muted: #555; --line: #d0d0d8; --bg: #f6f6f9;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink);
+         background: var(--bg); margin: 0; padding: 24px; max-width: 1100px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 28px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .banner { margin-top: 10px; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+  .ok   { background: #e3f2e5; border: 1px solid var(--built); }
+  .warn { background: #fdeaea; border: 1px solid var(--gated); font-weight: 600; }
+  .humans { background: #fff7e0; border: 1px solid var(--partial); font-weight: 600; }
+  .src { background: #eef; border: 1px solid #99c; font-weight: 600; }
+  .toggle button, .filterbtn { margin-right: 8px; padding: 5px 14px; border: 1px solid var(--line);
+    background: #fff; border-radius: 5px; cursor: pointer; font-size: 13px; }
+  .toggle button.active { background: var(--ink); color: #fff; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; background: #fff; }
+  th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #ececf2; }
+  .chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .c-func { background: #dff0e1; color: var(--built); border: 1px solid var(--built); }
+  .c-spec { background: #eee; color: var(--muted); border: 1px solid var(--empty); }
+  .c-avail { background: #dff0e1; color: var(--avail); border: 1px solid var(--avail); }
+  .c-gated { background: #f6d5d5; color: var(--gated); border: 2px solid var(--gated); }
+  .c-unknown { background: #fff3c4; color: var(--unknown); border: 2px dashed var(--unknown); font-style: italic; }
+  .layer-row td { background: #e4e4ee; font-weight: 700; font-size: 12px; }
+  .nb { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-size: 13px; }
+  .nb .basis { color: var(--muted); }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  pre { background: #14141f; color: #d8e6d8; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  fieldset { border: 1px solid var(--line); border-radius: 6px; background: #fff; font-size: 13px; }
+  label { margin-right: 12px; white-space: nowrap; }
+  .cal { padding: 12px 16px; border-radius: 8px; font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+  .cal-pending { background: #fde3e3; border: 3px solid var(--gated); color: var(--gated); }
+  .cal-out { background: #fdf0d5; border: 3px solid var(--partial); color: var(--partial); }
+  .cal-in { background: #dff0e1; border: 3px solid var(--built); color: var(--built); }
+  .refusal { background: #fff7e0; border: 2px solid var(--partial); border-radius: 8px;
+             padding: 14px 16px; font-size: 14px; }
+  .node { cursor: pointer; }
+  .node rect { stroke-width: 2; rx: 8; }
+  .node text { font-size: 12px; font-family: inherit; }
+  .edge { stroke: #666; stroke-width: 1.6; fill: none; marker-end: url(#arrow); }
+  .edge-label { font-size: 10px; fill: var(--muted); }
+  #detail { font-size: 13px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<h1>AfriCAN DANCE — dev status dashboard</h1>
+<div class="sub">Local dev tooling (<code>tools/status-ui/</code>) — <b>not</b> the researcher-facing UI;
+that layer (<code>interface/</code>) is empty and reserved. Everything below renders
+<code>docs/status.json</code>; nothing is computed in the browser.</div>
+<div id="meta"></div>
+
+<h2>Section 1 · Live system state</h2>
+<div class="toggle">
+  <button id="btnA" class="active" onclick="showView('A')">Architecture</button>
+  <button id="btnB" onclick="showView('B')">Spec / Phase</button>
+</div>
+
+<div id="viewA" style="margin-top:10px">
+  <svg id="graph" viewBox="0 0 980 600" width="980" height="600"></svg>
+  <div id="detail" class="card">Click a node for its contents and evidence.</div>
+</div>
+
+<div id="viewB" class="hidden" style="margin-top:10px">
+  <div style="margin-bottom:8px">
+    <span class="sub">Filter by Readiness — “what can I start now?”:</span>
+    <button class="filterbtn" onclick="filterReady('')">All</button>
+    <button class="filterbtn" onclick="filterReady('AVAILABLE')">AVAILABLE</button>
+    <button class="filterbtn" onclick="filterReady('GATED')">GATED</button>
+    <button class="filterbtn" onclick="filterReady('UNKNOWN')">UNKNOWN</button>
+  </div>
+  <table id="specTable"><thead>
+    <tr><th>ID</th><th>Title</th><th>Status</th><th>Readiness</th></tr>
+  </thead><tbody></tbody></table>
+</div>
+
+<h2>Section 2 · What is NOT built</h2>
+<div id="notbuilt"></div>
+
+<h2>Section 3 · Blockers</h2>
+<div class="banner humans">These are human-owned. The agent implements definitions and
+decisions; it cannot supply them. Nothing here is agent-solvable.</div>
+<div class="grid2">
+  <div><h3 style="font-size:14px">Open decisions</h3><div id="decisions"></div></div>
+  <div><h3 style="font-size:14px">Undefined domain definitions ([TO BE DEFINED])</h3><div id="undefs"></div></div>
+</div>
+
+<h2>Section 4 · Query explorer</h2>
+<div class="banner src">Data source: the TOY FIXTURE (<code>fixtures/query/core_rows.json</code>) — NOT real data.</div>
+<fieldset style="margin-top:8px">
+  <legend>Filter (deterministic read API over <code>v_variant_effect</code>)</legend>
+  <div style="margin:6px 0">
+    <b>Population:</b>
+    <label><input type="checkbox" name="pop" value="AA"> AA</label>
+    <label><input type="checkbox" name="pop" value="GHA"> GHA</label>
+    <label><input type="checkbox" name="pop" value="ETH"> ETH</label>
+    <label><input type="checkbox" name="pop" value="NHW"> NHW</label>
+    <span class="sub">(per-population only — no merged groupings exist)</span>
+  </div>
+  <div style="margin:6px 0">
+    <label><b>Gene:</b> <input id="fGene" size="8" placeholder="TP53"></label>
+    <label><b>Classification:</b>
+      <select id="fCls"><option value="">any</option><option>benign</option><option>pathogenic</option><option>VUS</option></select></label>
+    <label><b>Calibration:</b>
+      <select id="fCal"><option value="">any</option><option>in_calibration</option><option>out_of_calibration</option><option>calibration_pending</option></select></label>
+  </div>
+  <div style="margin:6px 0">
+    <b>Undefined criteria (will refuse, by design):</b>
+    <label><input type="checkbox" id="fAe"> ancestry-enriched</label>
+    <label><input type="checkbox" id="fAct"> actionable/druggable</label>
+    <label><input type="checkbox" id="fDis"> disconfirmation</label>
+  </div>
+  <button class="filterbtn" onclick="runQuery('/api/query')">Run filtered query</button>
+  <button class="filterbtn" onclick="runQuery('/api/summary')">Run per-population summary</button>
+</fieldset>
+<div id="result" style="margin-top:10px"></div>
+
+<script>
+let STATUS = null, META = null;
+
+async function boot() {
+  try {
+    STATUS = await (await fetch('/api/status')).json();
+  } catch (e) {
+    document.getElementById('meta').innerHTML =
+      '<div class="banner warn">Cannot read docs/status.json via the shim. ' +
+      'Start it from the repo root: <code>python tools/status-ui/serve.py</code> ' +
+      'and open http://127.0.0.1:8017/ — this page does not work from file://.</div>';
+    return;
+  }
+  try { META = await (await fetch('/api/meta')).json(); } catch (e) { META = null; }
+  renderMeta(); renderGraph(); renderSpecTable(); renderNotBuilt(); renderBlockers();
+}
+
+function renderMeta() {
+  const el = document.getElementById('meta');
+  if (!META) {
+    el.innerHTML = '<div class="banner warn">HEAD unavailable — the shim did not answer /api/meta. ' +
+      'Sync between status.json and repo state is unknown.</div>';
+    return;
+  }
+  el.innerHTML = META.status_in_sync
+    ? `<div class="banner ok">Current HEAD <code>${META.current_head}</code> — status.json reflects repo state (regeneration produces no diff; CI job <code>status-drift</code> enforces this).</div>`
+    : `<div class="banner warn">DRIFT: current HEAD <code>${META.current_head}</code> does not match a fresh regeneration of status.json — run the generator and commit the result.</div>`;
+}
+
+/* ---------- Section 1 · View A: architecture ---------- */
+const STATE_COLOR = { BUILT: 'var(--built)', PARTIAL: 'var(--partial)', EMPTY: 'var(--empty)' };
+
+function layerState(name) { return (STATUS.layers.find(l => l.name === name) || {}).state || 'EMPTY'; }
+function layerEvidence(name) { return (STATUS.layers.find(l => l.name === name) || {}).evidence || ''; }
+
+function node(x, y, w, h, label, state, dash) {
+  const c = STATE_COLOR[state] || 'var(--empty)';
+  return `<g class="node" data-layer="${label.split(' ')[0]}" transform="translate(${x},${y})">
+    <rect width="${w}" height="${h}" rx="8" fill="#fff" stroke="${c}" ${dash ? 'stroke-dasharray="5,4"' : ''}/>
+    <text x="${w/2}" y="${h/2 - 2}" text-anchor="middle" font-weight="700">${label}</text>
+    <text x="${w/2}" y="${h/2 + 14}" text-anchor="middle" fill="${c}" font-weight="700">${state}</text>
+  </g>`;
+}
+
+function edge(x1, y1, x2, y2, label, lx, ly) {
+  return `<path class="edge" d="M${x1},${y1} L${x2},${y2}"/>` +
+    (label ? `<text class="edge-label" x="${lx}" y="${ly}">${label}</text>` : '');
+}
+
+function renderGraph() {
+  const slots = STATUS.producer_slots;
+  let g = `<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3"
+        orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#666"/></marker></defs>`;
+  // core — the spine, center
+  g += edge(240, 120, 430, 260, 'write · ingest contract', 225, 205);           // pipeline -> core
+  g += edge(760, 300, 560, 300, 'write · ingest contract', 615, 288);           // producers -> core
+  g += edge(480, 340, 480, 430, 'read-only (v_* views)', 490, 395);             // core -> query
+  g += edge(480, 490, 480, 545, '', 0, 0);                                      // query -> interface
+  g += node(380, 250, 200, 90, 'core · persistence + provenance', layerState('core'));
+  g += node(60, 60, 200, 70, 'pipeline · data production', layerState('pipeline'));
+  g += node(380, 430, 200, 60, 'query · read path', layerState('query'));
+  g += node(380, 540, 200, 55, 'interface · presentation', layerState('interface'));
+  g += node(40, 430, 220, 60, 'tools/ · dev tooling (not a layer)', layerState('tools'), true);
+  // producers container + individual slots
+  g += `<rect x="620" y="40" width="330" height="${70 + slots.length * 46}" rx="10" fill="#fcfcfe"
+        stroke="${STATE_COLOR[layerState('producers')]}" stroke-width="2"/>`;
+  g += `<text x="785" y="62" text-anchor="middle" font-weight="700">producers — ${layerState('producers')} · isolated plugins</text>`;
+  slots.forEach((s, i) => {
+    const st = s.state === 'BUILT' ? 'BUILT' : 'EMPTY';
+    g += `<g class="node" data-slot="${s.name}" transform="translate(640,${76 + i * 46})">
+      <rect width="290" height="38" rx="6" fill="#fff" stroke="${STATE_COLOR[st]}"
+        ${st === 'EMPTY' ? 'stroke-dasharray="5,4"' : ''}/>
+      <text x="145" y="17" text-anchor="middle" font-weight="600">${s.name}</text>
+      <text x="145" y="31" text-anchor="middle" fill="${STATE_COLOR[st]}" font-size="11">${s.state}</text>
+    </g>`;
+  });
+  document.getElementById('graph').innerHTML = g;
+  document.querySelectorAll('#graph .node').forEach(n => {
+    n.addEventListener('click', () => showDetail(n));
+  });
+}
+
+function showDetail(n) {
+  const el = document.getElementById('detail');
+  if (n.dataset.slot) {
+    const s = STATUS.producer_slots.find(p => p.name === n.dataset.slot);
+    el.innerHTML = `<b>producer slot: ${s.name}</b> — ${s.state}. ` +
+      (s.state === 'PLANNED'
+        ? 'Empty slot. Per ARCHITECTURE.md §4.2 a producer is an isolated plugin: it reads a core view and writes a provenance-tagged result via the ingest contract — it may never import another producer, query, or interface.'
+        : 'The one built producer: multi-tool consensus VUS reclassification (SPEC-002, FUNCTIONAL).');
+    return;
+  }
+  const name = n.dataset.layer;
+  const L = STATUS.layers.find(l => l.name === name);
+  const specs = STATUS.spec_items.filter(it => it.layer.includes(name));
+  el.innerHTML = `<b>${name}</b> — ${L ? L.state : '?'}<br><span class="sub">Evidence: ${L ? L.evidence : ''}</span>` +
+    (specs.length ? '<br>SPEC items: ' + specs.map(i => `${i.id} (${i.status})`).join(', ') : '');
+}
+
+/* ---------- Section 1 · View B: spec / phase ---------- */
+function statusChip(s) { return `<span class="chip ${s === 'FUNCTIONAL' ? 'c-func' : 'c-spec'}">${s}</span>`; }
+function readyChip(r) {
+  const k = r.startsWith('GATED') ? 'c-gated' : r.startsWith('UNKNOWN') ? 'c-unknown' : 'c-avail';
+  return `<span class="chip ${k}">${r}</span>`;
+}
+
+function renderSpecTable(filter = '') {
+  const tb = document.querySelector('#specTable tbody');
+  const groups = {};
+  STATUS.spec_items.forEach(it => { (groups[it.layer] = groups[it.layer] || []).push(it); });
+  let html = '';
+  for (const [layer, items] of Object.entries(groups)) {
+    const shown = items.filter(it => !filter || it.readiness.startsWith(filter));
+    if (!shown.length) continue;
+    html += `<tr class="layer-row"><td colspan="4">${layer}</td></tr>`;
+    shown.forEach(it => {
+      html += `<tr><td>${it.id}</td><td>${it.title}</td><td>${statusChip(it.status)}</td><td>${readyChip(it.readiness)}</td></tr>`;
+    });
+  }
+  tb.innerHTML = html;
+}
+function filterReady(f) { renderSpecTable(f); }
+
+/* ---------- Section 2 · not built ---------- */
+function renderNotBuilt() {
+  const nb = STATUS.not_built;
+  const rows = [];
+  const pair = (label, value, basis) =>
+    `<div class="nb"><b>${label}:</b> ${value}${basis ? ` <span class="basis">— evidence: ${basis}</span>` : ''}</div>`;
+  for (const [k, v] of Object.entries(nb)) {
+    if (v && typeof v === 'object' && 'value' in v) rows.push(pair(k, '<b>' + v.value + '</b>', v.basis));
+    else rows.push(pair(k, Array.isArray(v) ? v.map(x => `<code>${x}</code>`).join(', ') : v,
+      'verified from the filesystem / repo state by the generator'));
+  }
+  document.getElementById('notbuilt').innerHTML = rows.join('');
+}
+
+/* ---------- Section 3 · blockers ---------- */
+function renderBlockers() {
+  document.getElementById('decisions').innerHTML = STATUS.open_decisions.map(d =>
+    `<div class="card"><b>${d.id}</b> — ${d.title}<br>Status: ${d.status}<br><span class="sub">Owner: ${d.owner}</span></div>`).join('');
+  document.getElementById('undefs').innerHTML = STATUS.undefined_definitions.map(d =>
+    `<div class="card">${d.definition}<br><span class="sub">Owner: ${d.owner}</span></div>`).join('');
+}
+
+/* ---------- Section 4 · query explorer ---------- */
+function showView(v) {
+  document.getElementById('viewA').classList.toggle('hidden', v !== 'A');
+  document.getElementById('viewB').classList.toggle('hidden', v !== 'B');
+  document.getElementById('btnA').classList.toggle('active', v === 'A');
+  document.getElementById('btnB').classList.toggle('active', v === 'B');
+}
+
+async function runQuery(endpoint) {
+  const p = new URLSearchParams();
+  document.querySelectorAll('input[name=pop]:checked').forEach(c => p.append('population', c.value));
+  const gene = document.getElementById('fGene').value.trim(); if (gene) p.set('gene', gene);
+  const cls = document.getElementById('fCls').value; if (cls) p.set('classification', cls);
+  const cal = document.getElementById('fCal').value; if (cal) p.set('calibration_status', cal);
+  if (document.getElementById('fAe').checked) p.set('ancestry_enriched', 'true');
+  if (document.getElementById('fAct').checked) p.set('actionable', 'true');
+  if (document.getElementById('fDis').checked) p.set('disconfirmation', 'true');
+
+  const resp = await fetch(endpoint + '?' + p.toString());
+  const payload = await resp.json();
+  const out = document.getElementById('result');
+
+  if (resp.status === 422) {   // refusal — an explanation, not an error
+    out.innerHTML = `<div class="refusal"><b>Refused — by design (control I3).</b><br>${payload.refusal}</div>`;
+    return;
+  }
+  if (!resp.ok) {
+    out.innerHTML = `<div class="banner warn">${payload.error || resp.status}</div>`;
+    return;
+  }
+  const r = payload.result;
+  const calCls = r.calibration_status === 'calibration_pending' ? 'cal-pending'
+               : r.calibration_status === 'out_of_calibration' ? 'cal-out' : 'cal-in';
+  let h = `<div class="banner src">Data source: ${payload.data_source}</div>`;
+  h += `<div class="cal ${calCls}">RESULT-LEVEL CALIBRATION: ${r.calibration_status || 'n/a (no rows)'} —
+        this caveat applies to every count, percentage, and summary below, not just to individual rows.</div>`;
+  h += '<div class="grid2">';
+  h += `<div class="card"><b>Exact query executed (show your work)</b><pre>${r.query.sql}\n\n-- bound values:\n${JSON.stringify(r.query.params, null, 2)}</pre></div>`;
+  h += `<div class="card"><b>Provenance</b><br>producer: ${r.provenance.producers.join(', ')}<br>
+        version: ${r.provenance.versions.join(', ')}<br>method: ${r.provenance.methods.join(', ')}<br>
+        distinct runs: ${r.provenance.n_distinct_runs}<br><b>Populations covered:</b> ${r.populations.join(', ') || 'none'}</div>`;
+  h += '</div>';
+  h += `<div class="card"><b>Rows (${r.rows.length})</b><table><thead><tr>
+        <th>variant</th><th>gene</th><th>pop</th><th>was</th><th>now</th><th>calibration (row)</th></tr></thead><tbody>` +
+    r.rows.map(x => `<tr><td>${x.variant_id}</td><td>${x.gene}</td><td>${x.population_code}</td>
+      <td>${x.original_classification}</td><td>${x.new_classification}</td><td>${x.calibration_status}</td></tr>`).join('') +
+    '</tbody></table></div>';
+  if (r.summary) {
+    const s = r.summary;
+    const row = (k, d) => `<tr><td>${k}</td><td>${d.n}</td><td>${d.vus_before}</td><td>${d.vus_after}</td>
+      <td>${d.vus_after_pct}%</td><td>${d.pathogenic}</td><td>${d.benign}</td></tr>`;
+    h += `<div class="card"><b>Per-population VUS summary</b> — every number here inherits the
+      result-level caveat above.<table><thead><tr><th>population</th><th>n</th><th>vus_before</th>
+      <th>vus_after</th><th>vus_after_pct</th><th>pathogenic</th><th>benign</th></tr></thead><tbody>` +
+      row('OVERALL', s.overall) +
+      Object.entries(s.per_population).map(([k, d]) => row(k, d)).join('') +
+      '</tbody></table></div>';
+  }
+  out.innerHTML = h;
+}
+
+boot();
+</script>
+</body>
+</html>

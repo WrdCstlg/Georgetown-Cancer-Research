@@ -136,6 +136,80 @@
       "aim": "Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md)",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-018",
+      "title": "Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API",
+      "layer": "dev tooling (`tools/status-ui/`)",
+      "aim": "Cross-cutting — developer ergonomics only; NOT the researcher UI (R7 — interface/ stays empty and reserved)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    }
+  ],
+  "layers": [
+    {
+      "name": "pipeline",
+      "state": "EMPTY",
+      "evidence": "README only on disk"
+    },
+    {
+      "name": "core",
+      "state": "BUILT",
+      "evidence": "schema.sql + db.py + ingest/ + provenance/ on disk; SPEC-001 FUNCTIONAL (SPEC.md)"
+    },
+    {
+      "name": "producers",
+      "state": "PARTIAL",
+      "evidence": "1 of 8 planned slots have code (variant_effect; slot list from ARCHITECTURE.md §5)"
+    },
+    {
+      "name": "query",
+      "state": "PARTIAL",
+      "evidence": "read_api.py on disk; SPEC-015 FUNCTIONAL, SPEC-009 (NL) SPECIFIED (SPEC.md)"
+    },
+    {
+      "name": "interface",
+      "state": "EMPTY",
+      "evidence": "README only on disk; reserved for the future researcher-facing product"
+    },
+    {
+      "name": "tools",
+      "state": "BUILT",
+      "evidence": "dev tooling on disk (status generator + status-ui shim); outside the five-layer model (ARCHITECTURE.md §5)"
+    }
+  ],
+  "producer_slots": [
+    {
+      "name": "variant_effect",
+      "state": "BUILT"
+    },
+    {
+      "name": "drivers",
+      "state": "PLANNED"
+    },
+    {
+      "name": "expression",
+      "state": "PLANNED"
+    },
+    {
+      "name": "target_nomination",
+      "state": "PLANNED"
+    },
+    {
+      "name": "gnn",
+      "state": "PLANNED"
+    },
+    {
+      "name": "causal",
+      "state": "PLANNED"
+    },
+    {
+      "name": "imaging",
+      "state": "PLANNED"
+    },
+    {
+      "name": "multimodal_predictor",
+      "state": "PLANNED"
     }
   ],
   "runs_today": {
@@ -149,6 +223,11 @@
         "file": "tests/test_query_read_api.py",
         "command": "python tests/test_query_read_api.py",
         "test_count": 16
+      },
+      {
+        "file": "tests/test_status_ui_shim.py",
+        "command": "python tests/test_status_ui_shim.py",
+        "test_count": 5
       },
       {
         "file": "tests/test_variant_effect.py",
@@ -200,51 +279,77 @@
     {
       "id": "D-002",
       "title": "contracts/ layout: flat contract modules vs. subdirectories only",
-      "status": "PROPOSED — pending approval"
+      "status": "PROPOSED — pending approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },
     {
       "id": "D-003",
       "title": "Supported Python floor: keep 3.8 or raise to the dev version",
-      "status": "PROPOSED — pending owner approval"
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },
     {
       "id": "D1",
       "title": "Ownership / IP of the substrate",
-      "status": "OPEN"
+      "status": "OPEN",
+      "owner": "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
     },
     {
       "id": "D2",
       "title": "Compute & data residency",
-      "status": "OPEN"
+      "status": "OPEN",
+      "owner": "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
     },
     {
       "id": "D3",
       "title": "Data governance",
-      "status": "OPEN"
+      "status": "OPEN",
+      "owner": "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
     },
     {
       "id": "D4",
       "title": "Substrate DB: build vs. buy",
-      "status": "OPEN"
+      "status": "OPEN",
+      "owner": "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
     },
     {
       "id": "D5",
       "title": "Custom multi-modal predictor: commit or gate",
-      "status": "OPEN"
+      "status": "OPEN",
+      "owner": "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
     },
     {
       "id": "D6",
       "title": "Reproducibility contract",
-      "status": "OPEN"
+      "status": "OPEN",
+      "owner": "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
     }
   ],
   "undefined_definitions": [
-    "Per-population calibration targets",
-    "What makes a variant \"ancestry-enriched\" (effect size, frequency-delta, significance, per-population)",
-    "What makes a target \"actionable\" / \"druggable\" (DGIdb evidence tier, druggability score cutoff)",
-    "Calibration adequacy — when a European-trained tool is \"in-\" vs \"out-of-calibration\" for a population",
-    "Drug-response endpoint for differential sensitivity (IC50 fold-change, Emax delta, significance)",
-    "Disconfirmation criteria — what counts as \"ancestry effect smaller than the pilot suggested\""
+    {
+      "definition": "Per-population calibration targets",
+      "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)"
+    },
+    {
+      "definition": "What makes a variant \"ancestry-enriched\" (effect size, frequency-delta, significance, per-population)",
+      "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)"
+    },
+    {
+      "definition": "What makes a target \"actionable\" / \"druggable\" (DGIdb evidence tier, druggability score cutoff)",
+      "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)"
+    },
+    {
+      "definition": "Calibration adequacy — when a European-trained tool is \"in-\" vs \"out-of-calibration\" for a population",
+      "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)"
+    },
+    {
+      "definition": "Drug-response endpoint for differential sensitivity (IC50 fold-change, Emax delta, significance)",
+      "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)"
+    },
+    {
+      "definition": "Disconfirmation criteria — what counts as \"ancestry effect smaller than the pilot suggested\"",
+      "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)"
+    }
   ],
   "data_inventory": {
     "source": "docs/DATA-INVENTORY.md",

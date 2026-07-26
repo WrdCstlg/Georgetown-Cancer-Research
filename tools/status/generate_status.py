@@ -54,7 +54,10 @@ def spec_items():
 
 
 def open_decisions():
-    """Transcribe docs/DECISIONS.md sections that carry a Status line."""
+    """Transcribe docs/DECISIONS.md sections that carry a Status line.
+    Owner is a deterministic transcription rule, not an inference:
+    PROPOSED statuses say 'pending (owner) approval' -> project owner;
+    D1-D6 say 'awaiting the parties named in docs/build-plan.md §1/§5'."""
     text = _read(os.path.join("docs", "DECISIONS.md"))
     out = []
     current = None
@@ -67,18 +70,32 @@ def open_decisions():
         s = re.match(r"^Status:\s*\*\*(.+?)\*\*", line)
         if s and current is not None and current["status"] is None:
             current["status"] = s.group(1).strip().rstrip(".")
-    return [d for d in out if d["status"] and
-            (d["status"].startswith("OPEN") or d["status"].startswith("PROPOSED"))]
+    result = []
+    for d in out:
+        if not d["status"]:
+            continue
+        if d["status"].startswith("PROPOSED"):
+            d["owner"] = "project owner (status: pending approval — docs/DECISIONS.md)"
+        elif d["status"].startswith("OPEN"):
+            d["owner"] = "project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)"
+        else:
+            continue
+        result.append(d)
+    return result
 
 
 def undefined_definitions():
-    """First cell of every DEFINITIONS.md table row marked [TO BE DEFINED]."""
+    """First cell of every DEFINITIONS.md table row marked [TO BE DEFINED].
+    Owner is stated by DEFINITIONS.md's own header: owned by the domain experts."""
     out = []
     for line in _read("DEFINITIONS.md").splitlines():
         if "[TO BE DEFINED]" in line and line.startswith("|"):
             first = line.strip().strip("|").split("|")[0].strip()
             first = re.sub(r"\*\*", "", first)
-            out.append(first)
+            out.append({
+                "definition": first,
+                "owner": "domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)",
+            })
     return out
 
 
@@ -180,6 +197,67 @@ def producer_dirs():
                   if os.path.isdir(os.path.join(d, x)) and x != "__pycache__")
 
 
+def producer_slots():
+    """Every producer slot from the ARCHITECTURE.md §5 module map with its
+    BUILT/PLANNED mark, transcribed — the dashboard renders slots, not just
+    dirs that happen to exist."""
+    lines = _read("ARCHITECTURE.md").splitlines()
+    slots, in_section = [], False
+    for line in lines:
+        if line.startswith("├── producers/"):
+            in_section = True
+            continue
+        if in_section:
+            m = re.match(r"^│\s+[├└]── (\w+)/\s+#\s*(BUILT|PLANNED)", line)
+            if m:
+                slots.append({"name": m.group(1), "state": m.group(2)})
+            elif not line.startswith("│"):
+                break
+    return slots
+
+
+def layers():
+    """Build state per layer, computed HERE (never in the browser) from the
+    filesystem + SPEC.md, with the evidence stated. Rules:
+    EMPTY = README only on disk; BUILT = owning code on disk; PARTIAL = some
+    but not all of the layer's planned contents exist."""
+    out = []
+
+    def readme_only(rel):
+        return _only_readme(rel)
+
+    def has(rel):
+        return os.path.exists(os.path.join(ROOT, rel))
+
+    out.append({"name": "pipeline", "state": "EMPTY" if readme_only("pipeline") else "BUILT",
+                "evidence": "README only on disk" if readme_only("pipeline")
+                            else "code on disk"})
+    core_built = has(os.path.join("core", "schema", "schema.sql")) and has(os.path.join("core", "db.py"))
+    out.append({"name": "core", "state": "BUILT" if core_built else "EMPTY",
+                "evidence": "schema.sql + db.py + ingest/ + provenance/ on disk; SPEC-001 FUNCTIONAL (SPEC.md)"
+                if core_built else "no core code on disk"})
+    slots = producer_slots()
+    present = producer_dirs()
+    n_built = sum(1 for s in slots if s["state"] == "BUILT")
+    state = "EMPTY" if n_built == 0 else ("BUILT" if n_built == len(slots) else "PARTIAL")
+    out.append({"name": "producers", "state": state,
+                "evidence": f"{n_built} of {len(slots)} planned slots have code "
+                            f"({', '.join(present) or 'none'}; slot list from ARCHITECTURE.md §5)"})
+    q = has(os.path.join("query", "read_api.py"))
+    out.append({"name": "query", "state": "PARTIAL" if q else "EMPTY",
+                "evidence": "read_api.py on disk; SPEC-015 FUNCTIONAL, SPEC-009 (NL) SPECIFIED (SPEC.md)"
+                if q else "README only on disk"})
+    out.append({"name": "interface", "state": "EMPTY" if readme_only("interface") else "BUILT",
+                "evidence": "README only on disk; reserved for the future researcher-facing product"
+                if readme_only("interface") else "code on disk"})
+    t = has(os.path.join("tools", "status", "generate_status.py"))
+    out.append({"name": "tools", "state": "BUILT" if t else "EMPTY",
+                "evidence": "dev tooling on disk (status generator + status-ui shim); "
+                            "outside the five-layer model (ARCHITECTURE.md §5)"
+                if t else "no tools/ on disk"})
+    return out
+
+
 # --- assembly -----------------------------------------------------------------
 
 def build_status():
@@ -187,6 +265,8 @@ def build_status():
     return {
         "schema_version": SCHEMA_VERSION,
         "spec_items": spec_items(),
+        "layers": layers(),
+        "producer_slots": producer_slots(),
         "runs_today": {
             "suites": suites(),
             "ci_checks": ci_checks(),
@@ -291,14 +371,13 @@ def render_md(s):
       "D1–D6 await the parties named in docs/build-plan.md §1/§5):")
     A("")
     for d in s["open_decisions"]:
-        A(f"- **{d['id']}** — {d['title']}: {d['status']}")
+        A(f"- **{d['id']}** — {d['title']}: {d['status']} — owner: {d['owner']}")
     A("")
-    A("Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]) — "
-      "owner: **domain experts (the professor and collaborators)**. The query "
+    A("Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]). The query "
       "layer refuses these by name rather than inventing values:")
     A("")
     for d in s["undefined_definitions"]:
-        A(f"- {d}")
+        A(f"- {d['definition']} — owner: {d['owner']}")
     A("")
     di = s["data_inventory"]
     A(f"**Data inventory (F3):** `{di['source']}` (human-owned) tracks "

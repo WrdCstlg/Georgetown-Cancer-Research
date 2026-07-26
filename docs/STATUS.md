@@ -29,6 +29,7 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-015 | Query layer: deterministic structured read API over core read views (no NL) — filters, per-population VUS summary, query/provenance echo, result-level calibration caveat, named refusals for undefined criteria | `query/` | FUNCTIONAL | AVAILABLE |
 | SPEC-016 | Repo hygiene: disjoint fixture ID namespaces across fixture directories + run/documentation honesty (docs claim only what was executed) | repo tooling (`fixtures/`, docs) | FUNCTIONAL | AVAILABLE |
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
+| SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
 
@@ -36,6 +37,7 @@ Test suites (standard-library only, direct execution — the supported path):
 
 - `python tests/test_core_ingest.py` — 4 tests
 - `python tests/test_query_read_api.py` — 16 tests
+- `python tests/test_status_ui_shim.py` — 5 tests
 - `python tests/test_variant_effect.py` — 4 tests
 
 CI checks (from `.github/workflows/tests.yml`): `spec-id`, `status-drift`, `test (py 3.14)`, `test (py 3.8)`. Suites are standard-library only and run by direct execution (the supported path; pytest compatibility UNVERIFIED — SPEC-016). This file does not run them: CI is the source of truth for pass/fail.
@@ -54,23 +56,23 @@ CI checks (from `.github/workflows/tests.yml`): `spec-id`, `status-drift`, `test
 
 Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–D6 await the parties named in docs/build-plan.md §1/§5):
 
-- **D-002** — contracts/ layout: flat contract modules vs. subdirectories only: PROPOSED — pending approval
-- **D-003** — Supported Python floor: keep 3.8 or raise to the dev version: PROPOSED — pending owner approval
-- **D1** — Ownership / IP of the substrate: OPEN
-- **D2** — Compute & data residency: OPEN
-- **D3** — Data governance: OPEN
-- **D4** — Substrate DB: build vs. buy: OPEN
-- **D5** — Custom multi-modal predictor: commit or gate: OPEN
-- **D6** — Reproducibility contract: OPEN
+- **D-002** — contracts/ layout: flat contract modules vs. subdirectories only: PROPOSED — pending approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-003** — Supported Python floor: keep 3.8 or raise to the dev version: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D1** — Ownership / IP of the substrate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
+- **D2** — Compute & data residency: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
+- **D3** — Data governance: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
+- **D4** — Substrate DB: build vs. buy: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
+- **D5** — Custom multi-modal predictor: commit or gate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
+- **D6** — Reproducibility contract: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 
-Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]) — owner: **domain experts (the professor and collaborators)**. The query layer refuses these by name rather than inventing values:
+Missing domain definitions (DEFINITIONS.md §4, marked [TO BE DEFINED]). The query layer refuses these by name rather than inventing values:
 
-- Per-population calibration targets
-- What makes a variant "ancestry-enriched" (effect size, frequency-delta, significance, per-population)
-- What makes a target "actionable" / "druggable" (DGIdb evidence tier, druggability score cutoff)
-- Calibration adequacy — when a European-trained tool is "in-" vs "out-of-calibration" for a population
-- Drug-response endpoint for differential sensitivity (IC50 fold-change, Emax delta, significance)
-- Disconfirmation criteria — what counts as "ancestry effect smaller than the pilot suggested"
+- Per-population calibration targets — owner: domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)
+- What makes a variant "ancestry-enriched" (effect size, frequency-delta, significance, per-population) — owner: domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)
+- What makes a target "actionable" / "druggable" (DGIdb evidence tier, druggability score cutoff) — owner: domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)
+- Calibration adequacy — when a European-trained tool is "in-" vs "out-of-calibration" for a population — owner: domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)
+- Drug-response endpoint for differential sensitivity (IC50 fold-change, Emax delta, significance) — owner: domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)
+- Disconfirmation criteria — what counts as "ancestry effect smaller than the pilot suggested" — owner: domain experts — the professor and collaborators (DEFINITIONS.md header: agent implements, never authors)
 
 **Data inventory (F3):** `docs/DATA-INVENTORY.md` (human-owned) tracks 8 study datasets + 6 public reference resources; 8 rows are UNKNOWN in every field. Custody, location, and access are undetermined for everything the system needs — a human owner must fill it before any real-data claim can be made.
 
