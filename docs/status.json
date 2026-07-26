@@ -152,6 +152,30 @@
       "aim": "Cross-cutting — no-drift discipline (G3) + I6 traceability",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-020",
+      "title": "drivers producer: IntOGen driver identification on the reclassified variant table",
+      "layer": "`producers/drivers/`",
+      "aim": "Aim 1 (build plan Phase 2 — \"reclassified variant table feeds the IntOGen driver-identification step\")",
+      "status": "SPECIFIED",
+      "readiness": "AVAILABLE (Phase 2 per build plan §6)"
+    },
+    {
+      "id": "SPEC-021",
+      "title": "expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved",
+      "layer": "`producers/expression/`",
+      "aim": "Aim 2a (build plan §2 producers layer; Phase 3)",
+      "status": "SPECIFIED",
+      "readiness": "UNKNOWN (same build plan §6 \"once the substrate is FUNCTIONAL\" precondition as SPEC-007/008, plus the R-tooling gap)"
+    },
+    {
+      "id": "SPEC-022",
+      "title": "Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md",
+      "layer": "repo tooling (`SPEC.md`, `core/` docs)",
+      "aim": "Cross-cutting — I6 traceability + decision-state honesty (SPEC-017)",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
     }
   ],
   "layers": [
