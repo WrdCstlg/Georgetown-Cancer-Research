@@ -5,36 +5,59 @@
 <title>AfriCAN DANCE — dev status dashboard</title>
 <style>
   :root {
-    --built: #2e7d32; --partial: #c77800; --empty: #757575;
-    --gated: #b71c1c; --unknown: #8a6d00; --avail: #2e7d32;
-    --ink: #1a1a2e; --muted: #555; --line: #d0d0d8; --bg: #f6f6f9;
+    --built: #1b6e2a; --partial: #b05e00; --empty: #6b6b6b;
+    --gated: #a31515; --unknown: #7a5c00; --avail: #1b6e2a;
+    --ink: #16162a; --muted: #555; --line: #cfcfda; --bg: #f4f4f8;
   }
   * { box-sizing: border-box; }
   body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink);
-         background: var(--bg); margin: 0; padding: 24px; max-width: 1100px; }
-  h1 { font-size: 20px; margin: 0 0 4px; }
-  h2 { font-size: 16px; margin: 28px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
-  .sub { color: var(--muted); font-size: 13px; }
-  .banner { margin-top: 10px; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+         background: var(--bg); margin: 0; padding: 20px 28px; max-width: 1440px; }
+  h1 { font-size: 19px; margin: 0 0 2px; }
+  h2 { font-size: 15px; margin: 26px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 3px; }
+  .sub { color: var(--muted); font-size: 12.5px; }
+  .banner { margin-top: 8px; padding: 7px 12px; border-radius: 6px; font-size: 12.5px; }
   .ok   { background: #e3f2e5; border: 1px solid var(--built); }
   .warn { background: #fdeaea; border: 1px solid var(--gated); font-weight: 600; }
   .humans { background: #fff7e0; border: 1px solid var(--partial); font-weight: 600; }
   .src { background: #eef; border: 1px solid #99c; font-weight: 600; }
+
+  /* Section 1 dominates: fills the viewport on load */
+  #sec1 { min-height: calc(100vh - 130px); display: flex; flex-direction: column; }
+  #graphWrap { flex: 1; }
+  #graph { width: 100%; height: auto; display: block; }
+
+  .toggle { margin: 10px 0 8px; }
   .toggle button, .filterbtn { margin-right: 8px; padding: 5px 14px; border: 1px solid var(--line);
     background: #fff; border-radius: 5px; cursor: pointer; font-size: 13px; }
   .toggle button.active { background: var(--ink); color: #fff; }
+
   table { border-collapse: collapse; width: 100%; font-size: 13px; background: #fff; }
   th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
   th { background: #ececf2; }
-  .chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
-  .c-func { background: #dff0e1; color: var(--built); border: 1px solid var(--built); }
-  .c-spec { background: #eee; color: var(--muted); border: 1px solid var(--empty); }
-  .c-avail { background: #dff0e1; color: var(--avail); border: 1px solid var(--avail); }
-  .c-gated { background: #f6d5d5; color: var(--gated); border: 2px solid var(--gated); }
-  .c-unknown { background: #fff3c4; color: var(--unknown); border: 2px dashed var(--unknown); font-style: italic; }
+  .chip { display: inline-block; padding: 1px 9px; border-radius: 10px; font-size: 12px; font-weight: 700;
+          border: 1.6px solid; white-space: nowrap; }
+  .c-func { color: var(--built); border-color: var(--built); background: #e2f1e4; }
+  .c-spec { color: var(--muted); border-color: var(--empty); background: #eee; }
+  .c-avail { color: var(--avail); border-color: var(--avail); background: #e2f1e4; }
+  .c-gated { color: var(--gated); border-color: var(--gated); border-width: 2px; background: #f8dbdb; }
+  .c-unknown { color: var(--unknown); border-color: var(--unknown); border-width: 2px;
+               border-style: dashed; background: #fff3c4; font-style: italic; }
+  .reason { color: var(--muted); font-size: 12px; }
   .layer-row td { background: #e4e4ee; font-weight: 700; font-size: 12px; }
-  .nb { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-size: 13px; }
+
+  details { background: #fff; border: 1px solid var(--line); border-radius: 6px; margin: 8px 0; }
+  details > summary { cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; }
+  details > summary .sub { font-weight: 400; }
+  details > div { padding: 4px 14px 12px; }
+
+  .nb { border-left: 3px solid var(--line); padding: 5px 10px; margin: 6px 0; font-size: 13px; }
   .nb .basis { color: var(--muted); }
+  .drow { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; font-size: 13px;
+          border-bottom: 1px dotted var(--line); }
+  .drow .id { font-weight: 700; min-width: 52px; }
+  .drow .t { flex: 1; }
+  .attrib { font-size: 12.5px; color: var(--muted); margin: 4px 0 10px; }
+
   .card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
   pre { background: #14141f; color: #d8e6d8; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -47,35 +70,48 @@
   .refusal { background: #fff7e0; border: 2px solid var(--partial); border-radius: 8px;
              padding: 14px 16px; font-size: 14px; }
   .node { cursor: pointer; }
-  .node rect { stroke-width: 2; rx: 8; }
-  .node text { font-size: 12px; font-family: inherit; }
-  .edge { stroke: #666; stroke-width: 1.6; fill: none; marker-end: url(#arrow); }
-  .edge-label { font-size: 10px; fill: var(--muted); }
+  .edge { stroke: #4a4a5a; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+  .edge-label { font-size: 12.5px; fill: var(--ink); font-weight: 600; paint-order: stroke;
+                stroke: #f4f4f8; stroke-width: 4px; }
+  .legend text { font-size: 12px; fill: var(--ink); }
   #detail { font-size: 13px; }
   .hidden { display: none; }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { max-width: none; padding: 10px; }
+    .no-print { display: none !important; }
+    #sec1 { min-height: 0; }
+    #graph { max-height: 175mm; }
+    h2 { page-break-before: auto; }
+    details, .card, table, fieldset, .nb { page-break-inside: avoid; }
+    details > div { display: block !important; }
+    a { text-decoration: none; color: inherit; }
+  }
 </style>
 </head>
 <body>
 
 <h1>AfriCAN DANCE — dev status dashboard</h1>
-<div class="sub">Local dev tooling (<code>tools/status-ui/</code>) — <b>not</b> the researcher-facing UI;
-that layer (<code>interface/</code>) is empty and reserved. Everything below renders
-<code>docs/status.json</code>; nothing is computed in the browser.</div>
+<div class="sub">Local dev tooling (<code>tools/status-ui/</code>) — <b>not</b> the researcher-facing UI
+(<code>interface/</code> is empty and reserved). Everything renders <code>docs/status.json</code>;
+nothing is computed in the browser.</div>
 <div id="meta"></div>
 
-<h2>Section 1 · Live system state</h2>
-<div class="toggle">
+<section id="sec1">
+<h2 style="border:none; margin-bottom:0">Section 1 · Live system state</h2>
+<div class="toggle no-print">
   <button id="btnA" class="active" onclick="showView('A')">Architecture</button>
   <button id="btnB" onclick="showView('B')">Spec / Phase</button>
 </div>
 
-<div id="viewA" style="margin-top:10px">
-  <svg id="graph" viewBox="0 0 980 600" width="980" height="600"></svg>
+<div id="viewA">
+  <div id="graphWrap"><svg id="graph" viewBox="0 0 1340 760" preserveAspectRatio="xMidYMid meet"></svg></div>
   <div id="detail" class="card">Click a node for its contents and evidence.</div>
 </div>
 
-<div id="viewB" class="hidden" style="margin-top:10px">
-  <div style="margin-bottom:8px">
+<div id="viewB" class="hidden">
+  <div class="no-print" style="margin-bottom:8px">
     <span class="sub">Filter by Readiness — “what can I start now?”:</span>
     <button class="filterbtn" onclick="filterReady('')">All</button>
     <button class="filterbtn" onclick="filterReady('AVAILABLE')">AVAILABLE</button>
@@ -86,17 +122,25 @@ that layer (<code>interface/</code>) is empty and reserved. Everything below ren
     <tr><th>ID</th><th>Title</th><th>Status</th><th>Readiness</th></tr>
   </thead><tbody></tbody></table>
 </div>
+</section>
 
-<h2>Section 2 · What is NOT built</h2>
-<div id="notbuilt"></div>
+<h2>Section 2 · What is not built</h2>
+<details id="nbDetails"><summary id="nbSummary"></summary><div id="notbuilt"></div></details>
 
 <h2>Section 3 · Blockers</h2>
-<div class="banner humans">These are human-owned. The agent implements definitions and
-decisions; it cannot supply them. Nothing here is agent-solvable.</div>
-<div class="grid2">
-  <div><h3 style="font-size:14px">Open decisions</h3><div id="decisions"></div></div>
-  <div><h3 style="font-size:14px">Undefined domain definitions ([TO BE DEFINED])</h3><div id="undefs"></div></div>
-</div>
+<details id="blDetails"><summary id="blSummary"></summary><div>
+  <div class="banner humans">All human-owned — the agent implements definitions and decisions;
+  it cannot supply them.</div>
+  <h3 style="font-size:13px; margin:10px 0 4px">Open decisions</h3>
+  <div class="attrib">Owner for every decision below: the project owner; D1–D6 additionally await
+  the parties named in docs/build-plan.md §1/§5 (per docs/DECISIONS.md).</div>
+  <div id="decisions"></div>
+  <h3 style="font-size:13px; margin:12px 0 4px">Undefined domain definitions ([TO BE DEFINED])</h3>
+  <div class="attrib">Owner for every definition below: the domain experts — the professor and
+  collaborators. DEFINITIONS.md is expert-owned; the agent implements, never authors. The query
+  layer refuses these by name rather than inventing values.</div>
+  <div id="undefs"></div>
+</div></details>
 
 <h2>Section 4 · Query explorer</h2>
 <div class="banner src">Data source: the TOY FIXTURE (<code>fixtures/query/core_rows.json</code>) — NOT real data.</div>
@@ -153,22 +197,23 @@ function renderMeta() {
     return;
   }
   el.innerHTML = META.status_in_sync
-    ? `<div class="banner ok">Current HEAD <code>${META.current_head}</code> — status.json reflects repo state (regeneration produces no diff; CI job <code>status-drift</code> enforces this).</div>`
-    : `<div class="banner warn">DRIFT: current HEAD <code>${META.current_head}</code> does not match a fresh regeneration of status.json — run the generator and commit the result.</div>`;
+    ? `<div class="banner ok">HEAD <code>${META.current_head}</code> — status.json reflects repo state (regeneration produces no diff; CI job <code>status-drift</code> enforces this).</div>`
+    : `<div class="banner warn">DRIFT: HEAD <code>${META.current_head}</code> does not match a fresh regeneration of status.json — run the generator and commit the result.</div>`;
 }
 
-/* ---------- Section 1 · View A: architecture ---------- */
-const STATE_COLOR = { BUILT: 'var(--built)', PARTIAL: 'var(--partial)', EMPTY: 'var(--empty)' };
+/* ---------- Section 1 · View A: architecture graph ---------- */
+const C = { BUILT: '#1b6e2a', PARTIAL: '#b05e00', EMPTY: '#6b6b6b' };
+const FILL = { BUILT: '#e2f1e4', PARTIAL: '#fdf0d5', EMPTY: '#f0f0f0' };
 
 function layerState(name) { return (STATUS.layers.find(l => l.name === name) || {}).state || 'EMPTY'; }
-function layerEvidence(name) { return (STATUS.layers.find(l => l.name === name) || {}).evidence || ''; }
 
-function node(x, y, w, h, label, state, dash) {
-  const c = STATE_COLOR[state] || 'var(--empty)';
+function node(x, y, w, h, label, sub, state, dash, lw) {
+  const c = C[state] || C.EMPTY;
   return `<g class="node" data-layer="${label.split(' ')[0]}" transform="translate(${x},${y})">
-    <rect width="${w}" height="${h}" rx="8" fill="#fff" stroke="${c}" ${dash ? 'stroke-dasharray="5,4"' : ''}/>
-    <text x="${w/2}" y="${h/2 - 2}" text-anchor="middle" font-weight="700">${label}</text>
-    <text x="${w/2}" y="${h/2 + 14}" text-anchor="middle" fill="${c}" font-weight="700">${state}</text>
+    <rect width="${w}" height="${h}" rx="9" fill="${FILL[state] || '#fff'}" stroke="${c}"
+      stroke-width="${lw || 2.5}" ${dash ? 'stroke-dasharray="7,5"' : ''}/>
+    <text x="${w/2}" y="${h/2 - (sub ? 4 : -5)}" text-anchor="middle" font-size="16" font-weight="700">${label}</text>
+    ${sub ? `<text x="${w/2}" y="${h/2 + 18}" text-anchor="middle" font-size="12.5" fill="${c}" font-weight="700">${sub}</text>` : ''}
   </g>`;
 }
 
@@ -179,35 +224,64 @@ function edge(x1, y1, x2, y2, label, lx, ly) {
 
 function renderGraph() {
   const slots = STATUS.producer_slots;
-  let g = `<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3"
-        orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#666"/></marker></defs>`;
-  // core — the spine, center
-  g += edge(240, 120, 430, 260, 'write · ingest contract', 225, 205);           // pipeline -> core
-  g += edge(760, 300, 560, 300, 'write · ingest contract', 615, 288);           // producers -> core
-  g += edge(480, 340, 480, 430, 'read-only (v_* views)', 490, 395);             // core -> query
-  g += edge(480, 490, 480, 545, '', 0, 0);                                      // query -> interface
-  g += node(380, 250, 200, 90, 'core · persistence + provenance', layerState('core'));
-  g += node(60, 60, 200, 70, 'pipeline · data production', layerState('pipeline'));
-  g += node(380, 430, 200, 60, 'query · read path', layerState('query'));
-  g += node(380, 540, 200, 55, 'interface · presentation', layerState('interface'));
-  g += node(40, 430, 220, 60, 'tools/ · dev tooling (not a layer)', layerState('tools'), true);
-  // producers container + individual slots
-  g += `<rect x="620" y="40" width="330" height="${70 + slots.length * 46}" rx="10" fill="#fcfcfe"
-        stroke="${STATE_COLOR[layerState('producers')]}" stroke-width="2"/>`;
-  g += `<text x="785" y="62" text-anchor="middle" font-weight="700">producers — ${layerState('producers')} · isolated plugins</text>`;
+  const slotH = 46, slotGap = 12, contX = 860, contY = 40, contW = 440;
+  const contH = 66 + slots.length * (slotH + slotGap);
+  let g = `<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="3.5"
+        orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#4a4a5a"/></marker></defs>`;
+
+  // edges first (under nodes)
+  g += edge(340, 130, 430, 265, 'write · ingest contract', 215, 200);        // pipeline -> core
+  g += edge(contX, 300, 740, 320, 'write · ingest contract', 745, 300);      // producers -> core
+  g += edge(590, 450, 590, 545, 'read-only · v_* views', 600, 505);          // core -> query
+  g += edge(590, 615, 590, 668, '', 0, 0);                                   // query -> interface
+
+  // core — the spine, visually dominant
+  const cs = layerState('core');
+  g += `<g class="node" data-layer="core" transform="translate(430,265)">
+    <rect width="310" height="185" rx="12" fill="${FILL[cs]}" stroke="${C[cs]}" stroke-width="4.5"/>
+    <text x="155" y="72" text-anchor="middle" font-size="22" font-weight="800">CORE</text>
+    <text x="155" y="98" text-anchor="middle" font-size="13.5">fusion substrate — persistence + provenance</text>
+    <text x="155" y="122" text-anchor="middle" font-size="13.5">the spine: everything writes here, all reads are views</text>
+    <text x="155" y="150" text-anchor="middle" font-size="14" font-weight="800" fill="${C[cs]}">${cs}</text>
+  </g>`;
+
+  g += node(60, 60, 280, 84, 'pipeline', '1 · data production — ' + layerState('pipeline'), layerState('pipeline'));
+  g += node(455, 545, 270, 70, 'query', '4a · read path — ' + layerState('query'), layerState('query'));
+  g += node(455, 668, 270, 70, 'interface', '4b · presentation — ' + layerState('interface'), layerState('interface'));
+  g += node(60, 560, 300, 84, 'tools/', 'dev tooling — not a layer — ' + layerState('tools'), layerState('tools'), true);
+
+  // producers container + individual slots (emptiness is spatial)
+  const ps = layerState('producers');
+  g += `<rect x="${contX}" y="${contY}" width="${contW}" height="${contH}" rx="12" fill="#fbfbfd"
+        stroke="${C[ps]}" stroke-width="3"/>`;
+  g += `<text x="${contX + contW/2}" y="${contY + 26}" text-anchor="middle" font-size="16" font-weight="800">
+        producers — ${ps}</text>`;
+  g += `<text x="${contX + contW/2}" y="${contY + 46}" text-anchor="middle" font-size="12" fill="#555">
+        3 · analysis — isolated plugin slots, compose only via the core</text>`;
   slots.forEach((s, i) => {
-    const st = s.state === 'BUILT' ? 'BUILT' : 'EMPTY';
-    g += `<g class="node" data-slot="${s.name}" transform="translate(640,${76 + i * 46})">
-      <rect width="290" height="38" rx="6" fill="#fff" stroke="${STATE_COLOR[st]}"
-        ${st === 'EMPTY' ? 'stroke-dasharray="5,4"' : ''}/>
-      <text x="145" y="17" text-anchor="middle" font-weight="600">${s.name}</text>
-      <text x="145" y="31" text-anchor="middle" fill="${STATE_COLOR[st]}" font-size="11">${s.state}</text>
+    const built = s.state === 'BUILT';
+    const st = built ? 'BUILT' : 'EMPTY';
+    const y = contY + 60 + i * (slotH + slotGap);
+    g += `<g class="node" data-slot="${s.name}" transform="translate(${contX + 25},${y})">
+      <rect width="${contW - 50}" height="${slotH}" rx="7" fill="${built ? FILL.BUILT : '#fdfdfd'}"
+        stroke="${C[st]}" stroke-width="${built ? 3 : 2}" ${built ? '' : 'stroke-dasharray="7,5"'}/>
+      <text x="${(contW - 50)/2}" y="${slotH/2 + 5}" text-anchor="middle" font-size="14.5"
+        font-weight="${built ? 800 : 500}" ${built ? '' : 'fill="#999"'}>${s.name}</text>
     </g>`;
   });
+
+  // legend
+  g += `<g class="legend" transform="translate(60,730)">
+    <rect width="16" height="16" y="-13" fill="${FILL.BUILT}" stroke="${C.BUILT}" stroke-width="2.5"/>
+    <text x="24" y="0">BUILT</text>
+    <rect x="100" width="16" height="16" y="-13" fill="${FILL.PARTIAL}" stroke="${C.PARTIAL}" stroke-width="2.5"/>
+    <text x="124" y="0">PARTIAL</text>
+    <rect x="215" width="16" height="16" y="-13" fill="#fdfdfd" stroke="${C.EMPTY}" stroke-width="2" stroke-dasharray="5,4"/>
+    <text x="239" y="0">EMPTY / not built</text>
+  </g>`;
+
   document.getElementById('graph').innerHTML = g;
-  document.querySelectorAll('#graph .node').forEach(n => {
-    n.addEventListener('click', () => showDetail(n));
-  });
+  document.querySelectorAll('#graph .node').forEach(n => n.addEventListener('click', () => showDetail(n)));
 }
 
 function showDetail(n) {
@@ -216,7 +290,7 @@ function showDetail(n) {
     const s = STATUS.producer_slots.find(p => p.name === n.dataset.slot);
     el.innerHTML = `<b>producer slot: ${s.name}</b> — ${s.state}. ` +
       (s.state === 'PLANNED'
-        ? 'Empty slot. Per ARCHITECTURE.md §4.2 a producer is an isolated plugin: it reads a core view and writes a provenance-tagged result via the ingest contract — it may never import another producer, query, or interface.'
+        ? 'Empty slot. Per ARCHITECTURE.md §4.2 a producer is an isolated plugin: it reads a core view and writes a provenance-tagged result via the ingest contract — never another producer, query, or interface.'
         : 'The one built producer: multi-tool consensus VUS reclassification (SPEC-002, FUNCTIONAL).');
     return;
   }
@@ -230,8 +304,14 @@ function showDetail(n) {
 /* ---------- Section 1 · View B: spec / phase ---------- */
 function statusChip(s) { return `<span class="chip ${s === 'FUNCTIONAL' ? 'c-func' : 'c-spec'}">${s}</span>`; }
 function readyChip(r) {
-  const k = r.startsWith('GATED') ? 'c-gated' : r.startsWith('UNKNOWN') ? 'c-unknown' : 'c-avail';
-  return `<span class="chip ${k}">${r}</span>`;
+  const key = r.split(' ')[0];
+  const cls = key === 'GATED' ? 'c-gated' : key === 'UNKNOWN' ? 'c-unknown' : 'c-avail';
+  return `<span class="chip ${cls}" title="${r.replace(/"/g, '&quot;')}">${key}</span>`;
+}
+function readyReason(r) {
+  const m = r.match(/^(?:AVAILABLE|GATED|UNKNOWN)\s*[—(]?\s*(.*)$/);
+  let t = (m && m[1] ? m[1] : '').replace(/\)$/, '');
+  return t ? `<span class="reason" title="${r.replace(/"/g, '&quot;')}">${t.length > 64 ? t.slice(0, 64) + '…' : t}</span>` : '';
 }
 
 function renderSpecTable(filter = '') {
@@ -244,33 +324,50 @@ function renderSpecTable(filter = '') {
     if (!shown.length) continue;
     html += `<tr class="layer-row"><td colspan="4">${layer}</td></tr>`;
     shown.forEach(it => {
-      html += `<tr><td>${it.id}</td><td>${it.title}</td><td>${statusChip(it.status)}</td><td>${readyChip(it.readiness)}</td></tr>`;
+      html += `<tr><td>${it.id}</td><td>${it.title}</td><td>${statusChip(it.status)}</td>
+               <td>${readyChip(it.readiness)} ${readyReason(it.readiness)}</td></tr>`;
     });
   }
   tb.innerHTML = html;
 }
 function filterReady(f) { renderSpecTable(f); }
 
-/* ---------- Section 2 · not built ---------- */
+/* ---------- Section 2 · not built (collapsed reference) ---------- */
 function renderNotBuilt() {
   const nb = STATUS.not_built;
+  const bits = [];
+  if (nb.empty_layers.length) bits.push(nb.empty_layers.length + ' empty layers');
+  if (nb.unwired_providers.length) bits.push(nb.unwired_providers.length + ' unwired providers');
+  if (nb.placeholder_configs.length) bits.push(nb.placeholder_configs.length + ' placeholder configs');
+  if (!nb.real_data_processed.value) bits.push('no real data processed');
+  if (!nb.production_database.value) bits.push('no production database');
+  if (!nb.nl_query.value) bits.push('no NL query');
+  document.getElementById('nbSummary').innerHTML =
+    `NOT BUILT — ${bits.join(' · ')} <span class="sub">(click to expand with evidence)</span>`;
+
   const rows = [];
   const pair = (label, value, basis) =>
-    `<div class="nb"><b>${label}:</b> ${value}${basis ? ` <span class="basis">— evidence: ${basis}</span>` : ''}</div>`;
+    `<div class="nb"><b>${label}:</b> ${value}${basis ? `<div class="basis">${basis}</div>` : ''}</div>`;
   for (const [k, v] of Object.entries(nb)) {
     if (v && typeof v === 'object' && 'value' in v) rows.push(pair(k, '<b>' + v.value + '</b>', v.basis));
-    else rows.push(pair(k, Array.isArray(v) ? v.map(x => `<code>${x}</code>`).join(', ') : v,
-      'verified from the filesystem / repo state by the generator'));
+    else if (Array.isArray(v) && v.length) rows.push(pair(k, v.map(x => `<code>${x}</code>`).join('<br>'), ''));
+    else if (Array.isArray(v)) rows.push(pair(k, 'none', ''));
+    else rows.push(pair(k, v, ''));
   }
   document.getElementById('notbuilt').innerHTML = rows.join('');
 }
 
-/* ---------- Section 3 · blockers ---------- */
+/* ---------- Section 3 · blockers (collapsed reference) ---------- */
 function renderBlockers() {
+  document.getElementById('blSummary').innerHTML =
+    `BLOCKERS — ${STATUS.open_decisions.length} open decisions · ` +
+    `${STATUS.undefined_definitions.length} undefined definitions ` +
+    `<span class="sub">(all human-owned — click to expand)</span>`;
   document.getElementById('decisions').innerHTML = STATUS.open_decisions.map(d =>
-    `<div class="card"><b>${d.id}</b> — ${d.title}<br>Status: ${d.status}<br><span class="sub">Owner: ${d.owner}</span></div>`).join('');
+    `<div class="drow"><span class="id">${d.id}</span><span class="t">${d.title}</span>` +
+    `<span class="chip ${d.status.startsWith('OPEN') ? 'c-gated' : 'c-unknown'}">${d.status.split(' ')[0]}</span></div>`).join('');
   document.getElementById('undefs').innerHTML = STATUS.undefined_definitions.map(d =>
-    `<div class="card">${d.definition}<br><span class="sub">Owner: ${d.owner}</span></div>`).join('');
+    `<div class="drow"><span class="t">${d.definition}</span></div>`).join('');
 }
 
 /* ---------- Section 4 · query explorer ---------- */
@@ -295,7 +392,7 @@ async function runQuery(endpoint) {
   const payload = await resp.json();
   const out = document.getElementById('result');
 
-  if (resp.status === 422) {   // refusal — an explanation, not an error
+  if (resp.status === 422) {
     out.innerHTML = `<div class="refusal"><b>Refused — by design (control I3).</b><br>${payload.refusal}</div>`;
     return;
   }
@@ -333,6 +430,9 @@ async function runQuery(endpoint) {
   }
   out.innerHTML = h;
 }
+
+/* print: expand collapsed reference sections so exports are complete */
+window.onbeforeprint = () => document.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
 
 boot();
 </script>

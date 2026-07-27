@@ -39,6 +39,7 @@
 | SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | Aim 2a (build plan §2 producers layer; Phase 3) | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | Cross-cutting — I6 traceability + decision-state honesty (SPEC-017) | FUNCTIONAL | AVAILABLE |
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | Cross-cutting — a gate that cries wolf gets ignored (G3 discipline) | FUNCTIONAL | AVAILABLE |
+| SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | Cross-cutting — developer ergonomics (R7: still not the researcher UI) | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -155,6 +156,19 @@ Executable acceptance (observed on the PR):
 - the gate still fails on a deliberate content edit to an artifact and passes after
   regeneration — the fix must not weaken it into always-passing;
 - `.gitattributes` pins only the two generated artifacts (no repo-wide renormalization).
+
+### SPEC-024 — dashboard information hierarchy
+Executable acceptance:
+- Section 1 fills the viewport on load; Sections 2–4 begin below the fold; View A reads as a
+  node graph (geometry, directed edges, build-state colors) at 1440px, with the core visually
+  dominant and producer slots rendered as slots (one filled, seven visibly empty);
+- no prose string repeats verbatim more than twice on the page (owner attributions are
+  section-level, listed once);
+- `not_built` evidence strings are specific and checkable — file:line where derivable
+  (e.g. `providers.py:53`) — or omitted; nothing generic;
+- Sections 2–3 render collapsed-by-default (`<details>`) with count summary lines;
+- `@media print` keeps the diagram a diagram and prints expanded content;
+- all four suites pass; `status-drift` green after regeneration.
 
 ## Acceptance criteria for SPECIFIED items
 

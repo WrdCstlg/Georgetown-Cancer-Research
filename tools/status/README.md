@@ -31,8 +31,8 @@ changes only within a schema version; bump `schema_version` for anything else.
 | `runs_today.note` | string | Human-readable caveat (direct execution, pytest unverified). |
 | `not_built.empty_layers` | array | Layer dirs containing only a README (verified on disk). |
 | `not_built.producer_dirs_present` | array | Producer slots that exist on disk. |
-| `not_built.unwired_providers` | array | Provider classes whose body raises `NotImplementedError`. |
-| `not_built.placeholder_configs` | array | `config/*.json` files marked `"status": "PLACEHOLDER"`. |
+| `not_built.unwired_providers` | array | Provider classes whose body raises `NotImplementedError`, each with a file:line citation. |
+| `not_built.placeholder_configs` | array | `config/*.json` files marked `"status": "PLACEHOLDER"`, with file:line citation. |
 | `not_built.real_data_processed` | object | `{value, basis}` — false while no `data/` directory exists. |
 | `not_built.production_database` | object | `{value, basis}` — false; substrate pending D4. |
 | `not_built.nl_query` | object | `{value, basis}` — false while SPEC-009 is SPECIFIED. |

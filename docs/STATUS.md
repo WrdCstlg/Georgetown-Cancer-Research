@@ -35,6 +35,7 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | FUNCTIONAL | AVAILABLE |
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
+| SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
 
@@ -49,13 +50,13 @@ CI checks (from `.github/workflows/tests.yml`): `spec-id`, `status-drift`, `test
 
 ## 4 · What is NOT built
 
-- **No real data has been processed.** No data/ directory exists; only toy fixtures/ have ever run.
+- **No real data has been processed.** No data/ directory exists; only fixtures/variant_effect/ and fixtures/query/ have ever run.
 - **Empty layers (README only):** `pipeline/`, `interface/`.
 - **Producers present:** `variant_effect/` — every other producer slot is unbuilt.
-- **Real score providers are not wired** — `raise NotImplementedError`: `AlphaMissenseProvider`, `EVEProvider`, `PolyPhenProvider`, `SIFTProvider`. The producer has only ever seen mock scores.
-- **All thresholds are PLACEHOLDER:** `config/calibration.json`, `config/variant_effect.json`. Strict mode hard-fails on them by design; every producer result is stamped `calibration_pending` — correctly, but no result is yet a clean call.
-- **No natural-language query.** SPEC-009 is SPECIFIED, unbuilt; the query layer reads exactly one view (`v_variant_effect`).
-- **No production database.** Dev/CI is embedded SQLite; production substrate pending D4 (Postgres proposed, not decided). No lockfile, no lint, no typecheck configured (AGENTS.md §3).
+- **Real score providers are not wired** — `raise NotImplementedError`: `AlphaMissenseProvider (producers/variant_effect/providers.py:53)`, `EVEProvider (producers/variant_effect/providers.py:65)`, `PolyPhenProvider (producers/variant_effect/providers.py:72)`, `SIFTProvider (producers/variant_effect/providers.py:79)`. The producer has only ever seen mock scores.
+- **All thresholds are PLACEHOLDER:** `config/calibration.json:2 ("status": "PLACEHOLDER")`, `config/variant_effect.json:2 ("status": "PLACEHOLDER")`. Strict mode hard-fails on them by design; every producer result is stamped `calibration_pending` — correctly, but no result is yet a clean call.
+- **No natural-language query.** SPEC-009 is SPECIFIED (SPEC.md registry); the query layer reads one view (query/read_api.py: _VIEW = v_variant_effect); the query layer reads exactly one view (`v_variant_effect`).
+- **No production database.** Dev/CI is embedded SQLite (core/db.py); production substrate pending D4 (docs/DECISIONS.md D4) — Postgres proposed, not decided (core/db.py:3-4). No lockfile, no lint, no typecheck configured (AGENTS.md §3).
 
 ## 5 · What unblocks the next step
 
