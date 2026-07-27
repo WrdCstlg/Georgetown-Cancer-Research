@@ -41,6 +41,7 @@
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | Cross-cutting — a gate that cries wolf gets ignored (G3 discipline) | FUNCTIONAL | AVAILABLE |
 | SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | Cross-cutting — developer ergonomics (R7: still not the researcher UI) | FUNCTIONAL | AVAILABLE |
 | SPEC-025 | Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005) | `core/` | Substrate precondition for all aims — per-population fidelity is the project's premise | FUNCTIONAL | AVAILABLE |
+| SPEC-026 | Generator parser safety: characterize every status generator parser, make silent-partial failures loud, test happy path + reformat resilience + contract shape; README getting-started fixed | repo tooling (`tools/status/`, `tests/`, `README.md`) | Cross-cutting — the gate proves consistency, nothing proved correctness (audit F11/F14) | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -183,6 +184,17 @@ Executable acceptance (all in `tests/test_core_integrity.py`):
   missing provenance (D-005, PROPOSED);
 - both tests were observed FAILING against the old schema before the fix;
 - all four suites pass after the change; `status-drift` green.
+
+### SPEC-026 — generator parser safety
+Executable acceptance (all in `tests/test_status_generator.py`, run per `AGENTS.md` §3):
+- happy path: each parser returns what the current sources actually contain (counts + specific
+  values, e.g. 8 producer slots, ≥26 SPEC items, 6 undefined definitions);
+- reformat resilience: for each fragile parser, a plausible-but-reformatted source either parses
+  correctly or RAISES — never silently returns partial; a deliberately malformed §5 map makes a
+  test fail loudly (observed failing before restore);
+- empty/malformed input raises a clear, named error;
+- contract shape: status.json carries its documented top-level keys and `schema_version`;
+- the suite runs in CI like the others; `status-drift` green.
 
 ## Acceptance criteria for SPECIFIED items
 
