@@ -178,8 +178,9 @@ Executable acceptance (all in `tests/test_core_integrity.py`):
   attribute of the variant entity (D-004, PROPOSED); the `variant` table carries no
   `population_code` column (schema-enforced);
 - F3 regression: re-ingesting identical records leaves the row count unchanged — one result
-  per (variant, producer, method), enforced by a UNIQUE constraint in the SCHEMA, so the
-  database refuses the duplicate the way it already refuses missing provenance (D-005, PROPOSED);
+  per observation, natural key (variant, population, producer, method), enforced by a UNIQUE
+  constraint in the SCHEMA, so the database refuses the duplicate the way it already refuses
+  missing provenance (D-005, PROPOSED);
 - both tests were observed FAILING against the old schema before the fix;
 - all four suites pass after the change; `status-drift` green.
 

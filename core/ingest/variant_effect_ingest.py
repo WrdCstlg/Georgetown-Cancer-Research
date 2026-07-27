@@ -31,17 +31,22 @@ def ingest(con, variants, result) -> int:
                     (code, POP_DESC.get(code, code)))
 
     for v in variants:
+        # D-004 (PROPOSED): population is NOT written to the variant entity — it is a
+        # property of the observation and lives only on the result row.
         con.execute(
             "INSERT OR REPLACE INTO variant "
-            "(variant_id, gene, protein_change, reference, population_code, clinical_db_absent) "
-            "VALUES (?,?,?,?,?,?)",
-            (v.variant_id, v.gene, v.protein_change, v.reference, v.population, int(v.clinical_db_absent)))
+            "(variant_id, gene, protein_change, reference, clinical_db_absent) "
+            "VALUES (?,?,?,?,?)",
+            (v.variant_id, v.gene, v.protein_change, v.reference, int(v.clinical_db_absent)))
 
     n = 0
     for r in result.records:
         p = r["provenance"]
+        # D-005 (PROPOSED): upsert on the observation's natural key
+        # (variant_id, population_code, producer, method) — re-ingesting replaces;
+        # the UNIQUE constraint in the schema is the enforcement.
         con.execute(
-            "INSERT INTO variant_effect_result "
+            "INSERT OR REPLACE INTO variant_effect_result "
             "(variant_id, original_classification, new_classification, producer, producer_version, "
             " method, n_tools_fired, reference, population_code, generated_at, "
             " calibration_status, calibration_pending, tool_calls_json) "

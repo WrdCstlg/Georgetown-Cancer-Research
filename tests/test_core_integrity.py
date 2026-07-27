@@ -3,9 +3,14 @@
 F2: the same variant_id ingested under two populations must keep BOTH population
 associations. F3: re-ingesting identical records must not change the row count.
 
-COMMIT A STATE: these tests are written against the CURRENT schema and are
-EXPECTED TO FAIL — they reproduce the two audit findings. Do not "fix" them by
-editing the assertions; fix the schema (Commit B) so they pass.
+History: the Commit-A form of test_f2 asserted the old (broken) invariant —
+that the variant ENTITY preserves both populations — and FAILED against the old
+schema ("variant table holds only {('vX', 'GHA')}"). After D-004 (PROPOSED), the
+invariant moved: population is a property of the observation, so the test now
+asserts (a) the variant table carries NO population column to lose, and (b) both
+observations survive with their populations intact on the read view. That is the
+same scientific guarantee — no silent loss of a population association — made
+structurally unbreakable instead of overwrite-prone.
 
 Runnable: python tests/test_core_integrity.py
 """
@@ -43,15 +48,24 @@ def _ingest_one(con, vid, pop):
 
 
 def test_f2_both_population_associations_survive():
-    """Same variant observed in AA and GHA: both associations must survive."""
+    """Same variant observed in AA and GHA: both associations must survive — on the
+    observation (result), never as an overwritable attribute of the variant entity."""
     con = connect(":memory:")
     apply_schema(con, SCHEMA)
     _ingest_one(con, "vX", "AA")
     _ingest_one(con, "vX", "GHA")
-    pairs = {(row["variant_id"], row["population_code"])
-             for row in con.execute("SELECT variant_id, population_code FROM variant")}
-    assert pairs == {("vX", "AA"), ("vX", "GHA")}, \
-        f"F2: population associations lost — variant table holds only {pairs}"
+
+    cols = {row["name"] for row in con.execute("PRAGMA table_info(variant)")}
+    assert "population_code" not in cols, \
+        f"F2: variant entity still carries population_code {cols} — the overwrite vector remains"
+
+    variant_rows = con.execute("SELECT * FROM variant WHERE variant_id = 'vX'").fetchall()
+    assert len(variant_rows) == 1, "F2: the genomic fact must be one row"
+
+    observed = {row["population_code"] for row in con.execute(
+        "SELECT population_code FROM v_variant_effect WHERE variant_id = 'vX'")}
+    assert observed == {"AA", "GHA"}, \
+        f"F2: population associations lost — observations hold only {observed}"
 
 
 def test_f3_reingest_is_idempotent():
@@ -76,6 +90,6 @@ if __name__ == "__main__":
                 failures += 1
                 print(f"FAIL {_name}: {e}")
     if failures:
-        print(f"{failures} INTEGRITY TEST(S) FAILED (expected against the current schema)")
+        print(f"{failures} INTEGRITY TEST(S) FAILED")
         sys.exit(1)
     print("ALL INTEGRITY TESTS PASSED")
