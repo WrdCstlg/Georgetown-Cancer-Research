@@ -192,6 +192,14 @@
       "aim": "Cross-cutting — developer ergonomics (R7: still not the researcher UI)",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-025",
+      "title": "Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005)",
+      "layer": "`core/`",
+      "aim": "Substrate precondition for all aims — per-population fidelity is the project's premise",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
     }
   ],
   "layers": [
@@ -268,6 +276,11 @@
         "test_count": 4
       },
       {
+        "file": "tests/test_core_integrity.py",
+        "command": "python tests/test_core_integrity.py",
+        "test_count": 2
+      },
+      {
         "file": "tests/test_query_read_api.py",
         "command": "python tests/test_query_read_api.py",
         "test_count": 16
@@ -333,6 +346,18 @@
     {
       "id": "D-003",
       "title": "Supported Python floor: keep 3.8 or raise to the dev version",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-004",
+      "title": "Where does population live in the core model?",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-005",
+      "title": "What does re-ingesting mean?",
       "status": "PROPOSED — pending owner approval",
       "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },

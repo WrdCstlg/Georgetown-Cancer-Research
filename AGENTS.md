@@ -65,6 +65,7 @@ python tests\test_variant_effect.py   # golden fixtures (G4) + producer guardrai
 python tests\test_core_ingest.py      # core write path + provenance enforcement
 python tests\test_query_read_api.py   # query read API (SPEC-015)
 python tests\test_status_ui_shim.py   # status-ui shim (SPEC-018)
+python tests\test_core_integrity.py   # core data integrity (SPEC-025)
 # pytest: NOT a verified runner. `python -m pytest tests\ -q` has never executed
 # end-to-end in this environment (the local shell cannot launch it); compatibility
 # is UNVERIFIED (SPEC-016). Direct execution above is the supported path.
