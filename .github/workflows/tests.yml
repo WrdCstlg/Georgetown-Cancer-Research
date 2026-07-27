@@ -39,6 +39,9 @@ jobs:
       - name: status-ui shim (SPEC-018)
         run: python tests/test_status_ui_shim.py
 
+      - name: core data integrity (SPEC-025)
+        run: python tests/test_core_integrity.py
+
   # SPEC-017: the STATUS artifacts must match a fresh regeneration — generated
   # docs cannot drift from repo state. Deterministic by contract (no timestamps,
   # no absolute paths, no commit hashes in the output).

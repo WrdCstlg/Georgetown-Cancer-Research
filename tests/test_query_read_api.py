@@ -40,9 +40,9 @@ def _db():
     for v in seed["variants"]:
         con.execute(
             "INSERT INTO variant (variant_id, gene, protein_change, reference, "
-            "population_code, clinical_db_absent) VALUES (?,?,?,?,?,?)",
+            "clinical_db_absent) VALUES (?,?,?,?,?)",
             (v["variant_id"], v["gene"], v["protein_change"], v["reference"],
-             v["population_code"], v["clinical_db_absent"]))
+             v["clinical_db_absent"]))
     for r in seed["results"]:
         con.execute(
             "INSERT INTO variant_effect_result "

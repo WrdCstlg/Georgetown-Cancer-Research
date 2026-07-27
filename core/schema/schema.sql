@@ -16,8 +16,10 @@ CREATE TABLE IF NOT EXISTS variant (
   gene               TEXT NOT NULL,
   protein_change     TEXT NOT NULL,
   reference          TEXT NOT NULL CHECK (reference IN ('grch38','pangenome')),
-  population_code    TEXT NOT NULL REFERENCES population(code),
   clinical_db_absent INTEGER NOT NULL DEFAULT 0    -- Postgres: BOOLEAN
+  -- D-004 (PROPOSED): a variant is a genomic fact. Population is a property of the
+  -- OBSERVATION and lives only on variant_effect_result -- never an overwritable
+  -- attribute here. `reference` stays: it is part of variant identity (SPEC-004).
 );
 
 CREATE TABLE IF NOT EXISTS variant_effect_result (
@@ -40,7 +42,13 @@ CREATE TABLE IF NOT EXISTS variant_effect_result (
       CHECK (calibration_status IN ('in_calibration','out_of_calibration','calibration_pending')),
   calibration_pending INTEGER NOT NULL,                        -- Postgres: BOOLEAN
 
-  tool_calls_json     TEXT    NOT NULL                         -- detail; Postgres: JSONB
+  tool_calls_json     TEXT    NOT NULL,                         -- detail; Postgres: JSONB
+
+  -- D-005 (PROPOSED): one result per (variant, population, producer, method) — the
+  -- natural key of an OBSERVATION (D-004). Re-ingesting the same key REPLACES (upsert);
+  -- the database refuses duplicate facts the way it refuses missing provenance.
+  -- Run history is deferred to D6.
+  UNIQUE (variant_id, population_code, producer, method)
 );
 
 CREATE INDEX IF NOT EXISTS ix_ver_variant ON variant_effect_result(variant_id);

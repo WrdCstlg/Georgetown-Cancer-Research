@@ -36,12 +36,14 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | FUNCTIONAL | AVAILABLE |
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
+| SPEC-025 | Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005) | `core/` | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
 
 Test suites (standard-library only, direct execution — the supported path):
 
 - `python tests/test_core_ingest.py` — 4 tests
+- `python tests/test_core_integrity.py` — 2 tests
 - `python tests/test_query_read_api.py` — 16 tests
 - `python tests/test_status_ui_shim.py` — 5 tests
 - `python tests/test_variant_effect.py` — 4 tests
@@ -64,6 +66,8 @@ Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–
 
 - **D-002** — contracts/ layout: flat contract modules vs. subdirectories only: PROPOSED — pending approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-003** — Supported Python floor: keep 3.8 or raise to the dev version: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-004** — Where does population live in the core model?: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-005** — What does re-ingesting mean?: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D1** — Ownership / IP of the substrate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D2** — Compute & data residency: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D3** — Data governance: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)

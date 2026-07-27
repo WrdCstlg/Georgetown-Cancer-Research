@@ -40,6 +40,7 @@
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | Cross-cutting — I6 traceability + decision-state honesty (SPEC-017) | FUNCTIONAL | AVAILABLE |
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | Cross-cutting — a gate that cries wolf gets ignored (G3 discipline) | FUNCTIONAL | AVAILABLE |
 | SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | Cross-cutting — developer ergonomics (R7: still not the researcher UI) | FUNCTIONAL | AVAILABLE |
+| SPEC-025 | Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005) | `core/` | Substrate precondition for all aims — per-population fidelity is the project's premise | FUNCTIONAL | AVAILABLE |
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -169,6 +170,19 @@ Executable acceptance:
 - Sections 2–3 render collapsed-by-default (`<details>`) with count summary lines;
 - `@media print` keeps the diagram a diagram and prints expanded content;
 - all four suites pass; `status-drift` green after regeneration.
+
+### SPEC-025 — core data integrity
+Executable acceptance (all in `tests/test_core_integrity.py`):
+- F2 regression: the same `variant_id` ingested under two populations keeps BOTH population
+  associations — population is a property of the observation (result), never an overwritable
+  attribute of the variant entity (D-004, PROPOSED); the `variant` table carries no
+  `population_code` column (schema-enforced);
+- F3 regression: re-ingesting identical records leaves the row count unchanged — one result
+  per observation, natural key (variant, population, producer, method), enforced by a UNIQUE
+  constraint in the SCHEMA, so the database refuses the duplicate the way it already refuses
+  missing provenance (D-005, PROPOSED);
+- both tests were observed FAILING against the old schema before the fix;
+- all four suites pass after the change; `status-drift` green.
 
 ## Acceptance criteria for SPECIFIED items
 
