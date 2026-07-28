@@ -75,6 +75,127 @@ not by allowing duplicate facts in the substrate. The schema enforces the natura
 way it already refuses missing provenance. If D6 later lands run-scoped storage, the natural
 key becomes part of the run identity instead.
 
+## D-006 — How does a variant reach an AlphaMissense score? (SPEC-005 blocker)
+Status: **PROPOSED — pending owner approval.**
+
+Fork: `VariantInput` (contracts/variant_effect.py:22-29) carries `gene` + `protein_change`.
+AlphaMissense's published files are keyed by neither. Wiring the provider (SPEC-005) cannot
+proceed until we decide where the lookup key comes from.
+
+### What the published files actually key on (verified against the real files, not from memory)
+
+Zenodo record 10.5281/zenodo.8208688, headers read by HTTP range request + partial gunzip:
+
+| File | Size | Key columns (verbatim header) |
+|------|------|-------------------------------|
+| `AlphaMissense_hg38.tsv.gz` | 642,961,469 B | `#CHROM POS REF ALT genome uniprot_id transcript_id protein_variant am_pathogenicity am_class` |
+| `AlphaMissense_aa_substitutions.tsv.gz` | 1,207,278,510 B | `uniprot_id protein_variant am_pathogenicity am_class` |
+| `AlphaMissense_isoforms_aa_substitutions.tsv.gz` | 2,461,351,945 B | `transcript_id protein_variant am_pathogenicity am_class` |
+| `AlphaMissense_gene_hg38.tsv.gz` | 253,636 B | `transcript_id mean_am_pathogenicity` (gene-level mean only — no per-variant score) |
+
+So there are exactly three usable per-variant keys: `(CHROM, POS, REF, ALT)`,
+`(uniprot_id, protein_variant)`, or `(transcript_id, protein_variant)`. The repo holds none
+of them. `gene` is an HGNC symbol; AlphaMissense never keys on gene symbol.
+
+Three further facts established from the real data, each of which changes the implementation:
+
+1. **`protein_variant` is bare, not HGVS.** The files use `G12D`; the repo uses `p.G12D`
+   (fixtures/variant_effect/variants_input.csv). Mechanical, but it is a format contract.
+2. **The two files disagree on the `am_class` vocabulary.** `AlphaMissense_hg38.tsv.gz` emits
+   `likely_benign` / `ambiguous` / `likely_pathogenic`. `AlphaMissense_aa_substitutions.tsv.gz`
+   emits `benign` / `ambiguous` / `pathogenic` — verified verbatim rows
+   (`A0A024R1R8 M1D 0.8267 pathogenic`, `A0A024R1R8 M1F 0.2753 benign`). The bundled README
+   documents only the `likely_*` form and its own sample block for that file is wrong. The
+   numeric thresholds are identical in both; only the labels differ. A provider that switches
+   files must not assume one vocabulary.
+3. **AlphaMissense covers single amino-acid missense substitutions ONLY.** Of the 20 variants
+   in the golden fixture: 12 are missense on grch38 (directly lookupable given a key), 3 are
+   missense on `pangenome` (no AlphaMissense coordinates exist — see below), and 5 are
+   nonsense or frameshift (`v01 p.R1450*`, `v06 p.E1309fs`, `v09 p.G659fs`, `v13 p.T1556fs`,
+   `v18 p.Q1367*`) and are outside the tool's domain entirely. Those 5 must yield "no
+   coverage", never a call.
+
+### Is this a contract deficiency or a missing upstream step?
+
+Mostly the latter, and the repo already says where the key belongs:
+
+- `pipeline/annotation/` (Funcotator) is PLANNED (ARCHITECTURE.md:148). Annotation is the step
+  that emits genomic coordinates, transcript, and protein consequence. Producing that is the
+  pipeline's concern (ARCHITECTURE.md:71, layer 1) — a producer that derived coordinates from a
+  gene symbol would be doing annotation inside layer 3, crossing AGENTS.md §1.1.
+- **SPEC-004** is literally this: "key variants by (locus, ref-context); reconcile GRCh38 vs.
+  pangenome callsets". It is SPECIFIED / AVAILABLE.
+- **D-004** already reasons that `reference` is "part of variant identity (SPEC-004)".
+- `reference` is `grch38 | pangenome` (contracts/variant_effect.py:27). AlphaMissense publishes
+  hg19 and hg38 only. **Pangenome-called variants have no AlphaMissense coordinates at all**
+  until SPEC-004's reconciliation exists. This is not a gap the provider can close.
+
+Demonstrated concretely: retrieving the real KRAS G12D row required supplying
+`chr12:25245350 C>T` from outside the system. Nothing in the repo can produce that string.
+
+### Options
+
+  (a) **Add `chrom/pos/ref_allele/alt_allele` to `VariantInput`.** Matches the hg38 file's
+      primary key exactly; no mapping layer, no ambiguity. But it is a contract change with
+      blast radius into contracts/, producers/, fixtures, and tests — and *nothing currently
+      produces those values* (pipeline/ is empty), so the fields would be fixture-only:
+      a contract widened ahead of any real producer. Still leaves pangenome unsolved.
+
+  (b) **Add `uniprot_id` to `VariantInput`; key `(uniprot_id, protein_variant)` against
+      `AlphaMissense_aa_substitutions.tsv.gz`.** Smaller contract delta (one field), and that
+      file carries **no genomic coordinates**, so it is reference-build independent — it
+      sidesteps the grch38-vs-pangenome problem rather than blocking on SPEC-004. Cost: needs
+      an HGNC→UniProt canonical mapping (UniProt release 2021_02, per the bundled README),
+      which is itself a versioned identifier-mapping concern, and still puts an identifier
+      field on the analysis contract.
+
+  (c) **Leave `VariantInput` unchanged; introduce an explicit identifier-mapping seam.**
+      A new contract (`contracts/identifiers.py`) maps `variant_id -> {uniprot_id,
+      transcript_id, chrom, pos, ref, alt}`. `VariantInput` keeps describing the *analysis*
+      view of a variant; identifiers are a separate concern with their own seam. The mapping
+      is populated by pipeline annotation / SPEC-004 when those exist, and by a small committed
+      fixture until then. The provider consumes the seam, never derives identifiers itself.
+      Cost: one new contract module and its own spec item.
+
+  (d) **Declare SPEC-005 BLOCKED on SPEC-004 and build nothing.** The most literal reading of
+      the gates. But SPEC-005 is registered AVAILABLE, and the published scores are real and
+      obtainable today, so this forfeits a genuine win over a gap that is real but bounded.
+
+### Recommendation: **(c), consuming the `(uniprot_id, protein_variant)` key of option (b).**
+
+Reasons, in order:
+1. It keeps annotation out of the producer. The provider looks a key *up*; it never derives
+   one. No AGENTS.md §1.1 boundary is crossed.
+2. `VariantInput` is untouched, so contracts/, core/, and query/ take zero blast radius — the
+   analysis contract does not accumulate identifier plumbing.
+3. The aa-substitutions key is build-independent, so SPEC-005 does not have to wait on
+   SPEC-004, and no one has to decide the pangenome-coordinate question to ship this.
+4. When `pipeline/annotation/` and SPEC-004 land, they become the producer of that mapping.
+   The seam is already the right shape; the provider does not change.
+5. Honest about coverage: the 5 non-missense fixture variants return "no coverage" (`None`),
+   which `reclassify()` already handles (producers/variant_effect/reclassify.py:65) and which
+   the consensus engine already treats correctly. No engine change required.
+
+Deliberately NOT decided here (they are not mine to decide):
+- **Licence.** All AlphaMissense predictions are **CC BY-NC-SA 4.0 — non-commercial only,
+  share-alike** (verified: Zenodo `license.id = cc-by-nc-sa-4.0`; the file headers themselves
+  carry "Licensed under CC BY-NC-SA 4.0 license"). Committing even a small score slice
+  redistributes CC-BY-NC-SA material from a repo that currently has no LICENSE file. NC
+  interacts with **D1** (if the substrate becomes reusable/commercial infrastructure) and the
+  whole question sits inside **D3** (data governance / DB licensing), which is OPEN — the same
+  class of constraint docs/DATA-INVENTORY.md already records for COSMIC.
+- **Residency.** Acquiring and storing the score data touches **D2** (compute & data
+  residency), OPEN. Note the mitigation available: the file is bgzip-compressed and
+  coordinate-sorted, so targeted retrieval by HTTP range + binary search fetches a few MB
+  rather than 643 MB (demonstrated: 30 range requests). That shrinks but does not remove the
+  D2 question.
+- **Score-to-call cutoffs.** AlphaMissense's published thresholds (`< 0.34` benign,
+  `> 0.564` pathogenic, ambiguous otherwise) are the tool's own defaults, to be transcribed as
+  AWAITING SIGN-OFF — never authored or adjusted here (I3).
+
+Whether option (c) needs its own SPEC item (identifier mapping is arguably its own concern
+under I6, not part of SPEC-005) is part of what is being approved.
+
 ## D1 — Ownership / IP of the substrate
 Status: **OPEN.**
 Question: who owns the fusion substrate?

@@ -362,6 +362,12 @@
       "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },
     {
+      "id": "D-006",
+      "title": "How does a variant reach an AlphaMissense score? (SPEC-005 blocker)",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
       "id": "D1",
       "title": "Ownership / IP of the substrate",
       "status": "OPEN",

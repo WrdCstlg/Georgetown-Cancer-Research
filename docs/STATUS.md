@@ -68,6 +68,7 @@ Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–
 - **D-003** — Supported Python floor: keep 3.8 or raise to the dev version: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-004** — Where does population live in the core model?: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-005** — What does re-ingesting mean?: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-006** — How does a variant reach an AlphaMissense score? (SPEC-005 blocker): PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D1** — Ownership / IP of the substrate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D2** — Compute & data residency: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D3** — Data governance: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
