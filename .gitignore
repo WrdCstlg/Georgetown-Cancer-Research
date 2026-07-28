@@ -5,3 +5,11 @@ __pycache__/
 *.env
 .DS_Store
 *.sqlite
+
+# Locally fetched third-party score data. NEVER COMMIT.
+# AlphaMissense predictions are CC BY-NC-SA 4.0 (non-commercial, share-alike);
+# this repo does not redistribute them. Populate with
+# `python tools/alphamissense/fetch_scores.py` -- see docs/alphamissense-data.md.
+# Redistribution and the NC term remain OPEN under decision D3.
+/.cache/
+*.tsv.gz

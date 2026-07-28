@@ -1,0 +1,22 @@
+{
+  "status": "AWAITING_SIGN_OFF",
+  "_note": "These cutoffs are AlphaMissense's OWN PUBLISHED DEFAULTS, transcribed verbatim from the publisher's README (see source). They were NOT authored, chosen, or adjusted by the coding agent (control I3). A domain owner must confirm they are the right operating point for the ancestry-aware context, or supply different ones -- see DEFINITIONS.md sec 1 and docs/DEFINITIONS_QUESTIONNAIRE.md question A9. Sign-off flips status to SIGNED_OFF; until then the producer warns once per run.",
+  "_not_applied_here": "The published files ship am_class already computed by the publisher, so the provider consumes the publisher's classification rather than re-deriving it from these numbers. The cutoffs are carried here so the rule is auditable and so a domain owner has something concrete to sign off on or override.",
+  "source": "AlphaMissense README.md, Zenodo record 10.5281/zenodo.8208688, section 'Column descriptions' -> am_class; retrieved 2026-07-28",
+  "source_quote": "'likely_benign' if alphamissense_pathogenicity < 0.34; 'likely_pathogenic' if alphamissense_pathogenicity > 0.564; and 'ambiguous' otherwise",
+  "published_cutoffs": {
+    "benign_below": 0.34,
+    "pathogenic_above": 0.564,
+    "otherwise": "ambiguous"
+  },
+  "class_vocabularies": {
+    "_note": "The publisher ships TWO label vocabularies for the SAME thresholds (verified against the real files, D-006). The provider normalizes both; neither is privileged.",
+    "AlphaMissense_hg38.tsv.gz": ["likely_benign", "ambiguous", "likely_pathogenic"],
+    "AlphaMissense_aa_substitutions.tsv.gz": ["benign", "ambiguous", "pathogenic"]
+  },
+  "licence": {
+    "terms": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "_note": "Non-commercial, share-alike. NO AlphaMissense score data is committed to this repo. Redistribution and the NC term remain OPEN under decision D3; NC interacts with D1. See docs/alphamissense-data.md."
+  }
+}

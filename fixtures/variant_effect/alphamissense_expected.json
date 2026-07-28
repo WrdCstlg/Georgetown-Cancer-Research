@@ -1,0 +1,41 @@
+{
+  "_what": "Golden expectations for the AlphaMissense provider (SPEC-005, partial). For each golden-fixture variant: the AlphaMissense lookup key and the call the provider must produce from the REAL published data.",
+
+  "_what_is_NOT_here": "No am_pathogenicity scores and no raw AlphaMissense class labels. AlphaMissense predictions are CC BY-NC-SA 4.0 (non-commercial, share-alike) and this repo does not redistribute them. What IS committed is our own assertion about what the tool reports for a named key -- the test proves that assertion against a locally fetched, gitignored cache. If the cache is absent the test SKIPS with a populate instruction; it never passes silently and never fabricates a score.",
+
+  "_expected_call_vocabulary": "This repo's ToolCall vocabulary (contracts/variant_effect.py): pathogenic | benign | uncertain. NOT AlphaMissense's own labels -- those differ per file (likely_pathogenic vs pathogenic) and the provider normalizes both (decision D-006).",
+
+  "_no_coverage": "AlphaMissense models SINGLE AMINO-ACID MISSENSE SUBSTITUTIONS only. Nonsense and frameshift variants have no record BY CONSTRUCTION -- the provider returns None (no coverage), which is deliberately distinct from ScoreNotFound (a score we expected and did not get).",
+
+  "source_file": "AlphaMissense_aa_substitutions.tsv.gz",
+  "source_record": "Zenodo 10.5281/zenodo.8208688 (DOI), licence CC BY-NC-SA 4.0",
+  "source_key_format": "<uniprot_id>/<protein_variant>, e.g. P01116/G12D",
+  "retrieved_on": "2026-07-28",
+  "accessions_from": "fixtures/variant_effect/identifiers.json (UniProtKB, CC BY 4.0)",
+
+  "expected": {
+    "v01": {"gene": "APC",    "protein_change": "p.R1450*",     "coverage": "none", "reason": "nonsense -- not a single-aa substitution"},
+    "v02": {"gene": "KRAS",   "protein_change": "p.G12D",       "coverage": "scored", "key": "P01116/G12D",   "expected_call": "pathogenic"},
+    "v03": {"gene": "TP53",   "protein_change": "p.R175H",      "coverage": "scored", "key": "P04637/R175H",  "expected_call": "pathogenic"},
+    "v04": {"gene": "PIK3CA", "protein_change": "p.E545K",      "coverage": "scored", "key": "P42336/E545K",  "expected_call": "pathogenic"},
+    "v05": {"gene": "SMAD4",  "protein_change": "p.R361H",      "coverage": "scored", "key": "Q13485/R361H",  "expected_call": "pathogenic"},
+    "v06": {"gene": "APC",    "protein_change": "p.E1309fs",    "coverage": "none", "reason": "frameshift -- not a single-aa substitution"},
+    "v07": {"gene": "KRAS",   "protein_change": "p.G13D",       "coverage": "scored", "key": "P01116/G13D",   "expected_call": "pathogenic"},
+    "v08": {"gene": "CTNNB1", "protein_change": "p.S45F",       "coverage": "scored", "key": "P35222/S45F",   "expected_call": "pathogenic"},
+    "v09": {"gene": "RNF43",  "protein_change": "p.G659fs",     "coverage": "none", "reason": "frameshift -- not a single-aa substitution"},
+    "v10": {"gene": "FBXW7",  "protein_change": "p.R465C",      "coverage": "scored", "key": "Q969H0/R465C",  "expected_call": "pathogenic"},
+    "v11": {"gene": "KRAS",   "protein_change": "p.G12V",       "coverage": "scored", "key": "P01116/G12V",   "expected_call": "pathogenic"},
+    "v12": {"gene": "TP53",   "protein_change": "p.R248Q",      "coverage": "scored", "key": "P04637/R248Q",  "expected_call": "pathogenic"},
+    "v13": {"gene": "APC",    "protein_change": "p.T1556fs",    "coverage": "none", "reason": "frameshift -- not a single-aa substitution"},
+    "v14": {"gene": "PIK3CA", "protein_change": "p.H1047R",     "coverage": "scored", "key": "P42336/H1047R", "expected_call": "uncertain",
+            "_note": "A well-known oncogenic hotspot that AlphaMissense nonetheless classifies 'ambiguous' -- its score falls below the published pathogenic cutoff (0.564). Pinned deliberately: the provider must report what the tool actually says, not what the literature expects."},
+    "v15": {"gene": "SMAD4",  "protein_change": "p.D351H",      "coverage": "scored", "key": "Q13485/D351H",  "expected_call": "pathogenic"},
+    "v16": {"gene": "KRAS",   "protein_change": "p.A146T",      "coverage": "scored", "key": "P01116/A146T",  "expected_call": "pathogenic"},
+    "v17": {"gene": "TP53",   "protein_change": "p.Y220C",      "coverage": "scored", "key": "P04637/Y220C",  "expected_call": "pathogenic"},
+    "v18": {"gene": "APC",    "protein_change": "p.Q1367*",     "coverage": "none", "reason": "nonsense -- not a single-aa substitution"},
+    "v19": {"gene": "CTNNB1", "protein_change": "p.T41A",       "coverage": "scored", "key": "P35222/T41A",   "expected_call": "pathogenic"},
+    "v20": {"gene": "BRAF",   "protein_change": "p.V600E",      "coverage": "scored", "key": "P15056/V600E",  "expected_call": "pathogenic"}
+  },
+
+  "_reference_build_note": "v03, v06, v09, v11 and v15 are called on `pangenome` in variants_input.csv. They resolve here regardless: the (uniprot_id, protein_variant) key carries no genomic coordinates, which is exactly why decision D-006 chose it -- SPEC-004 reference reconciliation is not a prerequisite."
+}

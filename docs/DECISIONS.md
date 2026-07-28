@@ -196,6 +196,54 @@ Deliberately NOT decided here (they are not mine to decide):
 Whether option (c) needs its own SPEC item (identifier mapping is arguably its own concern
 under I6, not part of SPEC-005) is part of what is being approved.
 
+## D-007 — The repository has no LICENSE file
+Status: **PROPOSED — pending owner approval.**
+
+Fork (surfaced while wiring SPEC-005): `git ls-files` shows **no LICENSE, COPYING, or
+licence header anywhere in the repo**. It is a public repository
+(github.com/WrdCstlg/Georgetown-Cancer-Research) with no stated terms.
+
+This is a problem **independent of AlphaMissense** and would exist if SPEC-005 were never
+built. Stating it plainly:
+
+- Under the Berne Convention and US copyright law, "no licence" is not "public domain" — it
+  is **all rights reserved**. Nobody, including collaborators and the institution, has an
+  express right to use, copy, modify, or redistribute this code.
+- That directly undercuts R6 ("platform outlives its operator") and the stated goal of the
+  team running it without us: a handover has no legal basis.
+- It collides with **D1** (ownership / IP of the substrate, OPEN), because the licence is the
+  instrument that *expresses* whichever ownership answer D1 lands on. D1 should be decided
+  first, or at least jointly — the licence is downstream of it.
+- Federal funding may attach its own obligations (e.g. public-access or data-sharing terms
+  under the award). Those are stated in the award, which is not in this repo.
+- It interacts with **D3** (data governance / licensing): AlphaMissense predictions are
+  **CC BY-NC-SA 4.0**. Share-alike attaches to *adapted* material, and NC restricts commercial
+  use. A permissive code licence sitting next to NC-SA data needs the boundary between "our
+  code" and "their data" to be explicit, or the NC/SA terms can be read to reach further than
+  intended. (This build commits **no** AlphaMissense data, precisely to avoid pre-empting it.)
+
+Options:
+  (a) **Permissive (MIT / BSD-3 / Apache-2.0).** Maximises reuse and handover; Apache-2.0 adds
+      an express patent grant, which matters for a genomics method that may be patentable.
+      Compatible with D1(a) "owned infrastructure reused across projects".
+  (b) **Copyleft (GPL-3.0 / AGPL-3.0).** Keeps derivatives open; aligns with a share-alike data
+      ecosystem. But it constrains institutional or commercial downstream use, which may
+      conflict with whatever D1 decides.
+  (c) **Explicit proprietary / all-rights-reserved with a written collaborator grant.**
+      Makes the current de-facto state deliberate instead of accidental, and hands the
+      access question to a separate agreement.
+  (d) **Dual: code licence + a separate data-terms file** stating that third-party data
+      (AlphaMissense CC BY-NC-SA, COSMIC, ClinVar) keeps its own terms and is not covered by
+      the code licence.
+
+Recommendation: **(d) layered on top of whatever (a)–(c) D1 implies — and (d) regardless.**
+Separating code terms from third-party data terms is correct under every outcome of D1 and
+costs nothing to state now. The choice *between* (a), (b), and (c) is **not mine to make**:
+it is an ownership and institutional question (D1), likely with grant terms and a technology-
+transfer office attached. I am recording the gap and the options; the owner chooses.
+
+No licence file is added by this change.
+
 ## D1 — Ownership / IP of the substrate
 Status: **OPEN.**
 Question: who owns the fusion substrate?
