@@ -40,16 +40,26 @@ def _head():
 # --- transcriptions -----------------------------------------------------------
 
 def spec_items():
-    """Transcribe the SPEC.md registry table verbatim — never assess."""
+    """Transcribe the SPEC.md registry table verbatim — never assess.
+    Loud, not silent: a table that yields nothing, or a row whose Status/Readiness
+    cells don't hold registry vocabulary (e.g. after a column reorder), is a
+    format change — raise so the drift gate surfaces it (SPEC-026)."""
     items = []
     for line in _read("SPEC.md").splitlines():
         if not line.startswith("| SPEC-"):
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if cells[4] not in ("FUNCTIONAL", "SPECIFIED", "BLOCKED") or \
+           not cells[5].startswith(("AVAILABLE", "GATED", "UNKNOWN")):
+            raise ValueError(
+                f"spec_items: row {cells[0]!r} has unexpected Status/Readiness cells "
+                f"({cells[4]!r}, {cells[5]!r}) — SPEC.md table format changed?")
         items.append({
             "id": cells[0], "title": cells[1], "layer": cells[2],
             "aim": cells[3], "status": cells[4], "readiness": cells[5],
         })
+    if not items:
+        raise ValueError("spec_items: parsed 0 rows from SPEC.md — table format changed?")
     return items
 
 
@@ -57,19 +67,28 @@ def open_decisions():
     """Transcribe docs/DECISIONS.md sections that carry a Status line.
     Owner is a deterministic transcription rule, not an inference:
     PROPOSED statuses say 'pending (owner) approval' -> project owner;
-    D1-D6 say 'awaiting the parties named in docs/build-plan.md §1/§5'."""
+    D1-D6 say 'awaiting the parties named in docs/build-plan.md §1/§5'.
+    Loud, not silent: a 'Status:' line that doesn't match the expected bold
+    form, or a file that yields no decisions at all, raises (SPEC-026)."""
     text = _read(os.path.join("docs", "DECISIONS.md"))
     out = []
     current = None
+    saw_header = False
     for line in text.splitlines():
         m = re.match(r"^## (D-?\d+)\s*[—-]\s*(.+)$", line)
         if m:
+            saw_header = True
             current = {"id": m.group(1), "title": m.group(2).strip(), "status": None}
             out.append(current)
             continue
-        s = re.match(r"^Status:\s*\*\*(.+?)\*\*", line)
-        if s and current is not None and current["status"] is None:
-            current["status"] = s.group(1).strip().rstrip(".")
+        if line.startswith("Status:"):
+            s = re.match(r"^Status:\s*\*\*(.+?)\*\*", line)
+            if not s:
+                raise ValueError(
+                    f"open_decisions: unparseable Status line {line!r} in "
+                    f"{current['id'] if current else '?'} — DECISIONS.md format changed?")
+            if current is not None and current["status"] is None:
+                current["status"] = s.group(1).strip().rstrip(".")
     result = []
     for d in out:
         if not d["status"]:
@@ -81,6 +100,10 @@ def open_decisions():
         else:
             continue
         result.append(d)
+    if saw_header and not result:
+        raise ValueError(
+            "open_decisions: found decision headers but parsed no OPEN/PROPOSED "
+            "statuses — DECISIONS.md format changed?")
     return result
 
 
