@@ -21,6 +21,7 @@
 | Germline MAF filter (somatic calling) | `< 1%` in ExAC / gnomAD / 1000G | [from grant strategy] — confirm |
 | Minimum sequencing depth | `20x` | [from grant strategy] — confirm |
 | VUS consensus rule (`producers/variant_effect`) | A variant is called **pathogenic** if ≥ `2` tools call pathogenic and none call benign; **benign** if ≥ `2` call benign and none call pathogenic; otherwise it remains **VUS** (`method_id: consensus_v0_min_agree`, `min_agree: 2` — controls how the four tool calls are combined into a reclassification) | **AWAITING SIGN-OFF** — currently a PLACEHOLDER in `config/variant_effect.json`; authored during the Phase-2 build and transcribed here per the reciprocity rule. Domain owner must confirm or adjust |
+| AlphaMissense score→class cutoffs (`producers/variant_effect`) | `likely_benign` if `am_pathogenicity < 0.34`; `likely_pathogenic` if `> 0.564`; `ambiguous` otherwise. These map onto the repo's tool-call vocabulary as benign / pathogenic / uncertain respectively | **AWAITING SIGN-OFF** — these are **AlphaMissense's OWN PUBLISHED DEFAULTS**, transcribed verbatim from the publisher's README (Zenodo `10.5281/zenodo.8208688`) into `config/alphamissense.json`, **not authored by the agent** (control I3). The publisher chose this operating point for a general population; whether it is the right one for AA / Ghanaian / Ethiopian cohorts is a domain question — see questionnaire A9. Note this is **separate from calibration**: results stay `calibration_pending` regardless of these cutoffs (§3) |
 
 ## 2 · Tumor subtyping
 

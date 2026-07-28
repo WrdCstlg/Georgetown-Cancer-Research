@@ -1,0 +1,48 @@
+{
+  "_what": "Identifier-mapping fixture (SPEC-027, decision D-006 option (c)). Maps each golden-fixture variant_id to the external identifiers resources key on. Contains IDENTIFIERS ONLY -- no scores, no predictions, no third-party licensed data.",
+  "_why_committed": "UniProtKB accessions are facts about proteins, not domain criteria and not anyone's prediction output. UniProtKB is CC BY 4.0 (attribution). Contrast fixtures that would contain AlphaMissense scores -- those are CC BY-NC-SA 4.0 and are NOT committed (see docs/alphamissense-data.md).",
+  "_provisional": "Hand-built for the golden fixture. When pipeline/annotation/ (Funcotator) and SPEC-004 exist they populate this SAME shape from real callsets and this file is retired. The consuming producer does not change.",
+  "_verification": "Each accession was retrieved from the UniProtKB REST API (reviewed/Swiss-Prot, organism_id 9606) on 2026-07-28 and independently corroborated for KRAS (P01116) and BRAF (P15056) by the uniprot_id column of real rows in AlphaMissense_hg38.tsv.gz. AlphaMissense used UniProt release 2021_02 canonical isoforms; these accessions are stable Swiss-Prot primary accessions.",
+  "source": "UniProtKB REST API (rest.uniprot.org/uniprotkb/search, reviewed:true, organism_id:9606), retrieved 2026-07-28",
+
+  "variants": {
+    "v01": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN (Adenomatous polyposis coli protein), retrieved 2026-07-28"},
+    "v02": {"uniprot_id": "P01116", "gene": "KRAS",   "source": "UniProtKB RASK_HUMAN (GTPase KRas), retrieved 2026-07-28; corroborated by AlphaMissense_hg38.tsv.gz row chr12:25245350 C>T"},
+    "v03": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN (Cellular tumor antigen p53), retrieved 2026-07-28"},
+    "v04": {"uniprot_id": "P42336", "gene": "PIK3CA", "source": "UniProtKB PK3CA_HUMAN, retrieved 2026-07-28"},
+    "v05": {"uniprot_id": "Q13485", "gene": "SMAD4",  "source": "UniProtKB SMAD4_HUMAN, retrieved 2026-07-28"},
+    "v06": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN, retrieved 2026-07-28"},
+    "v07": {"uniprot_id": "P01116", "gene": "KRAS",   "source": "UniProtKB RASK_HUMAN, retrieved 2026-07-28"},
+    "v08": {"uniprot_id": "P35222", "gene": "CTNNB1", "source": "UniProtKB CTNB1_HUMAN (Catenin beta-1), retrieved 2026-07-28"},
+    "v09": {"uniprot_id": "Q68DV7", "gene": "RNF43",  "source": "UniProtKB RNF43_HUMAN, retrieved 2026-07-28"},
+    "v10": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "v11": {"uniprot_id": "P01116", "gene": "KRAS",   "source": "UniProtKB RASK_HUMAN, retrieved 2026-07-28"},
+    "v12": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "v13": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN, retrieved 2026-07-28"},
+    "v14": {"uniprot_id": "P42336", "gene": "PIK3CA", "source": "UniProtKB PK3CA_HUMAN, retrieved 2026-07-28"},
+    "v15": {"uniprot_id": "Q13485", "gene": "SMAD4",  "source": "UniProtKB SMAD4_HUMAN, retrieved 2026-07-28"},
+    "v16": {"uniprot_id": "P01116", "gene": "KRAS",   "source": "UniProtKB RASK_HUMAN, retrieved 2026-07-28"},
+    "v17": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "v18": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN, retrieved 2026-07-28"},
+    "v19": {"uniprot_id": "P35222", "gene": "CTNNB1", "source": "UniProtKB CTNB1_HUMAN, retrieved 2026-07-28"},
+    "v20": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28; corroborated by AlphaMissense_hg38.tsv.gz row chr7:140753336 A>T"},
+
+    "c01": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "c02": {"uniprot_id": "P42336", "gene": "PIK3CA", "source": "UniProtKB PK3CA_HUMAN, retrieved 2026-07-28"},
+    "c03": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28"},
+    "c04": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "c05": {"uniprot_id": "Q68DV7", "gene": "RNF43",  "source": "UniProtKB RNF43_HUMAN, retrieved 2026-07-28"},
+    "c06": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN, retrieved 2026-07-28"},
+    "c07": {"uniprot_id": "P35222", "gene": "CTNNB1", "source": "UniProtKB CTNB1_HUMAN, retrieved 2026-07-28"},
+    "c08": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "c09": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "c10": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "c11": {"uniprot_id": "P42336", "gene": "PIK3CA", "source": "UniProtKB PK3CA_HUMAN, retrieved 2026-07-28"},
+    "c12": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28"},
+    "c13": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "c14": {"uniprot_id": "Q68DV7", "gene": "RNF43",  "source": "UniProtKB RNF43_HUMAN, retrieved 2026-07-28"},
+    "c15": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"}
+  },
+
+  "_controls_note": "c-prefixed entries back fixtures/variant_effect/alphamissense_expected.json's `controls` block. They are NOT in variants_input.csv and must not be added to it -- that is the golden producer fixture (G4)."
+}

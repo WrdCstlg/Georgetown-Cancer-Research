@@ -363,9 +363,13 @@ def render_md(s):
     A(f"- **Producers present:** {', '.join(f'`{x}/`' for x in nb['producer_dirs_present'])} "
       "— every other producer slot is unbuilt.")
     if nb["unwired_providers"]:
-        A(f"- **Real score providers are not wired** — `raise NotImplementedError`: "
-          f"{', '.join(f'`{x}`' for x in nb['unwired_providers'])}. The producer has only "
-          "ever seen mock scores.")
+        A(f"- **Real score providers — {len(nb['unwired_providers'])} still unwired** "
+          f"(`raise NotImplementedError`): {', '.join(f'`{x}`' for x in nb['unwired_providers'])}. "
+          "AlphaMissense IS wired against its real published scores (SPEC-005 partial, "
+          "SPEC-027, decision D-006) — but that data is CC BY-NC-SA 4.0 and is NOT committed; "
+          "it is fetched into a gitignored local cache, so CI exercises the provider's logic "
+          "without the data (docs/alphamissense-data.md). SPEC-005 stays SPECIFIED until all "
+          "four providers are wired.")
     if nb["placeholder_configs"]:
         A(f"- **All thresholds are PLACEHOLDER:** {', '.join(f'`{x}`' for x in nb['placeholder_configs'])}. "
           "Strict mode hard-fails on them by design; every producer result is stamped "

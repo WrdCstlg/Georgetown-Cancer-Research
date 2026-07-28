@@ -36,6 +36,16 @@ class ToolCall:
     raw_score: Optional[float] = None
     db_independent: bool = False          # True for structure/evolution tools (no clinical DB needed)
 
+    # Which artifact this call came out of, e.g.
+    # "AlphaMissense_aa_substitutions.tsv.gz (Zenodo 10.5281/zenodo.8208688)".
+    # First-class because publishers ship several files with DIFFERENT label
+    # vocabularies for the same score (D-006): AlphaMissense's hg38 file says
+    # likely_benign/likely_pathogenic, its aa-substitutions file says
+    # benign/pathogenic. Recording the origin makes a file switch VISIBLE in
+    # stored provenance instead of a silent change in what a call means.
+    # Optional with a default so existing mock/fixture providers are unaffected.
+    source: Optional[str] = None
+
 
 @dataclass
 class Provenance:

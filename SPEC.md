@@ -41,6 +41,10 @@
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | Cross-cutting — a gate that cries wolf gets ignored (G3 discipline) | FUNCTIONAL | AVAILABLE |
 | SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | Cross-cutting — developer ergonomics (R7: still not the researcher UI) | FUNCTIONAL | AVAILABLE |
 | SPEC-025 | Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005) | `core/` | Substrate precondition for all aims — per-population fidelity is the project's premise | FUNCTIONAL | AVAILABLE |
+| SPEC-027 | Identifier-mapping seam: `variant_id` → external identifiers (UniProt accession, transcript, locus) as its own contract, so a producer LOOKS UP identifiers and never derives them; unblocks real score providers without waiting on SPEC-004 | `contracts/` + `producers/variant_effect/` | Aim 1 — decision D-006 option (c); precondition for SPEC-005's real score providers | FUNCTIONAL | AVAILABLE |
+
+> **SPEC-026 is reserved** — registered on branch `test/generator-parsers` (generator parser
+> safety), parked and unmerged. Not duplicated here; the next free id after that branch is SPEC-028.
 
 ## Acceptance criteria for FUNCTIONAL items
 
@@ -183,6 +187,59 @@ Executable acceptance (all in `tests/test_core_integrity.py`):
   missing provenance (D-005, PROPOSED);
 - both tests were observed FAILING against the old schema before the fix;
 - all four suites pass after the change; `status-drift` green.
+
+### SPEC-027 — identifier-mapping seam
+Executable acceptance (all in `tests/test_alphamissense_provider.py`, run per `AGENTS.md` §3):
+- `contracts/identifiers.py` exists as its own seam; `VariantInput` is UNCHANGED — the analysis
+  contract carries no external identifier fields (asserted by a test that inspects its fields);
+- a producer resolves a variant's external identifiers by LOOKUP through the seam and never
+  derives them; a variant absent from the map raises `IdentifierNotFound` naming the variant
+  and the map, never a guess or a default;
+- the map is loadable from a committed JSON fixture today and is the same shape
+  `pipeline/annotation/` + SPEC-004 will populate later — the producer does not change when
+  the upstream source does;
+- the seam carries no domain criteria (identifiers are facts, not thresholds — I3).
+
+### SPEC-005 — real score providers (PARTIAL: AlphaMissense only)
+> Status stays **SPECIFIED**: SPEC-005 covers AlphaMissense **+ EVE + PolyPhen + SIFT**.
+> One of four is wired. `EVEProvider`, `PolyPhenProvider`, and `SIFTProvider` still
+> `raise NotImplementedError`. This item does not become FUNCTIONAL until all four are wired —
+> a partially-satisfied item is not a satisfied one (AGENTS.md §4).
+
+Executable acceptance for the AlphaMissense portion (all in
+`tests/test_alphamissense_provider.py`):
+- the provider returns a `ToolCall` built from REAL published AlphaMissense scores, keyed by
+  `(uniprot_id, protein_variant)` per decision D-006 — never a mock and never a default;
+- **both** published `am_class` vocabularies normalize identically: `likely_benign`/`benign`
+  and `likely_pathogenic`/`pathogenic` map to the same `ToolCall.call`, so a future switch
+  between `AlphaMissense_hg38.tsv.gz` and `AlphaMissense_aa_substitutions.tsv.gz` cannot
+  silently change a call (regression test for the vocabulary divergence found in D-006);
+- the file of origin is recorded on every `ToolCall` (`source`) so a file switch is visible in
+  stored provenance rather than silent;
+- a variant with no AlphaMissense record raises `ScoreNotFound` — never guesses, never returns
+  a default call; a non-missense variant (nonsense/frameshift) is "no coverage" (`None`),
+  which is distinct from "not found";
+- every result carries `calibration_pending`: AlphaMissense is European-calibrated and
+  per-population targets are [TO BE DEFINED] (DEFINITIONS.md §3). Asserted on real-scored
+  results, not only on mock ones;
+- score cutoffs are AlphaMissense's PUBLISHED defaults transcribed into
+  `config/alphamissense.json` and registered AWAITING SIGN-OFF in DEFINITIONS.md — not
+  authored, not adjusted (I3);
+- NO AlphaMissense score data is committed (CC BY-NC-SA 4.0). Tests read a gitignored local
+  cache and **SKIP with a populate instruction when it is absent** — never silently pass,
+  never fabricate a score;
+- the fixture has **discriminating power** (audit F10 class): expectations span all three
+  calls, no single expected call exceeds 70% of scored entries, and a constant-output stub
+  is wrong on a MAJORITY of entries whatever it returns — enforced by
+  `test_fixture_has_discriminating_power`, and demonstrated by stubbing the provider to a
+  constant and observing each of the three stubs fail;
+- benign controls are doubly sourced: ClinVar classifies each **Benign** or **Likely benign**
+  (taken from the returned `germline_classification`, not the esearch term) AND the
+  AlphaMissense score is below the published benign cut-point;
+- every scored expectation is **independently corroborated** against a DIFFERENT published
+  file (`AlphaMissense_hg38.tsv.gz`, keyed by genomic coordinate) so a parsing bug at
+  derivation time cannot be frozen into the fixture — `tools/alphamissense/corroborate_hg38.py`,
+  30/30 agreeing at 2026-07-28.
 
 ## Acceptance criteria for SPECIFIED items
 

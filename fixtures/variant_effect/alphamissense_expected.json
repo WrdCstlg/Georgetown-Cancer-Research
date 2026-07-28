@@ -1,0 +1,87 @@
+{
+  "_what": "Golden expectations for the AlphaMissense provider (SPEC-005, partial). For each golden-fixture variant: the AlphaMissense lookup key and the call the provider must produce from the REAL published data.",
+
+  "_what_is_NOT_here": "No am_pathogenicity scores and no raw AlphaMissense class labels. AlphaMissense predictions are CC BY-NC-SA 4.0 (non-commercial, share-alike) and this repo does not redistribute them. What IS committed is our own assertion about what the tool reports for a named key -- the test proves that assertion against a locally fetched, gitignored cache. If the cache is absent the test SKIPS with a populate instruction; it never passes silently and never fabricates a score.",
+
+  "_expected_call_vocabulary": "This repo's ToolCall vocabulary (contracts/variant_effect.py): pathogenic | benign | uncertain. NOT AlphaMissense's own labels -- those differ per file (likely_pathogenic vs pathogenic) and the provider normalizes both (decision D-006).",
+
+  "_no_coverage": "AlphaMissense models SINGLE AMINO-ACID MISSENSE SUBSTITUTIONS only. Nonsense and frameshift variants have no record BY CONSTRUCTION -- the provider returns None (no coverage), which is deliberately distinct from ScoreNotFound (a score we expected and did not get).",
+
+  "source_file": "AlphaMissense_aa_substitutions.tsv.gz",
+  "source_record": "Zenodo 10.5281/zenodo.8208688 (DOI), licence CC BY-NC-SA 4.0",
+  "source_key_format": "<uniprot_id>/<protein_variant>, e.g. P01116/G12D",
+  "retrieved_on": "2026-07-28",
+  "accessions_from": "fixtures/variant_effect/identifiers.json (UniProtKB, CC BY 4.0)",
+
+  "_independent_corroboration": "ALL 24 scored entries (15 in `expected` + 9 in `controls`) were re-derived from a DIFFERENT published file -- AlphaMissense_hg38.tsv.gz, keyed by genomic coordinate rather than by UniProt accession -- and agree to 4 decimal places, with matching uniprot_id. This addresses the single-source-derivation risk: expectations were frozen from one parse, so a parsing bug at derivation time would otherwise have been baked in and every test would have agreed with it. Reproduce with: python tools/alphamissense/corroborate_hg38.py (2026-07-28: 24 agreeing, 0 disagreeing). The cross-check also re-confirmed the vocabulary divergence in situ: the hg38 file reported likely_benign/likely_pathogenic exactly where the aa-substitutions file reported benign/pathogenic, for identical scores.",
+
+  "expected": {
+    "v01": {"gene": "APC",    "protein_change": "p.R1450*",     "coverage": "none", "reason": "nonsense -- not a single-aa substitution"},
+    "v02": {"gene": "KRAS",   "protein_change": "p.G12D",       "coverage": "scored", "key": "P01116/G12D",   "expected_call": "pathogenic"},
+    "v03": {"gene": "TP53",   "protein_change": "p.R175H",      "coverage": "scored", "key": "P04637/R175H",  "expected_call": "pathogenic"},
+    "v04": {"gene": "PIK3CA", "protein_change": "p.E545K",      "coverage": "scored", "key": "P42336/E545K",  "expected_call": "pathogenic"},
+    "v05": {"gene": "SMAD4",  "protein_change": "p.R361H",      "coverage": "scored", "key": "Q13485/R361H",  "expected_call": "pathogenic"},
+    "v06": {"gene": "APC",    "protein_change": "p.E1309fs",    "coverage": "none", "reason": "frameshift -- not a single-aa substitution"},
+    "v07": {"gene": "KRAS",   "protein_change": "p.G13D",       "coverage": "scored", "key": "P01116/G13D",   "expected_call": "pathogenic"},
+    "v08": {"gene": "CTNNB1", "protein_change": "p.S45F",       "coverage": "scored", "key": "P35222/S45F",   "expected_call": "pathogenic"},
+    "v09": {"gene": "RNF43",  "protein_change": "p.G659fs",     "coverage": "none", "reason": "frameshift -- not a single-aa substitution"},
+    "v10": {"gene": "FBXW7",  "protein_change": "p.R465C",      "coverage": "scored", "key": "Q969H0/R465C",  "expected_call": "pathogenic"},
+    "v11": {"gene": "KRAS",   "protein_change": "p.G12V",       "coverage": "scored", "key": "P01116/G12V",   "expected_call": "pathogenic"},
+    "v12": {"gene": "TP53",   "protein_change": "p.R248Q",      "coverage": "scored", "key": "P04637/R248Q",  "expected_call": "pathogenic"},
+    "v13": {"gene": "APC",    "protein_change": "p.T1556fs",    "coverage": "none", "reason": "frameshift -- not a single-aa substitution"},
+    "v14": {"gene": "PIK3CA", "protein_change": "p.H1047R",     "coverage": "scored", "key": "P42336/H1047R", "expected_call": "uncertain",
+            "_note": "A well-known oncogenic hotspot that AlphaMissense nonetheless classifies 'ambiguous' -- its score falls below the published pathogenic cutoff (0.564). Pinned deliberately: the provider must report what the tool actually says, not what the literature expects."},
+    "v15": {"gene": "SMAD4",  "protein_change": "p.D351H",      "coverage": "scored", "key": "Q13485/D351H",  "expected_call": "pathogenic"},
+    "v16": {"gene": "KRAS",   "protein_change": "p.A146T",      "coverage": "scored", "key": "P01116/A146T",  "expected_call": "pathogenic"},
+    "v17": {"gene": "TP53",   "protein_change": "p.Y220C",      "coverage": "scored", "key": "P04637/Y220C",  "expected_call": "pathogenic"},
+    "v18": {"gene": "APC",    "protein_change": "p.Q1367*",     "coverage": "none", "reason": "nonsense -- not a single-aa substitution"},
+    "v19": {"gene": "CTNNB1", "protein_change": "p.T41A",       "coverage": "scored", "key": "P35222/T41A",   "expected_call": "pathogenic"},
+    "v20": {"gene": "BRAF",   "protein_change": "p.V600E",      "coverage": "scored", "key": "P15056/V600E",  "expected_call": "pathogenic"}
+  },
+
+  "_reference_build_note": "v03, v06, v09, v11 and v15 are called on `pangenome` in variants_input.csv. They resolve here regardless: the (uniprot_id, protein_variant) key carries no genomic coordinates, which is exactly why decision D-006 chose it -- SPEC-004 reference reconciliation is not a prerequisite.",
+
+  "_controls_why": "The `expected` block above is drawn from the golden producer fixture, where 14 of 15 covered variants are pathogenic. That gives it almost no discriminating power: a stub provider returning 'pathogenic' unconditionally would pass 14/15 (audit F10 class of weakness). The `controls` block below adds real BENIGN and AMBIGUOUS variants so a constant-output stub fails on any call it could return.",
+
+  "_controls_selection": "Each benign control satisfies TWO independent sources: (1) ClinVar classifies it Benign or Likely benign -- taken from the returned germline_classification field, NOT from the esearch query term, which does not reliably restrict classification; and (2) the AlphaMissense score is below the published benign cut-point (0.34). Ambiguous controls are recurrent somatic hotspots from cancerhotspots.org whose score falls inside the ambiguous band. No control was chosen by intuition.",
+
+  "_controls_id_space": "c-prefixed. These are NOT in fixtures/variant_effect/variants_input.csv and must never be added to it -- that file is the golden producer fixture (G4) and its expected_output.json pins n=20. Controls exercise the AlphaMissense provider only. Disjoint from v* and from fixtures/query/'s q* (SPEC-016).",
+
+  "controls": {
+    "c01": {"gene": "TP53",   "protein_change": "p.P58A",  "coverage": "scored", "key": "P04637/P58A",  "expected_call": "benign",
+            "clinvar": "Likely benign (VCV001778944, NM_000546.6(TP53):c.172C>G p.Pro58Ala; retrieved 2026-07-28)"},
+    "c02": {"gene": "PIK3CA", "protein_change": "p.K733R", "coverage": "scored", "key": "P42336/K733R", "expected_call": "benign",
+            "clinvar": "Benign (VCV000456537, NM_006218.4(PIK3CA):c.2198A>G p.Lys733Arg; retrieved 2026-07-28)"},
+    "c03": {"gene": "BRAF",   "protein_change": "p.I326V", "coverage": "scored", "key": "P15056/I326V", "expected_call": "benign",
+            "clinvar": "Benign (VCV000417225, NM_004333.6(BRAF):c.976A>G p.Ile326Val; retrieved 2026-07-28)"},
+    "c04": {"gene": "FBXW7",  "protein_change": "p.P160L", "coverage": "scored", "key": "Q969H0/P160L", "expected_call": "benign",
+            "clinvar": "Benign (VCV000134385, NM_001349798.2(FBXW7):c.479C>T p.Pro160Leu; retrieved 2026-07-28)"},
+    "c05": {"gene": "RNF43",  "protein_change": "p.T714A", "coverage": "scored", "key": "Q68DV7/T714A", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV004863376, NM_017763.6(RNF43):c.2140A>G p.Thr714Ala; retrieved 2026-07-28)"},
+    "c06": {"gene": "APC",    "protein_change": "p.A927T", "coverage": "scored", "key": "P25054/A927T", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV004122045, NM_000038.6(APC):c.2779G>A p.Ala927Thr; retrieved 2026-07-28)",
+            "_note": "The only APC entry with an AlphaMissense score -- every APC variant in the golden fixture is nonsense or frameshift, i.e. no coverage."},
+    "c07": {"gene": "CTNNB1", "protein_change": "p.T547S", "coverage": "scored", "key": "P35222/T547S", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV002227671, NM_001904.4(CTNNB1):c.1639A>T p.Thr547Ser; retrieved 2026-07-28)",
+            "_note": "Deliberately the highest-scoring benign control -- it sits nearest the 0.34 cut-point, so a boundary regression shows up here first."},
+
+    "c10": {"gene": "TP53",   "protein_change": "p.N310S", "coverage": "scored", "key": "P04637/N310S", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV001766454, NM_000546.6(TP53):c.929A>G p.Asn310Ser; retrieved 2026-07-28)"},
+    "c11": {"gene": "PIK3CA", "protein_change": "p.N183S", "coverage": "scored", "key": "P42336/N183S", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV001129752, NM_006218.4(PIK3CA):c.548A>G p.Asn183Ser; retrieved 2026-07-28)"},
+    "c12": {"gene": "BRAF",   "protein_change": "p.A145S", "coverage": "scored", "key": "P15056/A145S", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV003481727, NM_004333.6(BRAF):c.433G>T p.Ala145Ser; retrieved 2026-07-28)"},
+    "c13": {"gene": "FBXW7",  "protein_change": "p.T140S", "coverage": "scored", "key": "Q969H0/T140S", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV003093876, NM_001349798.2(FBXW7):c.418A>T p.Thr140Ser; retrieved 2026-07-28)"},
+    "c14": {"gene": "RNF43",  "protein_change": "p.I212V", "coverage": "scored", "key": "Q68DV7/I212V", "expected_call": "benign",
+            "clinvar": "Likely benign (VCV004863373, NM_017763.6(RNF43):c.634A>G p.Ile212Val; retrieved 2026-07-28)"},
+
+    "c08": {"gene": "TP53",   "protein_change": "p.P152L", "coverage": "scored", "key": "P04637/P152L", "expected_call": "uncertain",
+            "hotspot": "cancerhotspots.org single-residue hotspot P152, 38 tumors (10 bowel); q=0; retrieved 2026-07-28",
+            "_note": "A recurrent somatic hotspot that lands INSIDE the ambiguous band -- exercises the middle call, which no v* entry except v14 does."},
+    "c09": {"gene": "FBXW7",  "protein_change": "p.R224Q", "coverage": "scored", "key": "Q969H0/R224Q", "expected_call": "uncertain",
+            "hotspot": "cancerhotspots.org single-residue hotspot R224, 10 tumors (3 bowel); q=0; retrieved 2026-07-28"},
+    "c15": {"gene": "TP53",   "protein_change": "p.L130V", "coverage": "scored", "key": "P04637/L130V", "expected_call": "uncertain",
+            "hotspot": "cancerhotspots.org single-residue hotspot L130, 30 tumors (5 bowel); q=0; retrieved 2026-07-28"}
+  }
+}

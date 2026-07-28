@@ -200,6 +200,14 @@
       "aim": "Substrate precondition for all aims — per-population fidelity is the project's premise",
       "status": "FUNCTIONAL",
       "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-027",
+      "title": "Identifier-mapping seam: `variant_id` → external identifiers (UniProt accession, transcript, locus) as its own contract, so a producer LOOKS UP identifiers and never derives them; unblocks real score providers without waiting on SPEC-004",
+      "layer": "`contracts/` + `producers/variant_effect/`",
+      "aim": "Aim 1 — decision D-006 option (c); precondition for SPEC-005's real score providers",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
     }
   ],
   "layers": [
@@ -271,6 +279,11 @@
   "runs_today": {
     "suites": [
       {
+        "file": "tests/test_alphamissense_provider.py",
+        "command": "python tests/test_alphamissense_provider.py",
+        "test_count": 13
+      },
+      {
         "file": "tests/test_core_ingest.py",
         "command": "python tests/test_core_ingest.py",
         "test_count": 4
@@ -314,10 +327,9 @@
       "variant_effect"
     ],
     "unwired_providers": [
-      "AlphaMissenseProvider (producers/variant_effect/providers.py:53)",
-      "EVEProvider (producers/variant_effect/providers.py:65)",
-      "PolyPhenProvider (producers/variant_effect/providers.py:72)",
-      "SIFTProvider (producers/variant_effect/providers.py:79)"
+      "EVEProvider (producers/variant_effect/providers.py:104)",
+      "PolyPhenProvider (producers/variant_effect/providers.py:111)",
+      "SIFTProvider (producers/variant_effect/providers.py:118)"
     ],
     "placeholder_configs": [
       "config/calibration.json:2 (\"status\": \"PLACEHOLDER\")",
@@ -359,6 +371,24 @@
       "id": "D-005",
       "title": "What does re-ingesting mean?",
       "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-006",
+      "title": "How does a variant reach an AlphaMissense score? (SPEC-005 blocker)",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-007",
+      "title": "The repository has no LICENSE file",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-008",
+      "title": "Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2)",
+      "status": "PROPOSED — pending domain-owner decision",
       "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },
     {

@@ -42,6 +42,19 @@ jobs:
       - name: core data integrity (SPEC-025)
         run: python tests/test_core_integrity.py
 
+      # SPEC-005 (partial) + SPEC-027. NOTE: CI has NO AlphaMissense score cache —
+      # the data is CC BY-NC-SA 4.0 and is deliberately not committed (decision
+      # D-006; docs/alphamissense-data.md). So the four score-dependent tests SKIP
+      # here and the suite reports "INCOMPLETE COVERAGE", loudly, rather than
+      # pretending to pass. What CI DOES gate: both published am_class vocabularies
+      # normalizing identically, the VariantInput contract staying unchanged,
+      # identifier refusals, and cutoff transcription.
+      # Whether CI should fetch the data is a D2/D3 question and is NOT decided here;
+      # if it is ever answered yes, add the fetch step and set
+      # ALPHAMISSENSE_CACHE_REQUIRED=1 to turn a skip back into a failure.
+      - name: alphamissense provider + identifier seam (SPEC-005 partial, SPEC-027)
+        run: python tests/test_alphamissense_provider.py
+
   # SPEC-017: the STATUS artifacts must match a fresh regeneration — generated
   # docs cannot drift from repo state. Deterministic by contract (no timestamps,
   # no absolute paths, no commit hashes in the output).
