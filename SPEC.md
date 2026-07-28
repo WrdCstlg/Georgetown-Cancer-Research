@@ -227,7 +227,19 @@ Executable acceptance for the AlphaMissense portion (all in
   authored, not adjusted (I3);
 - NO AlphaMissense score data is committed (CC BY-NC-SA 4.0). Tests read a gitignored local
   cache and **SKIP with a populate instruction when it is absent** — never silently pass,
-  never fabricate a score.
+  never fabricate a score;
+- the fixture has **discriminating power** (audit F10 class): expectations span all three
+  calls, no single expected call exceeds 70% of scored entries, and a constant-output stub
+  is wrong on a MAJORITY of entries whatever it returns — enforced by
+  `test_fixture_has_discriminating_power`, and demonstrated by stubbing the provider to a
+  constant and observing each of the three stubs fail;
+- benign controls are doubly sourced: ClinVar classifies each **Benign** or **Likely benign**
+  (taken from the returned `germline_classification`, not the esearch term) AND the
+  AlphaMissense score is below the published benign cut-point;
+- every scored expectation is **independently corroborated** against a DIFFERENT published
+  file (`AlphaMissense_hg38.tsv.gz`, keyed by genomic coordinate) so a parsing bug at
+  derivation time cannot be frozen into the fixture — `tools/alphamissense/corroborate_hg38.py`,
+  30/30 agreeing at 2026-07-28.
 
 ## Acceptance criteria for SPECIFIED items
 

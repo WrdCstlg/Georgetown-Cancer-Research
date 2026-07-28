@@ -31,6 +31,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.request
 import zlib
 
@@ -59,17 +61,34 @@ _requests = 0
 _bytes = 0
 
 
-def _get(offset: int, length: int) -> bytes:
+def _get(offset: int, length: int, attempts: int = 5) -> bytes:
+    """One ranged read, with backoff. Zenodo intermittently returns 502/503/504
+    on long sweeps; a transient gateway error must not look like missing data,
+    because "no rows here" silently changes what the binary search concludes."""
     global _requests, _bytes
-    _requests += 1
     end = min(offset + length - 1, SIZE - 1)
     req = urllib.request.Request(URL, headers={"Range": f"bytes={offset}-{end}"})
-    with urllib.request.urlopen(req, timeout=180) as r:
-        if r.status not in (200, 206):
-            raise RuntimeError(f"unexpected HTTP {r.status} for range {offset}-{end}")
-        data = r.read()
-    _bytes += len(data)
-    return data
+    last = None
+    for attempt in range(attempts):
+        _requests += 1
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                if r.status not in (200, 206):
+                    raise RuntimeError(f"unexpected HTTP {r.status} for range {offset}-{end}")
+                data = r.read()
+            _bytes += len(data)
+            return data
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as e:
+            last = e
+            if attempt == attempts - 1:
+                break
+            wait = 2 ** attempt
+            print(f"    (retry {attempt + 1}/{attempts - 1} after {type(e).__name__}; "
+                  f"sleeping {wait}s)", file=sys.stderr)
+            time.sleep(wait)
+    raise RuntimeError(
+        f"range {offset}-{end} failed after {attempts} attempts: {type(last).__name__}: {last}"
+    ) from last
 
 
 def _rows(raw: bytes, skip_leading: bool) -> list:
@@ -141,6 +160,14 @@ def main() -> int:
     ap.add_argument("--out", default=DEFAULT_OUT)
     ap.add_argument("--retrieved-on", default=None,
                     help="ISO date recorded in the cache (default: today, UTC)")
+    ap.add_argument("--accessions", default=None,
+                    help="comma-separated UniProt accessions; default: those in "
+                         "the identifier fixture")
+    ap.add_argument("--all-substitutions", action="store_true",
+                    help="cache EVERY substitution for each accession, not just the "
+                         "golden-fixture variants. Used by the driver-coverage probe "
+                         "(docs/probes/) and to source benign controls. Still local and "
+                         "gitignored -- nothing is redistributed.")
     args = ap.parse_args()
 
     if args.retrieved_on:
@@ -156,15 +183,19 @@ def main() -> int:
     # MISSENSE variants. Non-missense rows (nonsense, frameshift) are skipped:
     # AlphaMissense does not model them, so "no record" is expected, not a miss.
     need, skipped = {}, []
-    with open(VARIANTS, encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            vid = row["variant_id"]
-            m = _MISSENSE_RE.match(row["protein_change"].strip())
-            if not m:
-                skipped.append(f"{vid} {row['gene']} {row['protein_change']}")
-                continue
-            acc = identifiers[vid]["uniprot_id"]
-            need.setdefault(acc, set()).add(f"{m.group(1)}{m.group(2)}{m.group(3)}")
+    if args.accessions:
+        for acc in args.accessions.split(","):
+            need.setdefault(acc.strip(), set())
+    else:
+        with open(VARIANTS, encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                vid = row["variant_id"]
+                m = _MISSENSE_RE.match(row["protein_change"].strip())
+                if not m:
+                    skipped.append(f"{vid} {row['gene']} {row['protein_change']}")
+                    continue
+                acc = identifiers[vid]["uniprot_id"]
+                need.setdefault(acc, set()).add(f"{m.group(1)}{m.group(2)}{m.group(3)}")
 
     print(f"source   : {SOURCE_FILE} ({RECORD})")
     print(f"licence  : {LICENCE} -- NOT redistributed; this cache stays local")
@@ -180,6 +211,11 @@ def main() -> int:
         table = fetch_accession(acc)
         if not table:
             missing.append(f"{acc} (accession not found in {SOURCE_FILE})")
+            continue
+        if args.all_substitutions:
+            for pv, rec in table.items():
+                scores[f"{acc}/{pv}"] = rec
+            print(f"  {acc}: cached all {len(table)} substitutions")
             continue
         for pv in sorted(need[acc]):
             if pv in table:

@@ -11,6 +11,7 @@ Supported: python tests/test_alphamissense_provider.py  (direct execution is the
 supported, CI-enforced path; pytest compatibility is UNVERIFIED -- never executed
 end-to-end in this environment, SPEC-016)
 """
+import collections
 import csv
 import json
 import os
@@ -55,8 +56,23 @@ class Skip(Exception):
 
 
 def load_expected():
+    """Golden entries drawn from the producer's variants_input.csv (v* ids)."""
     with open(EXPECTED, encoding="utf-8") as f:
         return json.load(f)["expected"]
+
+
+def load_controls():
+    """Benign / ambiguous controls (c* ids). NOT in variants_input.csv -- that is
+    the golden producer fixture and its expected_output.json pins n=20 (G4)."""
+    with open(EXPECTED, encoding="utf-8") as f:
+        return json.load(f).get("controls", {})
+
+
+def control_variants():
+    """VariantInputs for the controls, built from the fixture itself."""
+    return [VariantInput(variant_id=vid, gene=e["gene"], protein_change=e["protein_change"],
+                         population="AA", reference="grch38")
+            for vid, e in sorted(load_controls().items())]
 
 
 def load_variants():
@@ -184,6 +200,29 @@ def test_published_cutoffs_are_transcribed_not_authored():
 
 # --- cache-dependent: SKIP loudly if the cache is absent ----------------------
 
+def test_fixture_has_discriminating_power():
+    """AUDIT F10 CLASS: a fixture whose expectations are nearly all one value
+    cannot detect a constant-output stub. Before controls were added, 14 of 15
+    covered entries expected 'pathogenic' -- a stub returning 'pathogenic'
+    unconditionally scored 14/15. Enforce a genuine mix so that can never
+    silently return: no single expected call may exceed 70% of scored entries,
+    and every call the provider can emit must appear."""
+    scored = [e for e in {**load_expected(), **load_controls()}.values()
+              if e["coverage"] == "scored"]
+    calls = [e["expected_call"] for e in scored]
+    dist = collections.Counter(calls)
+    assert set(dist) == {PATHOGENIC, BENIGN, UNCERTAIN}, \
+        f"every possible call must be represented; got {dict(dist)}"
+    top = dist.most_common(1)[0]
+    assert top[1] / len(calls) <= 0.70, \
+        f"'{top[0]}' is {100*top[1]/len(calls):.0f}% of expectations -- a constant stub would mostly pass"
+    # a constant-output stub must be wrong on a majority of entries, whatever it returns
+    for constant in (PATHOGENIC, BENIGN, UNCERTAIN):
+        wrong = sum(1 for c in calls if c != constant)
+        assert wrong > len(calls) / 2, \
+            f"a stub always returning {constant!r} would fail only {wrong}/{len(calls)}"
+
+
 def test_golden_real_scores_produce_expected_calls():
     provider, cache = make_provider()
     expected = load_expected()
@@ -200,6 +239,38 @@ def test_golden_real_scores_produce_expected_calls():
             assert call.tool == "alphamissense"
             assert call.raw_score is not None, f"{vid}: real score must be carried"
             assert call.source == cache.source, f"{vid}: file of origin not recorded"
+
+
+def test_benign_and_ambiguous_controls_produce_expected_calls():
+    """The controls carry the discriminating power: real ClinVar Benign /
+    Likely-benign variants that AlphaMissense also scores below the benign
+    cut-point, plus recurrent somatic hotspots that land inside the ambiguous
+    band. A provider that cannot distinguish these is broken even if every
+    pathogenic expectation passes."""
+    provider, _ = make_provider()
+    controls = load_controls()
+    assert controls, "controls block missing from the fixture"
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for v in control_variants():
+            exp = controls[v.variant_id]
+            call = provider.score(v)
+            assert call is not None, f"{v.variant_id}: expected a real score, got None"
+            assert call.call == exp["expected_call"], \
+                (v.variant_id, exp["key"], call.call, exp["expected_call"])
+            assert call.raw_score is not None
+    # every benign control must actually sit below the published cut-point,
+    # and every ambiguous control inside the band -- not merely be labelled so
+    cutoffs = AlphaMissenseConfig(AM_CFG).cutoffs
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        for v in control_variants():
+            exp, call = controls[v.variant_id], provider.score(v)
+            if exp["expected_call"] == BENIGN:
+                assert call.raw_score < cutoffs["benign_below"], (v.variant_id, call.raw_score)
+            elif exp["expected_call"] == UNCERTAIN:
+                assert cutoffs["benign_below"] <= call.raw_score <= cutoffs["pathogenic_above"], \
+                    (v.variant_id, call.raw_score)
 
 
 def test_provider_raises_when_a_score_is_absent_never_guesses():

@@ -281,7 +281,7 @@
       {
         "file": "tests/test_alphamissense_provider.py",
         "command": "python tests/test_alphamissense_provider.py",
-        "test_count": 11
+        "test_count": 13
       },
       {
         "file": "tests/test_core_ingest.py",
@@ -383,6 +383,12 @@
       "id": "D-007",
       "title": "The repository has no LICENSE file",
       "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-008",
+      "title": "Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2)",
+      "status": "PROPOSED — pending domain-owner decision",
       "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },
     {

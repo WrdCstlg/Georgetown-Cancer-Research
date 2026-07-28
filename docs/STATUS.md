@@ -43,7 +43,7 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 
 Test suites (standard-library only, direct execution — the supported path):
 
-- `python tests/test_alphamissense_provider.py` — 11 tests
+- `python tests/test_alphamissense_provider.py` — 13 tests
 - `python tests/test_core_ingest.py` — 4 tests
 - `python tests/test_core_integrity.py` — 2 tests
 - `python tests/test_query_read_api.py` — 16 tests
@@ -72,6 +72,7 @@ Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–
 - **D-005** — What does re-ingesting mean?: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-006** — How does a variant reach an AlphaMissense score? (SPEC-005 blocker): PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-007** — The repository has no LICENSE file: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-008** — Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2): PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D1** — Ownership / IP of the substrate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D2** — Compute & data residency: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D3** — Data governance: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)

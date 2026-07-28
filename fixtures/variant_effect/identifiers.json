@@ -25,6 +25,24 @@
     "v17": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
     "v18": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN, retrieved 2026-07-28"},
     "v19": {"uniprot_id": "P35222", "gene": "CTNNB1", "source": "UniProtKB CTNB1_HUMAN, retrieved 2026-07-28"},
-    "v20": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28; corroborated by AlphaMissense_hg38.tsv.gz row chr7:140753336 A>T"}
-  }
+    "v20": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28; corroborated by AlphaMissense_hg38.tsv.gz row chr7:140753336 A>T"},
+
+    "c01": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "c02": {"uniprot_id": "P42336", "gene": "PIK3CA", "source": "UniProtKB PK3CA_HUMAN, retrieved 2026-07-28"},
+    "c03": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28"},
+    "c04": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "c05": {"uniprot_id": "Q68DV7", "gene": "RNF43",  "source": "UniProtKB RNF43_HUMAN, retrieved 2026-07-28"},
+    "c06": {"uniprot_id": "P25054", "gene": "APC",    "source": "UniProtKB APC_HUMAN, retrieved 2026-07-28"},
+    "c07": {"uniprot_id": "P35222", "gene": "CTNNB1", "source": "UniProtKB CTNB1_HUMAN, retrieved 2026-07-28"},
+    "c08": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "c09": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "c10": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"},
+    "c11": {"uniprot_id": "P42336", "gene": "PIK3CA", "source": "UniProtKB PK3CA_HUMAN, retrieved 2026-07-28"},
+    "c12": {"uniprot_id": "P15056", "gene": "BRAF",   "source": "UniProtKB BRAF_HUMAN, retrieved 2026-07-28"},
+    "c13": {"uniprot_id": "Q969H0", "gene": "FBXW7",  "source": "UniProtKB FBXW7_HUMAN, retrieved 2026-07-28"},
+    "c14": {"uniprot_id": "Q68DV7", "gene": "RNF43",  "source": "UniProtKB RNF43_HUMAN, retrieved 2026-07-28"},
+    "c15": {"uniprot_id": "P04637", "gene": "TP53",   "source": "UniProtKB P53_HUMAN, retrieved 2026-07-28"}
+  },
+
+  "_controls_note": "c-prefixed entries back fixtures/variant_effect/alphamissense_expected.json's `controls` block. They are NOT in variants_input.csv and must not be added to it -- that is the golden producer fixture (G4)."
 }

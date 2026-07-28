@@ -103,8 +103,8 @@ Three further facts established from the real data, each of which changes the im
    (fixtures/variant_effect/variants_input.csv). Mechanical, but it is a format contract.
 2. **The two files disagree on the `am_class` vocabulary.** `AlphaMissense_hg38.tsv.gz` emits
    `likely_benign` / `ambiguous` / `likely_pathogenic`. `AlphaMissense_aa_substitutions.tsv.gz`
-   emits `benign` / `ambiguous` / `pathogenic` — verified verbatim rows
-   (`A0A024R1R8 M1D 0.8267 pathogenic`, `A0A024R1R8 M1F 0.2753 benign`). The bundled README
+   emits `benign` / `ambiguous` / `pathogenic` — verified by reading real rows of both files
+   (labels quoted here; the score values themselves are not reproduced). The bundled README
    documents only the `likely_*` form and its own sample block for that file is wrong. The
    numeric thresholds are identical in both; only the labels differ. A provider that switches
    files must not assume one vocabulary.
@@ -243,6 +243,68 @@ it is an ownership and institutional question (D1), likely with grant terms and 
 transfer office attached. I am recording the gap and the options; the owner chooses.
 
 No licence file is added by this change.
+
+## D-008 — Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2)
+Status: **PROPOSED — pending domain-owner decision.** This is a DOMAIN-MODEL question; the
+recommendation below is a recommendation only.
+
+Fork: SPEC-005 wires AlphaMissense, which predicts **clinical pathogenicity**, into a pipeline
+whose Phase-2 purpose is **somatic driver** reclassification. Those are different questions.
+The concern was raised concretely by PIK3CA H1047R — a canonical activating hotspot —
+landing in AlphaMissense's `ambiguous` band, below the published pathogenic cut-point.
+
+### What the probe found (docs/probes/alphamissense-driver-coverage.md, run 2026-07-28)
+
+The hypothesis "AlphaMissense systematically misses activating drivers" was tested against 178
+recurrent somatic hotspots in the grant's own 15 CRC driver genes, grouped by IntOGen/OncoKB
+mechanism of action. **It was NOT supported:**
+
+- activating: 93.5% called pathogenic (median ~0.98); loss-of-function: 95.0% (median ~0.99);
+- Mann-Whitney U p = 0.312, Fisher exact p = 0.748; colorectal-only subset p = 0.700 / 1.000;
+- all five activating misses are **PIK3CA** — KRAS, NRAS, BRAF and CTNNB1 hotspots are called
+  pathogenic without exception. The effect is gene-specific, not mechanism-specific.
+
+Two caveats survive the null result:
+1. **Recurrence weighting.** 8.9% of activating-hotspot tumor burden pan-cancer sits behind a
+   non-pathogenic call vs 2.0% for LoF — but **96.1% of that is H1047R alone**, and in bowel
+   tumors the gap narrows to 4.3% vs 2.8%.
+2. **The probe tests recurrent hotspots only, and is not ancestry-stratified.** It says nothing
+   about rare drivers or about R1/S1 ancestry-fairness. A null here is not a clean bill of health.
+
+### Options
+
+  (a) **Status quo.** AlphaMissense is one of four consensus tools; `min_agree: 2` already means
+      no single call reclassifies anything. Cheapest, and defensible given the null result — but
+      it leaves "pathogenicity ≠ driver" unaddressed as a stated modelling position.
+  (b) **Pair AlphaMissense with a driver-oriented signal** — hotspot recurrence (cancerhotspots /
+      COSMIC) or the IntOGen producer already registered as **SPEC-020** — so that a variant with
+      strong somatic recurrence is not left VUS purely on pathogenicity scores. Directly addresses
+      the H1047R case. Costs a new signal in the consensus, which is a domain decision about what
+      "reclassified" means.
+  (c) **Add a driver-specific predictor** (CHASMplus, boostDM, or IntOGen per-variant scores) as a
+      distinct producer, keeping pathogenicity and driver-ness as separate reported axes rather
+      than blending them into one call. Most faithful to the science; most work; needs its own
+      SPEC item and its own calibration story.
+  (d) **Restrict SPEC-005's claim.** Keep AlphaMissense but state explicitly, in DEFINITIONS.md
+      and wherever results render, that the reclassification axis is *pathogenicity*, not
+      *driver status*, and that Phase 2's VUS-reduction target is measured on that axis.
+
+### Recommendation: **(d) now, and (b) when SPEC-020 lands — RECOMMENDATION ONLY**
+
+(d) costs nothing, is true today, and is the honest framing regardless of what else is chosen —
+it prevents a pathogenicity number being read as a driver claim, which is exactly the **S4**
+failure mode (provenance making a subtly-wrong answer more credible). (b) is the natural pairing
+because SPEC-020 (IntOGen driver identification) is **already registered and AVAILABLE**, so the
+driver-oriented signal is coming anyway; the question is only whether it feeds reclassification
+or stays a separate output.
+
+**Not recommended without more evidence:** (c). The probe gives no basis for asserting a
+driver-specific predictor would do better here, and G6 would require fixtures and execution
+evidence this project cannot yet produce.
+
+**Explicitly NOT done by this change:** Phase 2 was not re-scoped, the consensus rule was not
+touched, `min_agree` was not changed, and no [TO BE DEFINED] value was filled. Raised for the
+domain owner as questionnaire **A10**.
 
 ## D1 — Ownership / IP of the substrate
 Status: **OPEN.**
