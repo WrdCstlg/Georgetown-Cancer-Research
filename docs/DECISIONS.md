@@ -306,6 +306,114 @@ evidence this project cannot yet produce.
 touched, `min_agree` was not changed, and no [TO BE DEFINED] value was filled. Raised for the
 domain owner as questionnaire **A10**.
 
+### Addendum (2026-07-28) — a second independent signal on the same variant
+
+Wiring EVE (SPEC-005 part 2) gave PIK3CA H1047R a second, methodologically independent read.
+It does **not** move toward pathogenic:
+
+| Source | Call on PIK3CA H1047R |
+|---|---|
+| AlphaMissense (structure/population-constraint) | `uncertain` (ambiguous band) |
+| EVE (evolutionary model) | **`benign`** |
+| ClinVar record **EVE itself ships** alongside its prediction | `Pathogenic` |
+
+So two independent predictors decline to call the most common activating hotspot in CRC
+pathogenic, and EVE disagrees with the very ClinVar annotation it distributes. Under the
+consensus rule this variant stays VUS — correctly, since nothing agrees.
+
+This does **not** revive the class-level hypothesis the probe rejected: the probe tested 178
+hotspots and found no activating-vs-LoF difference (p = 0.31/0.75), and that null stands. What
+it does is strengthen the narrow, variant-level form of the concern in the options above,
+because the miss is now reproduced across two models rather than being one tool's quirk.
+Recorded as evidence; the options and recommendation are unchanged and still the owner's call.
+
+## D-009 — EVE does not cover FBXW7 or RNF43 (SPEC-005 coverage gap)
+Status: **PROPOSED — pending domain-owner decision.** Recommendation only; nothing implemented.
+
+Fork: EVE publishes a curated set of **3,211 proteins**, not the proteome. Of the grant
+strategy's 15 named CRC driver "mountains" (`docs/sources/...PF5.txt` line 332), EVE covers
+**13**. It does **not** publish:
+
+| Gene | Why it matters here |
+|---|---|
+| **RNF43** | The grant's OWN preliminary data reports RNF43 mutated in **73.6% of NHW**, versus ~44% AA and ~38% Ghanaian, with p = 0.0047 (`...PF5.txt` lines 196–198). This is a **population-varying driver the study specifically cares about** — precisely the kind of gene an ancestry-aware analysis cannot afford to be blind in. |
+| **FBXW7** | A confirmed CRC driver in the grant's own mountain list; IntOGen COAD calls it LoF. Less central to the ancestry story than RNF43, but a real gap. |
+
+Consequence, measured rather than asserted: in the golden fixture, EVE returns no coverage for
+6 of 35 fixture entries on this basis (4 FBXW7, 2 RNF43). For `v10` (FBXW7 R465C) AlphaMissense
+*does* produce a call, so the variant has exactly one caller and **cannot reach `min_agree: 2`**
+however good that single call is. Coverage asymmetry between tools silently becomes
+un-reclassifiable variants.
+
+Options:
+  (a) **Accept 13/15 and record the gap** (what this change does). Honest, cheap, and the
+      remaining coverage is good. But RNF43 stays un-second-sourced indefinitely.
+  (b) **Substitute a third signal for the uncovered genes only** — e.g. PolyPhen or SIFT
+      (already in SPEC-005's scope, still unwired) restricted to FBXW7/RNF43. Restores
+      two-caller consensus where EVE cannot reach, without changing the rule.
+  (c) **A driver-oriented signal for the gap** — hotspot recurrence / COSMIC / the IntOGen
+      producer (SPEC-020). Overlaps decision D-008's option (b).
+  (d) **Request EVE coverage.** evemodel.org states: *"We are adding predictions for new genes
+      regularly — can't find the gene/protein you are looking for? Contact us and we can run it
+      for you!"* Zero engineering cost, unknown latency, outside our control.
+
+Recommendation: **(a) now, and (d) in parallel because it costs nothing** — ask the EVE authors
+for RNF43 and FBXW7. If that does not land, **(b)** is the natural fallback since PolyPhen and
+SIFT are already in SPEC-005's scope and wiring them is planned work, not new scope.
+
+**Not recommended:** widening the consensus rule or lowering `min_agree` to paper over the gap.
+That would trade a coverage problem for an evidence problem, and `min_agree` is a domain
+decision (questionnaire A8), not an engineering convenience.
+
+Nothing here is implemented. No substitute signal was wired.
+
+## D-010 — The residual VUS fraction is disagreement-limited, not coverage-limited
+Status: **PROPOSED — pending domain-owner decision.** This records a measured property of the
+consensus rule. It recommends **nothing** about `min_agree`; that is a domain decision and it is
+already questionnaire **A8**.
+
+Finding (measured, `tests/test_consensus_two_providers.py`, 2026-07-28): with AlphaMissense and
+EVE both wired, the golden fixture moves from **20/20 VUS (100%) to 13/20 (65%)** — 7 variants
+reclassified. Decomposing the 13 that remain:
+
+| Reason a variant is still VUS | n |
+|---|---:|
+| **The two tools DISAGREE** | **7** |
+| Neither tool covers it (nonsense/frameshift) | 5 |
+| Only one tool covers it (FBXW7, D-009) | 1 |
+
+So the single largest blocker is **tool disagreement**, not missing data. Concretely, every one
+of those 7 is a canonical somatic hotspot where a structural model and an evolutionary model
+diverge:
+
+| Variant | AlphaMissense | EVE |
+|---|---|---|
+| KRAS G12D | pathogenic | uncertain |
+| KRAS G13D | pathogenic | uncertain |
+| KRAS A146T | pathogenic | uncertain |
+| TP53 R175H | pathogenic | uncertain |
+| TP53 R248Q | pathogenic | uncertain |
+| PIK3CA E545K | pathogenic | uncertain |
+| PIK3CA H1047R | uncertain | **benign** |
+
+Why this is a finding and not a defect: the rule is doing exactly what it exists to do —
+refusing to reclassify where independent evidence conflicts. Six of the seven are
+AlphaMissense-pathogenic vs EVE-uncertain, i.e. one tool is confident and the other declines to
+commit; that is a *different* situation from two tools actively contradicting each other, which
+happens only for H1047R.
+
+The consequence for planning is concrete and worth stating plainly: **adding a third and fourth
+provider will not automatically improve the number in proportion.** With `min_agree: 2`, another
+caller helps only where it breaks a tie; where EVE is systematically "Uncertain" on hotspots, a
+third tool agreeing with AlphaMissense would resolve it, but a third tool that also declines
+would not. Phase 2's VUS-reduction target should be read against that, not against an assumption
+that more tools monotonically reduce VUS.
+
+**No recommendation is made about `min_agree`, tie-breaking, weighting tools differently, or
+treating "Uncertain" as abstention rather than a vote.** All of those are domain decisions. The
+concrete disagreement list above has been added to questionnaire **A8** so the domain owner is
+ruling on real cases rather than an abstraction.
+
 ## D1 — Ownership / IP of the substrate
 Status: **OPEN.**
 Question: who owns the fusion substrate?
@@ -329,6 +437,19 @@ Question: IRB scope, de-identification, DUAs, DB licensing (ClinVar/COSMIC/CIViC
 Options (per docs/build-plan.md §1): as scoped by IRB/DUAs; note COSMIC and some resources are
 license-gated for commercial use — relevant if D1 lands on "owned infra."
 Decision: OPEN — awaiting Phase-0 settlement (see docs/build-plan.md §1).
+
+**Third-party prediction data now in scope (added 2026-07-28 as encountered, not decided):**
+
+| Resource | Stated terms | Open question |
+|---|---|---|
+| **AlphaMissense** | **CC BY-NC-SA 4.0** — non-commercial, share-alike. Verified from the Zenodo record and the header of every published `.tsv.gz`. | May any slice be redistributed? Does NC permit our use if D1 lands on reusable/commercial infrastructure? Does SA reach derived artifacts? (D-006, D-007) |
+| **EVE** | **MIT, as asserted by evemodel.org** — but the `LICENSE.txt` the site serves is `Copyright (c) 2022 Joseph Min`, i.e. the **site's author**, not the Marks Lab / OATML who produced the predictions. An MIT text covering the site *software* is being pointed at as the licence for the prediction *data*. | Does that MIT grant actually govern the predictions? If it does, redistribution is permitted; if it does not, EVE's data has **no stated licence at all**, which is more restrictive than AlphaMissense, not less. |
+
+Because EVE's licence provenance is unsettled in exactly this way, the repo applies the **same
+no-commit discipline to both**: no AlphaMissense and no EVE score data is committed, both caches
+are gitignored, and prose carries distributional statistics only. That is a conservative default
+chosen so the decision stays open, **not** a determination that either licence forbids it.
+Settling this is part of D3.
 
 ## D4 — Substrate DB: build vs. buy
 Status: **OPEN.**

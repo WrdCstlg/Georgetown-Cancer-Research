@@ -1,0 +1,43 @@
+{
+  "status": "AWAITING_SIGN_OFF",
+  "_note": "EVE publishes its own class assignment; this file TRANSCRIBES the publisher's scheme. The coding agent did NOT author, choose, or adjust any cut-point (control I3). A domain owner must confirm the scheme is the right operating point for the ancestry-aware context, or supply a different one -- see DEFINITIONS.md sec 1 and docs/DEFINITIONS_QUESTIONNAIRE.md question A11. Sign-off flips status to SIGNED_OFF; until then the producer warns once per run.",
+  "_not_applied_here": "The provider consumes the publisher's EVE_classes_75_pct_retained_ASM column directly rather than re-deriving a class from the continuous score. The boundaries below are recorded so the rule is auditable and so a domain owner has something concrete to sign off on or override.",
+
+  "source": "evemodel.org API (/api/proteins/id/<id>/), column descriptions read from the site's own UI text; retrieved 2026-07-28",
+  "source_quote": "EVE classification when only classifying the 75% most confident of all possible amino acid substitutions. The 75% set corresponds to the 75% most confident class assignments (over all possible amino acid variants).",
+
+  "published_class_assignment": {
+    "column": "EVE_classes_75_pct_retained_ASM",
+    "scheme": "75% most confident class assignments retained; the remaining 25% are labelled Uncertain",
+    "classes": ["Benign", "Uncertain", "Pathogenic"]
+  },
+
+  "observed_class_boundaries": {
+    "_note": "OBSERVED from the published data, not published as thresholds and NOT authored here. Recorded because the boundaries proved to be effectively GLOBAL rather than fitted per protein -- verified identical across P53_HUMAN and RASK_HUMAN. If a future release makes them per-protein, this note is how that regression becomes visible.",
+    "benign_at_or_below": 0.359,
+    "pathogenic_at_or_above": 0.641,
+    "otherwise": "Uncertain"
+  },
+
+  "fields_consumed": {
+    "eve_score": "EVE_scores_ASM -- continuous EVE pathogenicity score",
+    "eve_class": "EVE_classes_75_pct_retained_ASM -- the class the provider consumes",
+    "uncertainty": "uncertainty_ASM -- EVE classification uncertainty",
+    "clinvar": "ClinVar_ClinicalSignificance -- shipped BY EVE alongside its prediction; used only for independent corroboration, never to form a call",
+    "gnomad_freq": "frequency_gv2 -- gnomAD v2 frequency, shipped by EVE; corroboration only"
+  },
+
+  "coverage": {
+    "_note": "EVE covers a curated protein set, NOT the proteome. Of the grant strategy's 15 CRC driver genes, 13 are published; FBXW7 and RNF43 are NOT. See decision D-009.",
+    "proteins_published": 3211,
+    "grant_driver_genes_covered": 13,
+    "grant_driver_genes_total": 15,
+    "not_covered": ["FBXW7", "RNF43"]
+  },
+
+  "licence": {
+    "terms_as_stated_by_site": "MIT License",
+    "url": "https://evemodel.org/LICENSE.txt",
+    "_provenance_caveat": "The LICENSE.txt served by evemodel.org is copyrighted to the SITE's author, not to the Marks Lab / OATML who produced the predictions. Whether it governs the prediction DATA is therefore unsettled. This repo applies the same no-commit discipline it applies to AlphaMissense: NO EVE score data is committed. The licensing question stays OPEN under decision D3."
+  }
+}
