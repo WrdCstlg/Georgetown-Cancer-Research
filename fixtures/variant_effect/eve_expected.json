@@ -1,0 +1,62 @@
+{
+  "_what": "Golden expectations for the EVE provider (SPEC-005 part 2 of 4). For each fixture variant: the EVE lookup key and the call the provider must produce from REAL published EVE data.",
+
+  "_what_is_NOT_here": "No EVE_scores_ASM values. evemodel.org states its data is MIT-licensed, but the LICENSE.txt it serves is copyrighted to the SITE's author rather than to the Marks Lab / OATML who produced the predictions, so whether it governs the DATA is unsettled (decision D3). This repo applies the same no-commit discipline it applies to AlphaMissense. What IS committed is our own assertion about what the tool reports for a named key; the test proves it against a locally fetched, gitignored cache and SKIPs with a populate instruction when that cache is absent.",
+
+  "_key": "<uniprot_entry_name>/<protein_variant>, e.g. P53_HUMAN/R175H. NOTE this differs from AlphaMissense's key, which uses the UniProt ACCESSION (P04637/R175H). Both are resolved through the identifier seam (SPEC-027), which was extended additively with `uniprot_entry_name` for exactly this reason.",
+
+  "_expected_call_vocabulary": "This repo's ToolCall vocabulary (contracts/variant_effect.py): pathogenic | benign | uncertain. EVE's own published labels are Benign / Uncertain / Pathogenic -- a THIRD vocabulary after AlphaMissense's two. The provider normalizes; nothing privileges any of them.",
+
+  "_three_no_coverage_states": "Deliberately distinguished, because they mean different things and only one is a gap in our wiring: (1) EVE does not publish the protein at all -- FBXW7 and RNF43, see decision D-009; (2) EVE publishes the row but assigned no score; (3) the change is not a single-aa substitution. All three yield None. A key that SHOULD be present but is missing raises EveScoreNotFound instead.",
+
+  "_corroboration": "`eve_shipped_clinvar` and `eve_shipped_gnomad_gv2` are the ClinVar_ClinicalSignificance and frequency_gv2 values EVE itself ships alongside each prediction. They are recorded as an INDEPENDENT axis and are never used to form a call. Where EVE's own class disagrees with the ClinVar significance it carries, that disagreement is RECORDED, not resolved -- see docs/probes/consensus-two-providers.md.",
+
+  "source": "evemodel.org API (/api/proteins/id/<id>/)",
+  "retrieved_on": "2026-07-28",
+  "entry_names_from": "fixtures/variant_effect/identifiers.json (UniProtKB, CC BY 4.0)",
+
+  "expected": {
+    "v01": {"gene": "APC",    "protein_change": "p.R1450*",  "coverage": "none", "reason": "not a single-aa substitution -- outside EVE's model"},
+    "v02": {"gene": "KRAS",   "protein_change": "p.G12D",    "coverage": "scored", "key": "RASK_HUMAN/G12D",   "expected_call": "uncertain",  "eve_shipped_clinvar": "Pathogenic"},
+    "v03": {"gene": "TP53",   "protein_change": "p.R175H",   "coverage": "scored", "key": "P53_HUMAN/R175H",   "expected_call": "uncertain",  "eve_shipped_clinvar": "Pathogenic"},
+    "v04": {"gene": "PIK3CA", "protein_change": "p.E545K",   "coverage": "scored", "key": "PK3CA_HUMAN/E545K", "expected_call": "uncertain",  "eve_shipped_clinvar": "Pathogenic/Likely pathogenic"},
+    "v05": {"gene": "SMAD4",  "protein_change": "p.R361H",   "coverage": "scored", "key": "SMAD4_HUMAN/R361H", "expected_call": "pathogenic", "eve_shipped_clinvar": "Pathogenic"},
+    "v06": {"gene": "APC",    "protein_change": "p.E1309fs", "coverage": "none", "reason": "not a single-aa substitution -- outside EVE's model"},
+    "v07": {"gene": "KRAS",   "protein_change": "p.G13D",    "coverage": "scored", "key": "RASK_HUMAN/G13D",   "expected_call": "uncertain",  "eve_shipped_clinvar": "Pathogenic"},
+    "v08": {"gene": "CTNNB1", "protein_change": "p.S45F",    "coverage": "scored", "key": "CTNB1_HUMAN/S45F",  "expected_call": "pathogenic", "eve_shipped_clinvar": "Pathogenic/Likely pathogenic, other"},
+    "v09": {"gene": "RNF43",  "protein_change": "p.G659fs",  "coverage": "none", "reason": "not a single-aa substitution -- outside EVE's model"},
+    "v10": {"gene": "FBXW7",  "protein_change": "p.R465C",   "coverage": "none", "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)"},
+    "v11": {"gene": "KRAS",   "protein_change": "p.G12V",    "coverage": "scored", "key": "RASK_HUMAN/G12V",   "expected_call": "pathogenic", "eve_shipped_clinvar": "Pathogenic"},
+    "v12": {"gene": "TP53",   "protein_change": "p.R248Q",   "coverage": "scored", "key": "P53_HUMAN/R248Q",   "expected_call": "uncertain",  "eve_shipped_clinvar": "Pathogenic"},
+    "v13": {"gene": "APC",    "protein_change": "p.T1556fs", "coverage": "none", "reason": "not a single-aa substitution -- outside EVE's model"},
+    "v14": {"gene": "PIK3CA", "protein_change": "p.H1047R",  "coverage": "scored", "key": "PK3CA_HUMAN/H1047R","expected_call": "benign",     "eve_shipped_clinvar": "Pathogenic",
+            "_note": "THE headline disagreement of this slice. AlphaMissense called H1047R 'uncertain'; EVE calls it BENIGN -- further still from pathogenic. And EVE's own shipped ClinVar annotation says Pathogenic, so EVE disagrees with the very record it ships. Recorded, not resolved; extends decision D-008."},
+    "v15": {"gene": "SMAD4",  "protein_change": "p.D351H",   "coverage": "scored", "key": "SMAD4_HUMAN/D351H", "expected_call": "pathogenic", "eve_shipped_clinvar": "Pathogenic"},
+    "v16": {"gene": "KRAS",   "protein_change": "p.A146T",   "coverage": "scored", "key": "RASK_HUMAN/A146T",  "expected_call": "uncertain",  "eve_shipped_clinvar": "Uncertain significance"},
+    "v17": {"gene": "TP53",   "protein_change": "p.Y220C",   "coverage": "scored", "key": "P53_HUMAN/Y220C",   "expected_call": "pathogenic", "eve_shipped_clinvar": "Pathogenic"},
+    "v18": {"gene": "APC",    "protein_change": "p.Q1367*",  "coverage": "none", "reason": "not a single-aa substitution -- outside EVE's model"},
+    "v19": {"gene": "CTNNB1", "protein_change": "p.T41A",    "coverage": "scored", "key": "CTNB1_HUMAN/T41A",  "expected_call": "pathogenic", "eve_shipped_clinvar": "Conflicting interpretations of pathogenicity, other"},
+    "v20": {"gene": "BRAF",   "protein_change": "p.V600E",   "coverage": "scored", "key": "BRAF_HUMAN/V600E",  "expected_call": "pathogenic"}
+  },
+
+  "controls": {
+    "c01": {"gene": "TP53",   "protein_change": "p.P58A",  "coverage": "scored", "key": "P53_HUMAN/P58A",   "expected_call": "benign"},
+    "c02": {"gene": "PIK3CA", "protein_change": "p.K733R", "coverage": "scored", "key": "PK3CA_HUMAN/K733R","expected_call": "benign", "eve_shipped_clinvar": "Benign"},
+    "c03": {"gene": "BRAF",   "protein_change": "p.I326V", "coverage": "none", "reason": "EVE publishes BRAF_HUMAN but assigned this substitution no score -- a distinct no-coverage state from an absent protein"},
+    "c04": {"gene": "FBXW7",  "protein_change": "p.P160L", "coverage": "none", "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)"},
+    "c05": {"gene": "RNF43",  "protein_change": "p.T714A", "coverage": "none", "reason": "EVE does not publish RNF43_HUMAN (decision D-009)"},
+    "c06": {"gene": "APC",    "protein_change": "p.A927T", "coverage": "scored", "key": "APC_HUMAN/A927T",  "expected_call": "benign"},
+    "c07": {"gene": "CTNNB1", "protein_change": "p.T547S", "coverage": "scored", "key": "CTNB1_HUMAN/T547S","expected_call": "benign"},
+    "c08": {"gene": "TP53",   "protein_change": "p.P152L", "coverage": "scored", "key": "P53_HUMAN/P152L",  "expected_call": "pathogenic", "eve_shipped_clinvar": "Pathogenic"},
+    "c09": {"gene": "FBXW7",  "protein_change": "p.R224Q", "coverage": "none", "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)"},
+    "c10": {"gene": "TP53",   "protein_change": "p.N310S", "coverage": "scored", "key": "P53_HUMAN/N310S",  "expected_call": "benign"},
+    "c11": {"gene": "PIK3CA", "protein_change": "p.N183S", "coverage": "scored", "key": "PK3CA_HUMAN/N183S","expected_call": "benign"},
+    "c12": {"gene": "BRAF",   "protein_change": "p.A145S", "coverage": "scored", "key": "BRAF_HUMAN/A145S", "expected_call": "benign"},
+    "c13": {"gene": "FBXW7",  "protein_change": "p.T140S", "coverage": "none", "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)"},
+    "c14": {"gene": "RNF43",  "protein_change": "p.I212V", "coverage": "none", "reason": "EVE does not publish RNF43_HUMAN (decision D-009)"},
+    "c15": {"gene": "TP53",   "protein_change": "p.L130V", "coverage": "scored", "key": "P53_HUMAN/L130V",  "expected_call": "pathogenic", "eve_shipped_clinvar": "Uncertain significance",
+            "_note": "EVE calls this Pathogenic while the ClinVar record it ships says Uncertain significance -- the opposite direction from v14. Both recorded, neither resolved."}
+  },
+
+  "_distribution": "23 scored: 9 pathogenic (39.1%), 8 benign (34.8%), 6 uncertain (26.1%); 12 no-coverage. No extra controls were needed for discriminating power -- EVE's own calls span all three values. A constant-output stub is wrong on at least 14 of 23 whatever it returns."
+}

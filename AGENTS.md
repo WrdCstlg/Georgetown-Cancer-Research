@@ -67,12 +67,17 @@ python tests\test_query_read_api.py   # query read API (SPEC-015)
 python tests\test_status_ui_shim.py   # status-ui shim (SPEC-018)
 python tests\test_core_integrity.py   # core data integrity (SPEC-025)
 python tests\test_alphamissense_provider.py   # AlphaMissense provider + identifier seam (SPEC-005 partial, SPEC-027)
+python tests\test_eve_provider.py             # EVE provider + seam extension (SPEC-005 partial, SPEC-027)
+python tests\test_consensus_two_providers.py  # consensus payoff, both providers (SPEC-005)
 # The AlphaMissense suite needs REAL published scores, which are NOT committed
 # (CC BY-NC-SA 4.0 — decision D-006, docs/alphamissense-data.md). Without a local
 # cache its four score-dependent tests SKIP and the suite prints INCOMPLETE COVERAGE.
 # Populate the cache first for the full gate:
 #   python tools\alphamissense\fetch_scores.py
 # Set ALPHAMISSENSE_CACHE_REQUIRED=1 to make a skip a hard failure.
+# EVE is the same: no committed data (licence provenance OPEN under D3). Populate with
+#   python tools\eve\fetch_scores.py
+# and set EVE_CACHE_REQUIRED=1 / CONSENSUS_CACHES_REQUIRED=1 to make skips hard failures.
 # pytest: NOT a verified runner. `python -m pytest tests\ -q` has never executed
 # end-to-end in this environment (the local shell cannot launch it); compatibility
 # is UNVERIFIED (SPEC-016). Direct execution above is the supported path.

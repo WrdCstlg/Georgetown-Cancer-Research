@@ -55,6 +55,21 @@ jobs:
       - name: alphamissense provider + identifier seam (SPEC-005 partial, SPEC-027)
         run: python tests/test_alphamissense_provider.py
 
+      # SPEC-005 part 2 of 4. Same story as AlphaMissense: CI has no EVE cache
+      # (licence provenance is OPEN under D3, so nothing is committed), so the
+      # data-dependent tests SKIP and the suite reports INCOMPLETE rather than
+      # pretending to pass. CI still gates EVE vocabulary normalization, the
+      # additive identifier-seam extension, refusals, config transcription and
+      # fixture discriminating power.
+      - name: eve provider + seam extension (SPEC-005 partial, SPEC-027)
+        run: python tests/test_eve_provider.py
+
+      # The consensus payoff measurement. Needs BOTH caches, so in CI it skips
+      # and says so; run locally after populating both fetchers to see the VUS
+      # movement and the disagreement table (docs/probes/consensus-two-providers.md).
+      - name: consensus with two providers (SPEC-005)
+        run: python tests/test_consensus_two_providers.py
+
   # SPEC-017: the STATUS artifacts must match a fresh regeneration — generated
   # docs cannot drift from repo state. Deterministic by contract (no timestamps,
   # no absolute paths, no commit hashes in the output).

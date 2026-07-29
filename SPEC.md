@@ -198,13 +198,42 @@ Executable acceptance (all in `tests/test_alphamissense_provider.py`, run per `A
 - the map is loadable from a committed JSON fixture today and is the same shape
   `pipeline/annotation/` + SPEC-004 will populate later — the producer does not change when
   the upstream source does;
-- the seam carries no domain criteria (identifiers are facts, not thresholds — I3).
+- the seam carries no domain criteria (identifiers are facts, not thresholds — I3);
+- **extended for EVE (D-009):** the seam carries `uniprot_entry_name` (UniProtKB entry name,
+  e.g. `P53_HUMAN`) alongside `uniprot_id` (accession, e.g. `P04637`), because EVE keys on the
+  entry name and AlphaMissense on the accession. This is an ADDITIVE optional field — the
+  existing `VariantInput` contract and every existing consumer are unchanged, which is the
+  property the seam was created to provide. A consumer asking for an absent identifier still
+  gets a named `IdentifierNotFound`, never a guess.
 
-### SPEC-005 — real score providers (PARTIAL: AlphaMissense only)
+### SPEC-005 — real score providers (PARTIAL: AlphaMissense + EVE, 2 of 4)
 > Status stays **SPECIFIED**: SPEC-005 covers AlphaMissense **+ EVE + PolyPhen + SIFT**.
-> One of four is wired. `EVEProvider`, `PolyPhenProvider`, and `SIFTProvider` still
+> **Two of four** are wired. `PolyPhenProvider` and `SIFTProvider` still
 > `raise NotImplementedError`. This item does not become FUNCTIONAL until all four are wired —
 > a partially-satisfied item is not a satisfied one (AGENTS.md §4).
+
+Executable acceptance for the EVE portion (all in `tests/test_eve_provider.py`):
+- the provider returns a `ToolCall` built from REAL published EVE data, keyed by
+  `(uniprot_entry_name, protein_variant)` — never a mock, never a default;
+- EVE's vocabulary (`Benign` / `Uncertain` / `Pathogenic`) normalizes into the repo's
+  `ToolCall` vocabulary, and an unrecognised label RAISES rather than being coerced —
+  this is a THIRD published vocabulary after AlphaMissense's two, so the normalizer must
+  not privilege any of them;
+- the file/service of origin is recorded on every `ToolCall` (`source`);
+- three coverage states are distinct and none of them guesses: a gene EVE does not publish,
+  a row EVE publishes but did not score, and a non-missense change all yield "no coverage"
+  (`None`); a variant that should be present but is absent from the cache raises;
+- every result is stamped `calibration_pending` — EVE is an evolutionary model with no
+  per-population calibration either (asserted on real-scored results);
+- cut-points are EVE's PUBLISHED class assignment transcribed into `config/eve.json` and
+  registered AWAITING SIGN-OFF in DEFINITIONS.md — not authored, not adjusted (I3);
+- NO EVE score data is committed; the cache is gitignored and the suite SKIPs with a populate
+  instruction when it is absent, reporting INCOMPLETE rather than passing silently;
+- the fixture has discriminating power: expectations span all three calls and a
+  constant-output stub is wrong on a majority of scored entries;
+- independent corroboration uses the `ClinVar_ClinicalSignificance` and `frequency_gv2`
+  fields EVE itself ships alongside each prediction; where EVE's own class disagrees with
+  the ClinVar significance it carries, the disagreement is RECORDED, not resolved.
 
 Executable acceptance for the AlphaMissense portion (all in
 `tests/test_alphamissense_provider.py`):

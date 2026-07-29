@@ -284,6 +284,11 @@
         "test_count": 13
       },
       {
+        "file": "tests/test_consensus_two_providers.py",
+        "command": "python tests/test_consensus_two_providers.py",
+        "test_count": 5
+      },
+      {
         "file": "tests/test_core_ingest.py",
         "command": "python tests/test_core_ingest.py",
         "test_count": 4
@@ -292,6 +297,11 @@
         "file": "tests/test_core_integrity.py",
         "command": "python tests/test_core_integrity.py",
         "test_count": 2
+      },
+      {
+        "file": "tests/test_eve_provider.py",
+        "command": "python tests/test_eve_provider.py",
+        "test_count": 12
       },
       {
         "file": "tests/test_query_read_api.py",
@@ -327,9 +337,8 @@
       "variant_effect"
     ],
     "unwired_providers": [
-      "EVEProvider (producers/variant_effect/providers.py:104)",
-      "PolyPhenProvider (producers/variant_effect/providers.py:111)",
-      "SIFTProvider (producers/variant_effect/providers.py:118)"
+      "PolyPhenProvider (producers/variant_effect/providers.py:151)",
+      "SIFTProvider (producers/variant_effect/providers.py:158)"
     ],
     "placeholder_configs": [
       "config/calibration.json:2 (\"status\": \"PLACEHOLDER\")",
@@ -388,6 +397,18 @@
     {
       "id": "D-008",
       "title": "Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2)",
+      "status": "PROPOSED — pending domain-owner decision",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-009",
+      "title": "EVE does not cover FBXW7 or RNF43 (SPEC-005 coverage gap)",
+      "status": "PROPOSED — pending domain-owner decision",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-010",
+      "title": "The residual VUS fraction is disagreement-limited, not coverage-limited",
       "status": "PROPOSED — pending domain-owner decision",
       "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },

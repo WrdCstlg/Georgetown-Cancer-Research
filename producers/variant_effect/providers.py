@@ -4,9 +4,15 @@ Real tools (AlphaMissense, EVE, PolyPhen, SIFT) plug in here behind ONE interfac
 so the reclassification logic never changes when real databases are wired in.
 The fixture provider supplies mock calls for the golden test.
 
-Wiring status (SPEC-005 is NOT complete -- one provider of four):
+Wiring status (SPEC-005 is NOT complete -- TWO providers of four):
   * AlphaMissense -- WIRED against real published scores (D-006, SPEC-027).
-  * EVE, PolyPhen, SIFT -- still raise NotImplementedError.
+  * EVE           -- WIRED against real published data (SPEC-027 seam extension).
+  * PolyPhen, SIFT -- still raise NotImplementedError.
+
+The two wired providers key on DIFFERENT identifiers (AlphaMissense on the
+UniProt accession, EVE on the UniProt entry name) and speak DIFFERENT class
+vocabularies. Both are resolved through the identifier seam and normalized in
+their own modules; nothing about that leaks into the consensus engine.
 
 An unwired provider raises (control G2): the pipeline can never silently run on
 fabricated scores. A WIRED provider refuses just as loudly -- it returns None only
@@ -21,6 +27,9 @@ import json
 from contracts.variant_effect import VariantInput, ToolCall
 from producers.variant_effect.alphamissense import (
     build_tool_call, to_am_protein_variant,
+)
+from producers.variant_effect.eve import (
+    build_tool_call as eve_build_tool_call, to_eve_protein_variant,
 )
 
 
@@ -94,14 +103,45 @@ class AlphaMissenseProvider(ScoreProvider):
 
 
 class EVEProvider(ScoreProvider):
+    """WIRED (SPEC-005 part 2 of 4, SPEC-027 seam extension).
+
+    Keys on `(uniprot_entry_name, protein_variant)` against EVE's published
+    per-protein data. NOTE the key differs from AlphaMissense's: EVE uses the
+    UniProtKB ENTRY NAME (`P53_HUMAN`), not the ACCESSION (`P04637`). Both are
+    looked up through the identifier seam; neither is derived here.
+
+    Three distinct NO-COVERAGE states, all returning None and none of them a guess:
+      * the protein is not published by EVE at all (EVE covers ~3,200 proteins,
+        not the proteome -- FBXW7 and RNF43 are absent, see D-009);
+      * EVE publishes the row but assigned it no score;
+      * the change is not a single-aa substitution.
+    A key that should be present but is missing raises EveScoreNotFound.
+
+    Scores come from a LOCAL, GITIGNORED cache -- no EVE data is committed
+    (docs/eve-data.md; licence provenance OPEN under D3).
+    """
     tool = "eve"
     db_independent = True
 
-    def __init__(self, db_path: str):
-        self.db_path = db_path
+    def __init__(self, cache, identifiers, config=None):
+        """cache: EveScoreCache · identifiers: IdentifierMap ·
+        config: EveConfig | None (warns once while unsigned)."""
+        self._cache = cache
+        self._identifiers = identifiers
+        self._config = config
 
-    def score(self, v):  # pragma: no cover
-        raise NotImplementedError("Wire the EVE score set. TODO.")
+    def score(self, v: VariantInput) -> Optional[ToolCall]:
+        protein_variant = to_eve_protein_variant(v.protein_change)
+        if protein_variant is None:
+            return None                     # no coverage -- not a missense substitution
+        if self._config is not None:
+            self._config.warn_if_unsigned()
+        entry_name = self._identifiers.get(v.variant_id).require("uniprot_entry_name")
+        if self._cache.coverage_state(entry_name, protein_variant) is not None:
+            return None                     # gene unpublished, or row present but unscored
+        record = self._cache.lookup(entry_name, protein_variant)   # raises if truly absent
+        return eve_build_tool_call(record, source=self._cache.source,
+                                   db_independent=self.db_independent)
 
 
 class PolyPhenProvider(ScoreProvider):

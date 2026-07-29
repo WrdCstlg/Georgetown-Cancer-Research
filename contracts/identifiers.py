@@ -48,9 +48,17 @@ class VariantIdentifiers:
     different upstream sources supply different subsets: annotation gives locus
     + transcript, a UniProt mapping gives the accession. A consumer asks for
     what IT needs and refuses clearly if that field is absent.
+
+    Two UniProt identifiers are carried on purpose, and they are NOT
+    interchangeable -- this is precisely the case the seam exists for:
+      * `uniprot_id`         -- ACCESSION (P04637). AlphaMissense keys on this.
+      * `uniprot_entry_name` -- ENTRY NAME (P53_HUMAN). EVE keys on this.
+    Adding the second was an ADDITIVE change: no existing consumer, and no part
+    of `VariantInput`, had to move (SPEC-027, decision D-009).
     """
     variant_id: str
-    uniprot_id: Optional[str] = None          # UniProtKB accession, e.g. P01116
+    uniprot_id: Optional[str] = None          # UniProtKB ACCESSION, e.g. P01116 (AlphaMissense)
+    uniprot_entry_name: Optional[str] = None  # UniProtKB ENTRY NAME, e.g. RASK_HUMAN (EVE)
     transcript_id: Optional[str] = None       # Ensembl, e.g. ENST00000256078.9
     chrom: Optional[str] = None               # e.g. chr12
     pos: Optional[int] = None                 # 1-based
@@ -107,6 +115,7 @@ def load_identifier_map(path: str) -> IdentifierMap:
         entries[vid] = VariantIdentifiers(
             variant_id=vid,
             uniprot_id=rec.get("uniprot_id"),
+            uniprot_entry_name=rec.get("uniprot_entry_name"),
             transcript_id=rec.get("transcript_id"),
             chrom=rec.get("chrom"),
             pos=rec.get("pos"),

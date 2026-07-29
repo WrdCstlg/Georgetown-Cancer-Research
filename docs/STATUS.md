@@ -44,8 +44,10 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 Test suites (standard-library only, direct execution — the supported path):
 
 - `python tests/test_alphamissense_provider.py` — 13 tests
+- `python tests/test_consensus_two_providers.py` — 5 tests
 - `python tests/test_core_ingest.py` — 4 tests
 - `python tests/test_core_integrity.py` — 2 tests
+- `python tests/test_eve_provider.py` — 12 tests
 - `python tests/test_query_read_api.py` — 16 tests
 - `python tests/test_status_ui_shim.py` — 5 tests
 - `python tests/test_variant_effect.py` — 4 tests
@@ -57,7 +59,7 @@ CI checks (from `.github/workflows/tests.yml`): `spec-id`, `status-drift`, `test
 - **No real data has been processed.** No data/ directory exists; only fixtures/variant_effect/ and fixtures/query/ have ever run.
 - **Empty layers (README only):** `pipeline/`, `interface/`.
 - **Producers present:** `variant_effect/` — every other producer slot is unbuilt.
-- **Real score providers — 3 still unwired** (`raise NotImplementedError`): `EVEProvider (producers/variant_effect/providers.py:104)`, `PolyPhenProvider (producers/variant_effect/providers.py:111)`, `SIFTProvider (producers/variant_effect/providers.py:118)`. AlphaMissense IS wired against its real published scores (SPEC-005 partial, SPEC-027, decision D-006) — but that data is CC BY-NC-SA 4.0 and is NOT committed; it is fetched into a gitignored local cache, so CI exercises the provider's logic without the data (docs/alphamissense-data.md). SPEC-005 stays SPECIFIED until all four providers are wired.
+- **Real score providers — 2 still unwired** (`raise NotImplementedError`): `PolyPhenProvider (producers/variant_effect/providers.py:151)`, `SIFTProvider (producers/variant_effect/providers.py:158)`. AlphaMissense IS wired against its real published scores (SPEC-005 partial, SPEC-027, decision D-006) — but that data is CC BY-NC-SA 4.0 and is NOT committed; it is fetched into a gitignored local cache, so CI exercises the provider's logic without the data (docs/alphamissense-data.md). SPEC-005 stays SPECIFIED until all four providers are wired.
 - **All thresholds are PLACEHOLDER:** `config/calibration.json:2 ("status": "PLACEHOLDER")`, `config/variant_effect.json:2 ("status": "PLACEHOLDER")`. Strict mode hard-fails on them by design; every producer result is stamped `calibration_pending` — correctly, but no result is yet a clean call.
 - **No natural-language query.** SPEC-009 is SPECIFIED (SPEC.md registry); the query layer reads one view (query/read_api.py: _VIEW = v_variant_effect); the query layer reads exactly one view (`v_variant_effect`).
 - **No production database.** Dev/CI is embedded SQLite (core/db.py); production substrate pending D4 (docs/DECISIONS.md D4) — Postgres proposed, not decided (core/db.py:3-4). No lockfile, no lint, no typecheck configured (AGENTS.md §3).
@@ -73,6 +75,8 @@ Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–
 - **D-006** — How does a variant reach an AlphaMissense score? (SPEC-005 blocker): PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-007** — The repository has no LICENSE file: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-008** — Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2): PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-009** — EVE does not cover FBXW7 or RNF43 (SPEC-005 coverage gap): PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-010** — The residual VUS fraction is disagreement-limited, not coverage-limited: PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D1** — Ownership / IP of the substrate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D2** — Compute & data residency: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D3** — Data governance: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)

@@ -1,0 +1,298 @@
+{
+ "c01": {
+  "coverage": "scored",
+  "expected_call": "benign",
+  "gene": "TP53",
+  "key": "P53_HUMAN/P58A",
+  "protein_change": "p.P58A",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "c02": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Benign",
+  "eve_shipped_gnomad_gv2": "0.0004179407310033435",
+  "expected_call": "benign",
+  "gene": "PIK3CA",
+  "key": "PK3CA_HUMAN/K733R",
+  "protein_change": "p.K733R",
+  "uniprot_entry_name": "PK3CA_HUMAN"
+ },
+ "c03": {
+  "coverage": "none",
+  "gene": "BRAF",
+  "protein_change": "p.I326V",
+  "reason": "EVE publishes the protein but assigned this substitution no score",
+  "uniprot_entry_name": "BRAF_HUMAN"
+ },
+ "c04": {
+  "coverage": "none",
+  "gene": "FBXW7",
+  "protein_change": "p.P160L",
+  "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)",
+  "uniprot_entry_name": "FBXW7_HUMAN"
+ },
+ "c05": {
+  "coverage": "none",
+  "gene": "RNF43",
+  "protein_change": "p.T714A",
+  "reason": "EVE does not publish RNF43_HUMAN (decision D-009)",
+  "uniprot_entry_name": "RNF43_HUMAN"
+ },
+ "c06": {
+  "coverage": "scored",
+  "expected_call": "benign",
+  "gene": "APC",
+  "key": "APC_HUMAN/A927T",
+  "protein_change": "p.A927T",
+  "uniprot_entry_name": "APC_HUMAN"
+ },
+ "c07": {
+  "coverage": "scored",
+  "eve_shipped_gnomad_gv2": "1.1934218587147646e-05",
+  "expected_call": "benign",
+  "gene": "CTNNB1",
+  "key": "CTNB1_HUMAN/T547S",
+  "protein_change": "p.T547S",
+  "uniprot_entry_name": "CTNB1_HUMAN"
+ },
+ "c08": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "eve_shipped_gnomad_gv2": "7.959438700382851e-06",
+  "expected_call": "pathogenic",
+  "gene": "TP53",
+  "key": "P53_HUMAN/P152L",
+  "protein_change": "p.P152L",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "c09": {
+  "coverage": "none",
+  "gene": "FBXW7",
+  "protein_change": "p.R224Q",
+  "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)",
+  "uniprot_entry_name": "FBXW7_HUMAN"
+ },
+ "c10": {
+  "coverage": "scored",
+  "expected_call": "benign",
+  "gene": "TP53",
+  "key": "P53_HUMAN/N310S",
+  "protein_change": "p.N310S",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "c11": {
+  "coverage": "scored",
+  "eve_shipped_gnomad_gv2": "0.00011254019292604502",
+  "expected_call": "benign",
+  "gene": "PIK3CA",
+  "key": "PK3CA_HUMAN/N183S",
+  "protein_change": "p.N183S",
+  "uniprot_entry_name": "PK3CA_HUMAN"
+ },
+ "c12": {
+  "coverage": "scored",
+  "eve_shipped_gnomad_gv2": "3.977028682330857e-06",
+  "expected_call": "benign",
+  "gene": "BRAF",
+  "key": "BRAF_HUMAN/A145S",
+  "protein_change": "p.A145S",
+  "uniprot_entry_name": "BRAF_HUMAN"
+ },
+ "c13": {
+  "coverage": "none",
+  "gene": "FBXW7",
+  "protein_change": "p.T140S",
+  "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)",
+  "uniprot_entry_name": "FBXW7_HUMAN"
+ },
+ "c14": {
+  "coverage": "none",
+  "gene": "RNF43",
+  "protein_change": "p.I212V",
+  "reason": "EVE does not publish RNF43_HUMAN (decision D-009)",
+  "uniprot_entry_name": "RNF43_HUMAN"
+ },
+ "c15": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Uncertain significance",
+  "expected_call": "pathogenic",
+  "gene": "TP53",
+  "key": "P53_HUMAN/L130V",
+  "protein_change": "p.L130V",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "v01": {
+  "coverage": "none",
+  "gene": "APC",
+  "protein_change": "p.R1450*",
+  "reason": "not a single-aa substitution -- outside EVE's model",
+  "uniprot_entry_name": "APC_HUMAN"
+ },
+ "v02": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "eve_shipped_gnomad_gv2": "4.010780979272284e-06",
+  "expected_call": "uncertain",
+  "gene": "KRAS",
+  "key": "RASK_HUMAN/G12D",
+  "protein_change": "p.G12D",
+  "uniprot_entry_name": "RASK_HUMAN"
+ },
+ "v03": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "eve_shipped_gnomad_gv2": "3.979687674111337e-06",
+  "expected_call": "uncertain",
+  "gene": "TP53",
+  "key": "P53_HUMAN/R175H",
+  "protein_change": "p.R175H",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "v04": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic/Likely pathogenic",
+  "eve_shipped_gnomad_gv2": "4.0324206621234715e-06",
+  "expected_call": "uncertain",
+  "gene": "PIK3CA",
+  "key": "PK3CA_HUMAN/E545K",
+  "protein_change": "p.E545K",
+  "uniprot_entry_name": "PK3CA_HUMAN"
+ },
+ "v05": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "expected_call": "pathogenic",
+  "gene": "SMAD4",
+  "key": "SMAD4_HUMAN/R361H",
+  "protein_change": "p.R361H",
+  "uniprot_entry_name": "SMAD4_HUMAN"
+ },
+ "v06": {
+  "coverage": "none",
+  "gene": "APC",
+  "protein_change": "p.E1309fs",
+  "reason": "not a single-aa substitution -- outside EVE's model",
+  "uniprot_entry_name": "APC_HUMAN"
+ },
+ "v07": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "expected_call": "uncertain",
+  "gene": "KRAS",
+  "key": "RASK_HUMAN/G13D",
+  "protein_change": "p.G13D",
+  "uniprot_entry_name": "RASK_HUMAN"
+ },
+ "v08": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic/Likely pathogenic, other",
+  "expected_call": "pathogenic",
+  "gene": "CTNNB1",
+  "key": "CTNB1_HUMAN/S45F",
+  "protein_change": "p.S45F",
+  "uniprot_entry_name": "CTNB1_HUMAN"
+ },
+ "v09": {
+  "coverage": "none",
+  "gene": "RNF43",
+  "protein_change": "p.G659fs",
+  "reason": "not a single-aa substitution -- outside EVE's model",
+  "uniprot_entry_name": "RNF43_HUMAN"
+ },
+ "v10": {
+  "coverage": "none",
+  "gene": "FBXW7",
+  "protein_change": "p.R465C",
+  "reason": "EVE does not publish FBXW7_HUMAN (decision D-009)",
+  "uniprot_entry_name": "FBXW7_HUMAN"
+ },
+ "v11": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "expected_call": "pathogenic",
+  "gene": "KRAS",
+  "key": "RASK_HUMAN/G12V",
+  "protein_change": "p.G12V",
+  "uniprot_entry_name": "RASK_HUMAN"
+ },
+ "v12": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "eve_shipped_gnomad_gv2": "1.1929662708669685e-05",
+  "expected_call": "uncertain",
+  "gene": "TP53",
+  "key": "P53_HUMAN/R248Q",
+  "protein_change": "p.R248Q",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "v13": {
+  "coverage": "none",
+  "gene": "APC",
+  "protein_change": "p.T1556fs",
+  "reason": "not a single-aa substitution -- outside EVE's model",
+  "uniprot_entry_name": "APC_HUMAN"
+ },
+ "v14": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "eve_shipped_gnomad_gv2": "4.0278079863376745e-06",
+  "expected_call": "benign",
+  "gene": "PIK3CA",
+  "key": "PK3CA_HUMAN/H1047R",
+  "protein_change": "p.H1047R",
+  "uniprot_entry_name": "PK3CA_HUMAN"
+ },
+ "v15": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "expected_call": "pathogenic",
+  "gene": "SMAD4",
+  "key": "SMAD4_HUMAN/D351H",
+  "protein_change": "p.D351H",
+  "uniprot_entry_name": "SMAD4_HUMAN"
+ },
+ "v16": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Uncertain significance",
+  "expected_call": "uncertain",
+  "gene": "KRAS",
+  "key": "RASK_HUMAN/A146T",
+  "protein_change": "p.A146T",
+  "uniprot_entry_name": "RASK_HUMAN"
+ },
+ "v17": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Pathogenic",
+  "eve_shipped_gnomad_gv2": "7.955196334245529e-06",
+  "expected_call": "pathogenic",
+  "gene": "TP53",
+  "key": "P53_HUMAN/Y220C",
+  "protein_change": "p.Y220C",
+  "uniprot_entry_name": "P53_HUMAN"
+ },
+ "v18": {
+  "coverage": "none",
+  "gene": "APC",
+  "protein_change": "p.Q1367*",
+  "reason": "not a single-aa substitution -- outside EVE's model",
+  "uniprot_entry_name": "APC_HUMAN"
+ },
+ "v19": {
+  "coverage": "scored",
+  "eve_shipped_clinvar": "Conflicting interpretations of pathogenicity, other",
+  "expected_call": "pathogenic",
+  "gene": "CTNNB1",
+  "key": "CTNB1_HUMAN/T41A",
+  "protein_change": "p.T41A",
+  "uniprot_entry_name": "CTNB1_HUMAN"
+ },
+ "v20": {
+  "coverage": "scored",
+  "eve_shipped_gnomad_gv2": "3.979941096871766e-06",
+  "expected_call": "pathogenic",
+  "gene": "BRAF",
+  "key": "BRAF_HUMAN/V600E",
+  "protein_change": "p.V600E",
+  "uniprot_entry_name": "BRAF_HUMAN"
+ }
+}
