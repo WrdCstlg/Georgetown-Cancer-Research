@@ -108,9 +108,10 @@ future change to that behaviour becomes visible.
 EVE publishes **3,211 proteins**, not the proteome. Of the grant's 15 named CRC driver genes it
 covers **13**. It does **not** publish **FBXW7** or **RNF43**.
 
-RNF43 is the one that stings: the grant's own preliminary data has it mutated in **73.6% of NHW**
-versus ~44% AA and ~38% Ghanaian (p = 0.0047) — a population-varying driver this study
-specifically cares about. See decision **D-009** for options; none was implemented.
+RNF43 is the one that stings: the grant's own preliminary data has its mutation frequency varying
+significantly by population (**p = 0.0047**), highest in NHW at **73.6%** — "a rate nearly double
+that seen in the other populations" — a population-varying driver this study specifically cares
+about. See decision **D-009** for options; none was implemented.
 
 The provider distinguishes **three** no-coverage states, and none of them guesses:
 
