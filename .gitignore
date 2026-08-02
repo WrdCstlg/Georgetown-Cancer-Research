@@ -13,3 +13,14 @@ __pycache__/
 # Redistribution and the NC term remain OPEN under decision D3.
 /.cache/
 *.tsv.gz
+
+# Throwaway scratch output at the repo root. Root-anchored on purpose: it must
+# NOT match anything under fixtures/, tests/, or tools/, where a real file could
+# legitimately be named scratch_something.
+#
+# Why this exists: scratch_eve.json was written to the repo root during the EVE
+# build and swept into a commit by `git add -A` (removed in PR #15). It carried
+# no prediction scores, but it duplicated a real fixture and should never have
+# been tracked. Scratch work belongs in the session scratchpad; this rule is the
+# mechanical backstop for when it does not get put there.
+/scratch_*
