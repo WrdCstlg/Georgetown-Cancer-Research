@@ -336,7 +336,7 @@ strategy's 15 named CRC driver "mountains" (`docs/sources/...PF5.txt` line 332),
 
 | Gene | Why it matters here |
 |---|---|
-| **RNF43** | The grant's OWN preliminary data reports RNF43 mutated in **73.6% of NHW**, versus ~44% AA and ~38% Ghanaian, with p = 0.0047 (`...PF5.txt` lines 196–198). This is a **population-varying driver the study specifically cares about** — precisely the kind of gene an ancestry-aware analysis cannot afford to be blind in. |
+| **RNF43** | The grant's OWN preliminary data reports RNF43 mutation frequency varying significantly by population (**p = 0.0047**), highest in the NHW cohort at **73.6%**, "a rate nearly double that seen in the other populations" (`...PF5.txt` lines 196–198, quoted verbatim). This is a **population-varying driver the study specifically cares about** — precisely the kind of gene an ancestry-aware analysis cannot afford to be blind in. *(Correction, 2026-07-28: an earlier revision of this record cited "~44% AA and ~38% Ghanaian" for RNF43. Those figures are not in the source — 38.1% Ghanaian is **APC's** rate. The grant gives only the NHW figure and the "nearly double" comparison for RNF43.)* |
 | **FBXW7** | A confirmed CRC driver in the grant's own mountain list; IntOGen COAD calls it LoF. Less central to the ancestry story than RNF43, but a real gap. |
 
 Consequence, measured rather than asserted: in the golden fixture, EVE returns no coverage for
