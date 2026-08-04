@@ -31,12 +31,14 @@ Status = where the work is (SPECIFIED → FUNCTIONAL). Readiness = whether it ca
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-019 | Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists | repo tooling (`tools/status/`) | FUNCTIONAL | AVAILABLE |
-| SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table | `producers/drivers/` | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
+| SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table — i.e. RUNNING the IntOGen pipeline (dNdScv, cBaSE, OncodriveCLUSTL, smRegions, HotMAPS, OncodriveFML, MutPanning) over this project's own cohort mutations | `producers/drivers/` | SPECIFIED | GATED — requires cohort mutation data, which does not exist (docs/DATA-INVENTORY.md: 7 of 8 study datasets UNKNOWN in every field); and IntOGen-plus is a Nextflow/container pipeline, i.e. `pipeline/` work, not a Python producer. Readiness corrected from AVAILABLE — decision D-011 |
 | SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | FUNCTIONAL | AVAILABLE |
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | FUNCTIONAL | AVAILABLE |
 | SPEC-025 | Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005) | `core/` | FUNCTIONAL | AVAILABLE |
+| SPEC-028 | drivers producer (reference signal): POSITIONAL driver evidence from IntOGen's published compendium — join by gene, intersect the variant's residue with the published significant domains / 2D clusters / 3D clusters, emit evidence with cohort provenance. A distinct capability from SPEC-020, which RUNS the pipeline; this one LOOKS UP results computed on other cohorts. Reports evidence, never a driver call on a variant | `producers/drivers/` + `core/` | FUNCTIONAL | AVAILABLE |
+| SPEC-029 | Multi-producer core: a producer-neutral `producer_result` table + `v_producer_result` / `v_variant` read views, so a second producer has somewhere to write and something producer-neutral to read | `core/` | FUNCTIONAL | AVAILABLE |
 | SPEC-027 | Identifier-mapping seam: `variant_id` → external identifiers (UniProt accession, transcript, locus) as its own contract, so a producer LOOKS UP identifiers and never derives them; unblocks real score providers without waiting on SPEC-004 | `contracts/` + `producers/variant_effect/` | FUNCTIONAL | AVAILABLE |
 
 ## 3 · What runs today
@@ -47,6 +49,7 @@ Test suites (standard-library only, direct execution — the supported path):
 - `python tests/test_consensus_two_providers.py` — 5 tests
 - `python tests/test_core_ingest.py` — 4 tests
 - `python tests/test_core_integrity.py` — 2 tests
+- `python tests/test_drivers_producer.py` — 14 tests
 - `python tests/test_eve_provider.py` — 12 tests
 - `python tests/test_query_read_api.py` — 16 tests
 - `python tests/test_status_ui_shim.py` — 5 tests
@@ -58,7 +61,7 @@ CI checks (from `.github/workflows/tests.yml`): `spec-id`, `status-drift`, `test
 
 - **No real data has been processed.** No data/ directory exists; only fixtures/variant_effect/ and fixtures/query/ have ever run.
 - **Empty layers (README only):** `pipeline/`, `interface/`.
-- **Producers present:** `variant_effect/` — every other producer slot is unbuilt.
+- **Producers present:** `drivers/`, `variant_effect/` — every other producer slot is unbuilt.
 - **Real score providers — 2 still unwired** (`raise NotImplementedError`): `PolyPhenProvider (producers/variant_effect/providers.py:151)`, `SIFTProvider (producers/variant_effect/providers.py:158)`. AlphaMissense IS wired against its real published scores (SPEC-005 partial, SPEC-027, decision D-006) — but that data is CC BY-NC-SA 4.0 and is NOT committed; it is fetched into a gitignored local cache, so CI exercises the provider's logic without the data (docs/alphamissense-data.md). SPEC-005 stays SPECIFIED until all four providers are wired.
 - **All thresholds are PLACEHOLDER:** `config/calibration.json:2 ("status": "PLACEHOLDER")`, `config/variant_effect.json:2 ("status": "PLACEHOLDER")`. Strict mode hard-fails on them by design; every producer result is stamped `calibration_pending` — correctly, but no result is yet a clean call.
 - **No natural-language query.** SPEC-009 is SPECIFIED (SPEC.md registry); the query layer reads one view (query/read_api.py: _VIEW = v_variant_effect); the query layer reads exactly one view (`v_variant_effect`).
@@ -77,6 +80,9 @@ Open decisions (docs/DECISIONS.md, transcribed — owners as stated there; D1–
 - **D-008** — Pathogenicity prediction vs. somatic driver identification (SPEC-005 / Phase 2): PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-009** — EVE does not cover FBXW7 or RNF43 (SPEC-005 coverage gap): PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D-010** — The residual VUS fraction is disagreement-limited, not coverage-limited: PROPOSED — pending domain-owner decision — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-011** — SPEC-020's Readiness was wrong: it is GATED, not AVAILABLE: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-012** — Where does a second producer's result go? (core schema shape): PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
+- **D-013** — IntOGen is CC0, and we are choosing not to commit it anyway: PROPOSED — pending owner approval — owner: project owner (status: pending approval — docs/DECISIONS.md)
 - **D1** — Ownership / IP of the substrate: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D2** — Compute & data residency: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
 - **D3** — Data governance: OPEN — owner: project owner + parties named in docs/build-plan.md §1/§5 (docs/DECISIONS.md)
@@ -102,7 +108,7 @@ Producer isolation (ARCHITECTURE.md §4.2) makes the producer slots independent:
 Producer slots — derived from the ARCHITECTURE.md §5 map (the single source of truth; `producer_slots[]` in status.json parses the same map, so this list cannot diverge from it). Each slot carries its SPEC Readiness, so GATED slots are not presented as available work:
 
 - `variant_effect/` — **BUILT** (SPEC-002 FUNCTIONAL)
-- `drivers/` — PLANNED, SPEC-020 — Readiness: **AVAILABLE (Phase 2 per build plan §6)**
+- `drivers/` — PLANNED, SPEC-020 — Readiness: **GATED — requires cohort mutation data, which does not exist (docs/DATA-INVENTORY.md: 7 of 8 study datasets UNKNOWN in every field); and IntOGen-plus is a Nextflow/container pipeline, i.e. `pipeline/` work, not a Python producer. Readiness corrected from AVAILABLE — decision D-011**
 - `expression/` — PLANNED, SPEC-021 — Readiness: **UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap)**
 - `target_nomination/` — PLANNED, SPEC-007 — Readiness: **UNKNOWN (build plan §6: "once the substrate is FUNCTIONAL" — substrate = Phase 1, whose SPEC-003/004 are still SPECIFIED; whether the precondition is met is ambiguous)**
 - `gnn/` — PLANNED, SPEC-008 — Readiness: **UNKNOWN (same §6 precondition as SPEC-007)**

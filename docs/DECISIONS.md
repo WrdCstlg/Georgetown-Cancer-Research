@@ -327,6 +327,38 @@ it does is strengthen the narrow, variant-level form of the concern in the optio
 because the miss is now reproduced across two models rather than being one tool's quirk.
 Recorded as evidence; the options and recommendation are unchanged and still the owner's call.
 
+### Addendum 2 (2026-08-02) — a driver-oriented signal does not rescue it either, and the reason is COHORT SCOPE
+
+Option (b) above proposed pairing the pathogenicity tools with a driver-oriented signal.
+SPEC-028 built exactly that, against IntOGen's published compendium. Measured result for
+PIK3CA H1047R:
+
+| Cohort scope | PIK3CA a driver? | Is residue **1047** in a significant cluster? |
+|---|---|---|
+| **COAD / READ (colorectal)** | Yes — Act, 2 cohorts | **NO — 0 of 2 rows** |
+| Pan-cancer | Yes — 109 cohorts | **YES — 35 of 109 rows** |
+
+The colorectal clusters IntOGen actually publishes for PIK3CA are `2D = 542:546` and
+`3D = {542, 545, 546}` — the **helical-domain** hotspot. Residue 1047 (kinase domain) is not
+among them in either colorectal cohort.
+
+So **in colorectal specifically, three methodologically independent axes decline to flag
+H1047R**: AlphaMissense `uncertain`, EVE `benign`, IntOGen COAD/READ positional `no cluster`.
+Only pan-cancer evidence and the ClinVar record EVE ships call it pathogenic.
+
+**This is a different claim from "the tools have a driver blind spot", and it is the more useful
+one.** It is not that the predictors miss activating drivers as a class — the 178-hotspot probe
+tested that and it failed (p = 0.31/0.75). It is that H1047R's driver status is **strongly
+cohort-dependent**: overwhelming pan-cancer (driven by breast), not established in colorectal
+cohorts of the size IntOGen has. That is consistent with CRC PIK3CA mutation being
+helical-domain-weighted, and it is now measured from a citable source in-repo rather than
+assumed.
+
+Consequence for option (b): pairing with a driver signal **does not** resolve H1047R if the
+driver signal is scoped to colorectal — which is the scope this study cares about. It would
+resolve it only under pan-cancer scope, which imports evidence from tumour types this study is
+not about. That trade-off is a domain question, now raised as questionnaire **A13**.
+
 ## D-009 — EVE does not cover FBXW7 or RNF43 (SPEC-005 coverage gap)
 Status: **PROPOSED — pending domain-owner decision.** Recommendation only; nothing implemented.
 
@@ -413,6 +445,119 @@ that more tools monotonically reduce VUS.
 treating "Uncertain" as abstention rather than a vote.** All of those are domain decisions. The
 concrete disagreement list above has been added to questionnaire **A8** so the domain owner is
 ruling on real cases rather than an abstraction.
+
+## D-011 — SPEC-020's Readiness was wrong: it is GATED, not AVAILABLE
+Status: **PROPOSED — pending owner approval.** Registry correction.
+
+SPEC-020 was registered `AVAILABLE (Phase 2 per build plan §6)`. It is not. Its own text —
+*"IntOGen driver identification **on the reclassified variant table**"*, citing the build plan's
+*"reclassified variant table **feeds** the IntOGen driver-identification step"* — describes
+**running** the IntOGen pipeline over this project's cohort mutations. That cannot start, for
+two independent reasons:
+
+1. **No cohort data.** `docs/DATA-INVENTORY.md` records 7 of 8 study datasets as UNKNOWN in
+   every field. IntOGen's methods (dNdScv, cBaSE, OncodriveCLUSTL, smRegions, HotMAPS,
+   OncodriveFML, MutPanning) all operate on a cohort mutation matrix. There is no input.
+2. **It is not a Python producer.** IntOGen-plus is a Nextflow pipeline with containerised
+   method implementations. Wrapping it is `pipeline/` work, not `producers/drivers/`.
+
+Readiness is therefore corrected to **GATED**, with both gates named in the registry row.
+
+Why this is logged rather than quietly edited: the whole point of the Readiness axis (SPEC-017)
+is that GATED work is not presented as available. An item marked AVAILABLE that cannot be
+started is exactly the failure the axis exists to prevent, and it survived from SPEC-022's
+orphan-slot registration until someone tried to build it. The registry overstated what could be
+begun; that should be visible, not silently repaired.
+
+**Separately**, consuming IntOGen's PUBLISHED results is a genuinely different capability — one
+*computes* driver status from our cohort, the other *looks up* driver evidence computed on other
+people's cohorts. It is registered as **SPEC-028** rather than folded into SPEC-020, because
+collapsing them would recreate the same overstatement in a new place.
+
+## D-012 — Where does a second producer's result go? (core schema shape)
+Status: **PROPOSED — pending owner approval.** Implemented as recommended, flagged PROPOSED.
+
+Fork: the core does not compose across producers. Its only results table is
+`variant_effect_result` — named and shaped for one producer
+(`original_classification`, `new_classification`, `n_tools_fired`, `tool_calls_json`), with the
+only read view `v_variant_effect`. A second producer has nowhere to write, and nothing
+producer-neutral to read. This blocks **seven** further producers: drivers, expression,
+target_nomination, gnn, causal, imaging, multimodal_predictor.
+
+### Options
+
+  (a) **Generic `producer_result` table.** One table for every producer: the cross-cutting
+      provenance and calibration columns stay NOT NULL, the producer-specific payload lives in
+      a JSON column whose shape is enforced at the `contracts/` seam.
+      *Gains:* one schema change, not eight. *Costs:* the database can no longer type-check any
+      producer's domain fields — e.g. it cannot enforce "driver evidence must carry a cohort
+      list". That enforcement moves up to the contract.
+
+  (b) **A typed table per producer**, alongside `variant_effect_result`.
+      *Gains:* full DB-level NOT NULL enforcement on every producer's domain fields — the
+      strongest form of "the core refuses bad state". *Costs:* a `core/` schema change, a new
+      ingest adapter and a new read view **per producer, seven more times**. Every one is a
+      change to the layer with the widest blast radius, done by whoever is adding a producer —
+      which is exactly the pressure that makes people put code in the wrong layer.
+
+  (c) **EAV annotation table** (`variant_id`, `key`, `value`).
+      *Gains:* never needs changing again. *Costs:* abandons nearly all schema enforcement,
+      including provenance and calibration. Directly contradicts the design invariant in
+      `core/schema/schema.sql` that provenance and calibration are first-class NOT NULL columns.
+
+### Recommendation: **(a)** — and the side I am erring toward, stated plainly
+
+I am erring toward **paying the schema change once rather than eight times**, and I think that
+is right *because of what the core's invariant actually protects*. The schema's own comment says
+it: *"a prediction is NEVER stored as a bare fact. Provenance and per-population calibration are
+FIRST-CLASS, NOT NULL columns — the database itself refuses to accept a result that lacks them."*
+The invariant is about **provenance and calibration**, not about domain payload typing. Option
+(a) preserves that invariant **completely and for all eight producers**; what it gives up was
+never what the invariant guarded.
+
+There is also precedent in the existing schema rather than only in argument:
+`variant_effect_result.tool_calls_json` is *already* an untyped JSON payload beside typed
+provenance. Option (a) generalises a pattern the repo has already accepted, rather than
+introducing a new one.
+
+**The honest cost, not glossed:** under (a) the database cannot refuse a driver-evidence record
+that omits its cohort list. That check moves to `contracts/driver_evidence.py` and the producer.
+A contract check is weaker than a schema check — it can be bypassed by writing to the table
+directly, where a NOT NULL cannot. If the domain owner weighs DB-level payload enforcement above
+the eight-fold cost, **(b) is the defensible choice** and this recommendation should be
+overturned.
+
+**Scope limit:** `variant_effect_result` is **not** migrated into the new table. Its natural key
+and upsert semantics are pinned by D-004/D-005 and tested by SPEC-025; migrating it is a separate
+change with its own blast radius. Two shapes coexist for now — stated as a known cost, not
+hidden. Unifying later is possible and is not scoped here.
+
+Also added, because its absence was the other half of the problem: **`v_variant`**, a
+producer-neutral read view. Without it the drivers producer would have to read
+`v_variant_effect` — i.e. one producer reading another producer's output — which
+ARCHITECTURE.md §4.2 exists to forbid.
+
+## D-013 — IntOGen is CC0, and we are choosing not to commit it anyway
+Status: **PROPOSED — pending owner approval.**
+
+IntOGen's release bundles `LICENSE.txt` = **CC0 1.0 Universal**, a public-domain dedication
+(verified from the archive, not from the website). Unlike AlphaMissense (CC BY-NC-SA 4.0) and
+EVE (MIT-as-asserted, with the copyright-provenance problem in D3), **IntOGen data is not
+licence-encumbered and committing a slice would be entirely permitted.**
+
+We are keeping the fetch-to-gitignored-cache pattern anyway. Reasons, recorded so the choice is
+visible as a choice rather than as an assumption:
+
+- **One uniform rule is harder to erode than three per-source exceptions.** "No third-party
+  prediction data in the repo" is a rule a reviewer can apply without checking each source's
+  licence; "no data unless it's CC0" invites a per-source argument every time.
+- The retrieval cost is trivial — a single ~965 KB download, standard library only.
+- D3 is still OPEN. Adding a third, differently-licensed data source to the repo while the
+  governing decision is unsettled trades a durable property for a small convenience.
+
+If the owner prefers to commit the CC0 slice — which would make the drivers fixture fully
+self-contained and let CI exercise the real data rather than skipping — that is a legitimate
+reversal and costs nothing to make.
 
 ## D1 — Ownership / IP of the substrate
 Status: **OPEN.**
