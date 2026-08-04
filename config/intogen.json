@@ -1,0 +1,34 @@
+{
+  "status": "AWAITING_SIGN_OFF",
+  "_note": "These are IntOGen's OWN PUBLISHED significance settings, transcribed verbatim from the release README. The coding agent did NOT author, choose, or adjust any threshold (control I3). The producer consumes rows the publisher already filtered; it does not re-filter them. A domain owner must confirm the settings and the cohort scope are right for this study -- see DEFINITIONS.md sec 1 and docs/DEFINITIONS_QUESTIONNAIRE.md questions A13 and A14.",
+
+  "source": "IntOGen-Drivers-20240920.zip, bundled README.txt, 'Headers of the driver files'; retrieved 2026-08-02",
+  "release_directory": "2024-06-18_IntOGen-Drivers",
+  "_release_naming_caveat": "The publisher's own README says '# IntOGen RELEASE 20230531' while the archive is named 20240920 and its directory is 2024-06-18. Three different dates for one release. Recorded rather than resolved -- the producer stamps whichever it reads, so provenance is honest either way.",
+
+  "published_significance": {
+    "METHODS": "methods that detect the gene as driver at q-value < 0.1",
+    "DOMAINS": "smRegions significant domains, q-value < 0.1",
+    "2D_CLUSTERS": "OncodriveCLUSTL significant linear clusters, p-value < 0.05",
+    "3D_CLUSTERS": "HotMAPS significant 3D clusters, q-value < 0.05",
+    "QVALUE_COMBINATION": "significance of the combined output"
+  },
+
+  "default_cohort_scope": ["COAD", "READ"],
+  "_scope_note": "COLORECTAL, not pan-cancer. This is load-bearing, not incidental: PIK3CA H1047R falls inside a significant cluster in 35 of 109 pan-cancer rows and in 0 of 2 COAD/READ rows. The scope changes the answer, so it is recorded in every result's provenance and is raised as a domain question (A13) rather than assumed.",
+
+  "coverage": {
+    "_note": "IntOGen's compendium has colorectal (COAD/READ) rows for 10 of the grant's 15 named CRC driver genes.",
+    "colorectal_rows": {"COAD": 55, "READ": 15},
+    "grant_driver_genes_with_colorectal_rows": 10,
+    "grant_driver_genes_total": 15,
+    "absent_from_colorectal": ["MLH1", "MSH2", "MSH6", "PMS2", "TGFBR2"],
+    "_absent_note": "The four MMR genes plus TGFBR2. Consistent with their drivers being truncating/germline rather than clustered missense -- not a retrieval failure."
+  },
+
+  "licence": {
+    "terms": "CC0 1.0 Universal (public domain dedication)",
+    "verified_from": "LICENSE.txt bundled inside the release archive",
+    "_note": "NOT licence-encumbered. Committing a slice WOULD be permitted. This repo keeps the fetch-to-gitignored-cache pattern anyway, deliberately, for consistency with the two encumbered providers -- see decision D-013. Recorded so the choice is visible as a choice."
+  }
+}

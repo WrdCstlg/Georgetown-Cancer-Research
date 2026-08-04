@@ -69,6 +69,7 @@ python tests\test_core_integrity.py   # core data integrity (SPEC-025)
 python tests\test_alphamissense_provider.py   # AlphaMissense provider + identifier seam (SPEC-005 partial, SPEC-027)
 python tests\test_eve_provider.py             # EVE provider + seam extension (SPEC-005 partial, SPEC-027)
 python tests\test_consensus_two_providers.py  # consensus payoff, both providers (SPEC-005)
+python tests\test_drivers_producer.py         # drivers producer + multi-producer core (SPEC-028, SPEC-029)
 # The AlphaMissense suite needs REAL published scores, which are NOT committed
 # (CC BY-NC-SA 4.0 — decision D-006, docs/alphamissense-data.md). Without a local
 # cache its four score-dependent tests SKIP and the suite prints INCOMPLETE COVERAGE.
@@ -78,6 +79,9 @@ python tests\test_consensus_two_providers.py  # consensus payoff, both providers
 # EVE is the same: no committed data (licence provenance OPEN under D3). Populate with
 #   python tools\eve\fetch_scores.py
 # and set EVE_CACHE_REQUIRED=1 / CONSENSUS_CACHES_REQUIRED=1 to make skips hard failures.
+# IntOGen is CC0 but is also not committed, by choice (D-013). Populate with
+#   python tools\intogen\fetch_compendium.py
+# and set INTOGEN_CACHE_REQUIRED=1 to make a skip a hard failure.
 # pytest: NOT a verified runner. `python -m pytest tests\ -q` has never executed
 # end-to-end in this environment (the local shell cannot launch it); compatibility
 # is UNVERIFIED (SPEC-016). Direct execution above is the supported path.

@@ -1,0 +1,340 @@
+{
+  "_what": "Golden expectations for the drivers producer (SPEC-028). For each golden-fixture variant: the POSITIONAL driver evidence IntOGen's published compendium supports, within the COAD/READ (colorectal) cohort scope.",
+  "_what_is_NOT_here": "No IntOGen payload beyond what our own assertion needs. IntOGen is CC0 and committing a slice WOULD be permitted (decision D-013) -- the fetch-to-gitignored-cache pattern is kept anyway, for consistency with the two licence-encumbered providers. The test proves these expectations against a locally fetched cache and SKIPs with a populate instruction when it is absent.",
+  "_the_central_point": "`gene_is_driver_in_scope` is TRUE for all 20 entries. A gene-level driver signal over these variants is CONSTANT and therefore carries no information. All the discrimination is positional: 10 variants have a residue inside a significant domain/2D/3D cluster, 5 are in a driver gene with no positional support, and 5 are not missense. A gene being a driver does NOT make every variant in it a driver.",
+  "_no_driver_call": "There is deliberately no expected `is_driver` per variant. This producer reports EVIDENCE. See contracts/driver_evidence.py.",
+  "_id_namespace": "v01-v20 are the SAME variants as fixtures/variant_effect/variants_input.csv -- the same genomic facts seen by a different producer, not a colliding namespace. SPEC-016 requires disjoint IDs across fixture directories where the same id would mean DIFFERENT things; here it means the same thing, so reuse is correct and deliberate.",
+  "source": "IntOGen Compendium_Cancer_Genes.tsv, release 2024-06-18_IntOGen-Drivers",
+  "licence": "CC0 1.0 Universal (public domain), verified from LICENSE.txt inside the release archive",
+  "cohort_scope": [
+    "COAD",
+    "READ"
+  ],
+  "_cohort_scope_note": "COLORECTAL, not pan-cancer, and the choice changes the answer. PIK3CA H1047R (v14) falls in a significant cluster in 35 of 109 pan-cancer rows and in 0 of 2 COAD/READ rows. Raised as questionnaire A13.",
+  "retrieved_on": "2026-08-02",
+  "expected": {
+    "v01": {
+      "expected_absence_reason": "not_missense",
+      "expected_evidence_kinds": [],
+      "gene": "APC",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.R1450*",
+      "residue": null,
+      "role_in_scope": "LoF"
+    },
+    "v02": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d",
+        "domain"
+      ],
+      "gene": "KRAS",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.G12D",
+      "residue": 12,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023",
+        "HARTWIG_WGS_READ_2023"
+      ]
+    },
+    "v03": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d",
+        "domain"
+      ],
+      "gene": "TP53",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.R175H",
+      "residue": 175,
+      "role_in_scope": "LoF",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023",
+        "HARTWIG_WGS_READ_2023"
+      ]
+    },
+    "v04": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d"
+      ],
+      "gene": "PIK3CA",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 2,
+      "protein_change": "p.E545K",
+      "residue": 545,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023"
+      ]
+    },
+    "v05": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_3d"
+      ],
+      "gene": "SMAD4",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.R361H",
+      "residue": 361,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "HARTWIG_WGS_COAD_2023"
+      ]
+    },
+    "v06": {
+      "expected_absence_reason": "not_missense",
+      "expected_evidence_kinds": [],
+      "gene": "APC",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.E1309fs",
+      "residue": null,
+      "role_in_scope": "LoF"
+    },
+    "v07": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d",
+        "domain"
+      ],
+      "gene": "KRAS",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.G13D",
+      "residue": 13,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023",
+        "HARTWIG_WGS_READ_2023"
+      ]
+    },
+    "v08": {
+      "expected_absence_reason": "no_positional_evidence",
+      "expected_evidence_kinds": [],
+      "gene": "CTNNB1",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 1,
+      "protein_change": "p.S45F",
+      "residue": 45,
+      "role_in_scope": "Act"
+    },
+    "v09": {
+      "expected_absence_reason": "not_missense",
+      "expected_evidence_kinds": [],
+      "gene": "RNF43",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 1,
+      "protein_change": "p.G659fs",
+      "residue": null,
+      "role_in_scope": "LoF"
+    },
+    "v10": {
+      "expected_absence_reason": "no_positional_evidence",
+      "expected_evidence_kinds": [],
+      "gene": "FBXW7",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.R465C",
+      "residue": 465,
+      "role_in_scope": "LoF"
+    },
+    "v11": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d",
+        "domain"
+      ],
+      "gene": "KRAS",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.G12V",
+      "residue": 12,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023",
+        "HARTWIG_WGS_READ_2023"
+      ]
+    },
+    "v12": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d",
+        "domain"
+      ],
+      "gene": "TP53",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.R248Q",
+      "residue": 248,
+      "role_in_scope": "LoF",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023",
+        "HARTWIG_WGS_READ_2023"
+      ]
+    },
+    "v13": {
+      "expected_absence_reason": "not_missense",
+      "expected_evidence_kinds": [],
+      "gene": "APC",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.T1556fs",
+      "residue": null,
+      "role_in_scope": "LoF"
+    },
+    "v14": {
+      "expected_absence_reason": "no_positional_evidence",
+      "expected_evidence_kinds": [],
+      "gene": "PIK3CA",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 2,
+      "protein_change": "p.H1047R",
+      "residue": 1047,
+      "role_in_scope": "Act"
+    },
+    "v15": {
+      "expected_absence_reason": "no_positional_evidence",
+      "expected_evidence_kinds": [],
+      "gene": "SMAD4",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.D351H",
+      "residue": 351,
+      "role_in_scope": "Act"
+    },
+    "v16": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "domain"
+      ],
+      "gene": "KRAS",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.A146T",
+      "residue": 146,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "HARTWIG_WGS_COAD_2023"
+      ]
+    },
+    "v17": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "domain"
+      ],
+      "gene": "TP53",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.Y220C",
+      "residue": 220,
+      "role_in_scope": "LoF",
+      "supporting_cohorts": [
+        "CPTAC_WXS_COAD_2020",
+        "HARTWIG_WGS_COAD_2023",
+        "HARTWIG_WGS_READ_2023"
+      ]
+    },
+    "v18": {
+      "expected_absence_reason": "not_missense",
+      "expected_evidence_kinds": [],
+      "gene": "APC",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 3,
+      "protein_change": "p.Q1367*",
+      "residue": null,
+      "role_in_scope": "LoF"
+    },
+    "v19": {
+      "expected_absence_reason": "no_positional_evidence",
+      "expected_evidence_kinds": [],
+      "gene": "CTNNB1",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 1,
+      "protein_change": "p.T41A",
+      "residue": 41,
+      "role_in_scope": "Act"
+    },
+    "v20": {
+      "expected_absence_reason": null,
+      "expected_evidence_kinds": [
+        "cluster_2d",
+        "cluster_3d",
+        "domain"
+      ],
+      "gene": "BRAF",
+      "gene_is_driver_in_scope": true,
+      "n_cohorts_in_scope": 2,
+      "protein_change": "p.V600E",
+      "residue": 600,
+      "role_in_scope": "Act",
+      "supporting_cohorts": [
+        "HARTWIG_WGS_COAD_2023"
+      ]
+    }
+  },
+  "controls": {
+    "d01": {
+      "gene": "MLH1",
+      "protein_change": "p.M1I",
+      "residue": 1,
+      "gene_is_driver_in_scope": false,
+      "role_in_scope": null,
+      "expected_evidence_kinds": [],
+      "expected_absence_reason": "gene_not_a_driver_in_scope",
+      "n_cohorts_in_scope": 0,
+      "clinvar": "Pathogenic (VCV004856779, ClinVar, retrieved 2026-08-02)"
+    },
+    "d02": {
+      "gene": "MSH2",
+      "protein_change": "p.H466N",
+      "residue": 466,
+      "gene_is_driver_in_scope": false,
+      "role_in_scope": null,
+      "expected_evidence_kinds": [],
+      "expected_absence_reason": "gene_not_a_driver_in_scope",
+      "n_cohorts_in_scope": 0,
+      "clinvar": "Likely benign (VCV004860318, ClinVar, retrieved 2026-08-02)"
+    },
+    "d03": {
+      "gene": "MSH6",
+      "protein_change": "p.P57H",
+      "residue": 57,
+      "gene_is_driver_in_scope": false,
+      "role_in_scope": null,
+      "expected_evidence_kinds": [],
+      "expected_absence_reason": "gene_not_a_driver_in_scope",
+      "n_cohorts_in_scope": 0,
+      "clinvar": "Likely benign (VCV004860409, ClinVar, retrieved 2026-08-02)"
+    },
+    "d04": {
+      "gene": "TGFBR2",
+      "protein_change": "p.A527P",
+      "residue": 527,
+      "gene_is_driver_in_scope": false,
+      "role_in_scope": null,
+      "expected_evidence_kinds": [],
+      "expected_absence_reason": "gene_not_a_driver_in_scope",
+      "n_cohorts_in_scope": 0,
+      "clinvar": "Likely pathogenic (VCV004801616, ClinVar, retrieved 2026-08-02)"
+    }
+  },
+  "_controls_why": "The 20 golden variants all sit in colorectal driver genes, so they never exercise the gene_not_a_driver_in_scope state -- the fourth coverage outcome was untested, and the distribution left a constant 'evidence' stub failing exactly 10/20 rather than a majority. These d-prefixed controls are real ClinVar missense variants in the five grant genes IntOGen has NO colorectal rows for (MLH1, MSH2, MSH6, PMS2, TGFBR2), each cited by accession. They exercise the missing state and rebalance the fixture. The fixture was strengthened rather than the assertion weakened."
+}

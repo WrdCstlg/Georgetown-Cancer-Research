@@ -35,12 +35,14 @@
 | SPEC-017 | Status truthfulness: docs never assert undecided decisions; Readiness axis; human-owned data inventory; generated STATUS + CI drift gate | repo tooling (`docs/`, `tools/status/`) | Cross-cutting — execution-honesty (G3) and no-drift discipline (docs/risk-and-agent-control.md) | FUNCTIONAL | AVAILABLE |
 | SPEC-018 | Local dev dashboard: static status.json renderer (architecture + SPEC/phase views, blockers) + read-only localhost shim over the query API | dev tooling (`tools/status-ui/`) | Cross-cutting — developer ergonomics only; NOT the researcher UI (R7 — interface/ stays empty and reserved) | FUNCTIONAL | AVAILABLE |
 | SPEC-019 | Collaborator-map correctness: STATUS §6 producer slots derive from the single source (ARCHITECTURE.md §5 via producer_slots[]) and carry their Readiness — no hand-maintained lists | repo tooling (`tools/status/`) | Cross-cutting — no-drift discipline (G3) + I6 traceability | FUNCTIONAL | AVAILABLE |
-| SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table | `producers/drivers/` | Aim 1 (build plan Phase 2 — "reclassified variant table feeds the IntOGen driver-identification step") | SPECIFIED | AVAILABLE (Phase 2 per build plan §6) |
+| SPEC-020 | drivers producer: IntOGen driver identification on the reclassified variant table — i.e. RUNNING the IntOGen pipeline (dNdScv, cBaSE, OncodriveCLUSTL, smRegions, HotMAPS, OncodriveFML, MutPanning) over this project's own cohort mutations | `producers/drivers/` | Aim 1 (build plan Phase 2 — "reclassified variant table feeds the IntOGen driver-identification step") | SPECIFIED | GATED — requires cohort mutation data, which does not exist (docs/DATA-INVENTORY.md: 7 of 8 study datasets UNKNOWN in every field); and IntOGen-plus is a Nextflow/container pipeline, i.e. `pipeline/` work, not a Python producer. Readiness corrected from AVAILABLE — decision D-011 |
 | SPEC-021 | expression producer: DESeq2 / GSEA / DoRothEA transcriptomic path (R/Bioconductor). KNOWN PREREQUISITE GAP: the repo has no R tooling, no renv.lock, and Python-only CI — flagged, not solved | `producers/expression/` | Aim 2a (build plan §2 producers layer; Phase 3) | SPECIFIED | UNKNOWN (same build plan §6 "once the substrate is FUNCTIONAL" precondition as SPEC-007/008, plus the R-tooling gap) |
 | SPEC-022 | Close loose ends: register orphan producer slots (I6) + finish the D4 demotion sweep in core/db.py and core/README.md | repo tooling (`SPEC.md`, `core/` docs) | Cross-cutting — I6 traceability + decision-state honesty (SPEC-017) | FUNCTIONAL | AVAILABLE |
 | SPEC-023 | Drift-gate determinism: STATUS artifacts byte-identical across platforms (LF-pinned via .gitattributes) so local git-status noise cannot mask real drift | repo tooling (`.gitattributes`, `tools/status/`) | Cross-cutting — a gate that cries wolf gets ignored (G3 discipline) | FUNCTIONAL | AVAILABLE |
 | SPEC-024 | Dashboard information hierarchy: Section 1 dominates, boilerplate deduplicated, file:line evidence in not_built, reference sections collapsed, print stylesheet | dev tooling (`tools/status-ui/`, `tools/status/`) | Cross-cutting — developer ergonomics (R7: still not the researcher UI) | FUNCTIONAL | AVAILABLE |
 | SPEC-025 | Core data integrity: per-population variant identity (population is a property of the observation, D-004) + idempotent ingest via schema-enforced natural key (D-005) | `core/` | Substrate precondition for all aims — per-population fidelity is the project's premise | FUNCTIONAL | AVAILABLE |
+| SPEC-028 | drivers producer (reference signal): POSITIONAL driver evidence from IntOGen's published compendium — join by gene, intersect the variant's residue with the published significant domains / 2D clusters / 3D clusters, emit evidence with cohort provenance. A distinct capability from SPEC-020, which RUNS the pipeline; this one LOOKS UP results computed on other cohorts. Reports evidence, never a driver call on a variant | `producers/drivers/` + `core/` | Aim 1 — a driver axis distinct from the pathogenicity axis (D-008); decision D-011 | FUNCTIONAL | AVAILABLE |
+| SPEC-029 | Multi-producer core: a producer-neutral `producer_result` table + `v_producer_result` / `v_variant` read views, so a second producer has somewhere to write and something producer-neutral to read | `core/` | Substrate precondition for every producer after variant_effect (drivers, expression, target_nomination, gnn, causal, imaging, multimodal_predictor) — decision D-012 | FUNCTIONAL | AVAILABLE |
 | SPEC-027 | Identifier-mapping seam: `variant_id` → external identifiers (UniProt accession, transcript, locus) as its own contract, so a producer LOOKS UP identifiers and never derives them; unblocks real score providers without waiting on SPEC-004 | `contracts/` + `producers/variant_effect/` | Aim 1 — decision D-006 option (c); precondition for SPEC-005's real score providers | FUNCTIONAL | AVAILABLE |
 
 > **SPEC-026 is reserved** — registered on branch `test/generator-parsers` (generator parser
@@ -187,6 +189,45 @@ Executable acceptance (all in `tests/test_core_integrity.py`):
   missing provenance (D-005, PROPOSED);
 - both tests were observed FAILING against the old schema before the fix;
 - all four suites pass after the change; `status-drift` green.
+
+### SPEC-029 — multi-producer core
+Executable acceptance (in `tests/test_drivers_producer.py` and `tests/test_core_ingest.py`):
+- a `producer_result` table exists whose provenance and calibration columns are NOT NULL, so
+  the database refuses a second producer's bare fact exactly as it already refuses
+  variant_effect's (ARCHITECTURE.md §4.5) — asserted by ingesting a stripped record and
+  observing the refusal;
+- `v_variant` exposes variants producer-neutrally, so a producer does NOT have to read another
+  producer's output view to see the variants it works on;
+- `v_producer_result` exposes results with provenance + calibration, filterable by `result_type`;
+- re-ingesting the same observation is idempotent on the natural key
+  `(variant_id, population_code, producer, method, result_type)`, matching D-005's semantics;
+- `variant_effect_result` and `v_variant_effect` are UNCHANGED — the existing suites and their
+  SPEC-001/SPEC-025 acceptance still pass byte-for-byte.
+
+### SPEC-028 — drivers producer (positional driver evidence)
+Executable acceptance (all in `tests/test_drivers_producer.py`, run per `AGENTS.md` §3):
+- the producer reads a core view and writes via the ingest contract; it imports **no other
+  producer**, not `query/`, not `interface/` — asserted by inspecting its module imports;
+- evidence is POSITIONAL, not gene-level: a variant in a colorectal driver gene whose residue
+  falls in no significant domain/2D/3D cluster is reported as `no_positional_evidence`, NOT as
+  a driver. On the golden fixture this splits 10 / 5, so the signal is not constant;
+- the producer emits **evidence**, never a driver *call* on a variant, and never a
+  pathogenicity call. It is not wired into the variant_effect consensus and `min_agree` is
+  untouched;
+- every result carries `calibration_pending`, for a reason specific to this producer and
+  written into `producers/drivers/README.md`: IntOGen clusters are significant relative to the
+  mutation spectrum of overwhelmingly European-ancestry cohorts, so **absence from a cluster is
+  UNINFORMATIVE rather than negative** for an African-ancestry variant;
+- cohort scope is colorectal (COAD/READ) by default and is recorded in provenance, because the
+  colorectal-vs-pan-cancer choice changes the answer (PIK3CA H1047R: flagged pan-cancer, not
+  flagged in COAD/READ) and is a domain question (questionnaire A13);
+- inclusion criteria are IntOGen's PUBLISHED significance settings transcribed into
+  `config/intogen.json` and registered AWAITING SIGN-OFF in DEFINITIONS.md — not authored (I3);
+- NO IntOGen data is committed. The cache is gitignored and the suite SKIPs with a populate
+  instruction when it is absent, reporting INCOMPLETE. (Note: IntOGen is CC0, so committing
+  WOULD be permitted — the cache pattern is a deliberate consistency choice, D-013.)
+- the fixture has discriminating power: a constant-output stub is wrong on a majority of
+  entries whatever it returns.
 
 ### SPEC-027 — identifier-mapping seam
 Executable acceptance (all in `tests/test_alphamissense_provider.py`, run per `AGENTS.md` §3):

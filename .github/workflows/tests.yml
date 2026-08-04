@@ -70,6 +70,15 @@ jobs:
       - name: consensus with two providers (SPEC-005)
         run: python tests/test_consensus_two_providers.py
 
+      # SPEC-028 (drivers producer) + SPEC-029 (multi-producer core). The core
+      # tests run everywhere; the IntOGen-data tests skip in CI, since the cache
+      # is not committed (D-013: CC0 would permit it, consistency chosen instead)
+      # and the suite reports INCOMPLETE rather than pretending to pass. CI still
+      # gates producer isolation, the positional parsers, the contract's
+      # conflation refusals, and that the core composes for a second producer.
+      - name: drivers producer + multi-producer core (SPEC-028, SPEC-029)
+        run: python tests/test_drivers_producer.py
+
   # SPEC-017: the STATUS artifacts must match a fresh regeneration — generated
   # docs cannot drift from repo state. Deterministic by contract (no timestamps,
   # no absolute paths, no commit hashes in the output).

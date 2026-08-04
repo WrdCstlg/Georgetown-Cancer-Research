@@ -155,11 +155,11 @@
     },
     {
       "id": "SPEC-020",
-      "title": "drivers producer: IntOGen driver identification on the reclassified variant table",
+      "title": "drivers producer: IntOGen driver identification on the reclassified variant table — i.e. RUNNING the IntOGen pipeline (dNdScv, cBaSE, OncodriveCLUSTL, smRegions, HotMAPS, OncodriveFML, MutPanning) over this project's own cohort mutations",
       "layer": "`producers/drivers/`",
       "aim": "Aim 1 (build plan Phase 2 — \"reclassified variant table feeds the IntOGen driver-identification step\")",
       "status": "SPECIFIED",
-      "readiness": "AVAILABLE (Phase 2 per build plan §6)"
+      "readiness": "GATED — requires cohort mutation data, which does not exist (docs/DATA-INVENTORY.md: 7 of 8 study datasets UNKNOWN in every field); and IntOGen-plus is a Nextflow/container pipeline, i.e. `pipeline/` work, not a Python producer. Readiness corrected from AVAILABLE — decision D-011"
     },
     {
       "id": "SPEC-021",
@@ -202,6 +202,22 @@
       "readiness": "AVAILABLE"
     },
     {
+      "id": "SPEC-028",
+      "title": "drivers producer (reference signal): POSITIONAL driver evidence from IntOGen's published compendium — join by gene, intersect the variant's residue with the published significant domains / 2D clusters / 3D clusters, emit evidence with cohort provenance. A distinct capability from SPEC-020, which RUNS the pipeline; this one LOOKS UP results computed on other cohorts. Reports evidence, never a driver call on a variant",
+      "layer": "`producers/drivers/` + `core/`",
+      "aim": "Aim 1 — a driver axis distinct from the pathogenicity axis (D-008); decision D-011",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
+      "id": "SPEC-029",
+      "title": "Multi-producer core: a producer-neutral `producer_result` table + `v_producer_result` / `v_variant` read views, so a second producer has somewhere to write and something producer-neutral to read",
+      "layer": "`core/`",
+      "aim": "Substrate precondition for every producer after variant_effect (drivers, expression, target_nomination, gnn, causal, imaging, multimodal_predictor) — decision D-012",
+      "status": "FUNCTIONAL",
+      "readiness": "AVAILABLE"
+    },
+    {
       "id": "SPEC-027",
       "title": "Identifier-mapping seam: `variant_id` → external identifiers (UniProt accession, transcript, locus) as its own contract, so a producer LOOKS UP identifiers and never derives them; unblocks real score providers without waiting on SPEC-004",
       "layer": "`contracts/` + `producers/variant_effect/`",
@@ -224,7 +240,7 @@
     {
       "name": "producers",
       "state": "PARTIAL",
-      "evidence": "1 of 8 planned slots have code (variant_effect; slot list from ARCHITECTURE.md §5)"
+      "evidence": "1 of 8 planned slots have code (drivers, variant_effect; slot list from ARCHITECTURE.md §5)"
     },
     {
       "name": "query",
@@ -299,6 +315,11 @@
         "test_count": 2
       },
       {
+        "file": "tests/test_drivers_producer.py",
+        "command": "python tests/test_drivers_producer.py",
+        "test_count": 14
+      },
+      {
         "file": "tests/test_eve_provider.py",
         "command": "python tests/test_eve_provider.py",
         "test_count": 12
@@ -334,6 +355,7 @@
       "interface"
     ],
     "producer_dirs_present": [
+      "drivers",
       "variant_effect"
     ],
     "unwired_providers": [
@@ -410,6 +432,24 @@
       "id": "D-010",
       "title": "The residual VUS fraction is disagreement-limited, not coverage-limited",
       "status": "PROPOSED — pending domain-owner decision",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-011",
+      "title": "SPEC-020's Readiness was wrong: it is GATED, not AVAILABLE",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-012",
+      "title": "Where does a second producer's result go? (core schema shape)",
+      "status": "PROPOSED — pending owner approval",
+      "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
+    },
+    {
+      "id": "D-013",
+      "title": "IntOGen is CC0, and we are choosing not to commit it anyway",
+      "status": "PROPOSED — pending owner approval",
       "owner": "project owner (status: pending approval — docs/DECISIONS.md)"
     },
     {
