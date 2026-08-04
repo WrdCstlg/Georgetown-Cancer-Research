@@ -246,6 +246,65 @@ def test_core_refuses_a_second_producers_bare_fact():
     assert read_producer_results(con) == [], "nothing may be written on rejection"
 
 
+def test_adapter_refuses_a_driver_record_missing_required_payload_fields():
+    """D-012's mitigation, pinned.
+
+    The generic producer_result table cannot enforce payload shape as NOT NULL
+    columns, so that guarantee moved from the DATABASE to APPLICATION CODE --
+    deliberately, and weaker for it. This is where a reviewer confirms it still
+    holds, because the schema will no longer tell them.
+    """
+    base_prov = {"producer": "drivers", "producer_version": "0.1.0", "method": METHOD,
+                 "reference": "test", "generated_at": "2026-01-01"}
+
+    def record(payload):
+        return [{"variant_id": "q01", "population_code": "AA", "payload": payload,
+                 "calibration_status": "calibration_pending", "calibration_pending": True,
+                 "provenance": dict(base_prov)}]
+
+    good = DriverEvidence("q01", "TP53", 175, "COAD", True,
+                          evidence_kinds=(EV_DOMAIN,), supporting_cohorts=("C1",)).to_payload()
+
+    # each of these is a state the DATABASE would have refused under a typed table
+    cases = [
+        ("missing cohort_scope", {k: v for k, v in good.items() if k != "cohort_scope"}),
+        ("missing gene", {k: v for k, v in good.items() if k != "gene"}),
+        ("missing evidence_kinds", {k: v for k, v in good.items() if k != "evidence_kinds"}),
+        ("empty cohort_scope", {**good, "cohort_scope": ""}),
+        ("evidence with no supporting cohort", {**good, "supporting_cohorts": []}),
+        ("evidence AND an absence_reason", {**good, "absence_reason": NO_POSITIONAL}),
+        ("no evidence and no absence_reason",
+         {**good, "evidence_kinds": [], "supporting_cohorts": [], "absence_reason": None}),
+        ("payload is not a dict", ["not", "a", "dict"]),
+    ]
+    for label, payload in cases:
+        con = seeded_core()
+        try:
+            ingest_producer_results(con, record(payload), RESULT_TYPE)
+        except DriverEvidenceError:
+            pass
+        else:
+            raise AssertionError(f"adapter accepted a malformed driver payload: {label}")
+        assert read_producer_results(con) == [], \
+            f"nothing may be written on rejection ({label})"
+
+    # and the well-formed record still goes in
+    con = seeded_core()
+    assert ingest_producer_results(con, record(good), RESULT_TYPE) == 1
+    assert len(read_producer_results(con, RESULT_TYPE)) == 1
+
+
+def test_payload_registry_gap_is_explicit():
+    """The mitigation only covers registered result_types. A new producer gets
+    provenance enforcement free and payload enforcement only once it registers --
+    a known gap (D-012), asserted so it cannot be forgotten silently."""
+    from contracts.payload_registry import is_registered, validate_payload as reg_validate
+    assert is_registered(RESULT_TYPE), "driver_evidence must have a registered validator"
+    assert not is_registered("some_future_producer_result")
+    # an unregistered type is NOT validated -- that is the documented gap
+    reg_validate("some_future_producer_result", {"anything": True})
+
+
 def test_producer_neutral_view_exists_and_does_not_require_variant_effect():
     con = seeded_core()
     rows = read_variants(con)

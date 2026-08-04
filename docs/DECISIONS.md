@@ -537,6 +537,45 @@ producer-neutral read view. Without it the drivers producer would have to read
 `v_variant_effect` — i.e. one producer reading another producer's output — which
 ARCHITECTURE.md §4.2 exists to forbid.
 
+### Addendum (2026-08-02) — the cost, the mitigation, and what the mitigation gives up
+
+**Decision stands: keep the generic table.** Recording the trade precisely, because it is a
+real transfer of a guarantee rather than a free win.
+
+**The cost is real.** Under `variant_effect_result`, a record missing its provenance is refused
+*by the database*: the column is `NOT NULL` and no code path can write around it. Under the
+generic `producer_result` table, the payload is a JSON blob, so the database will accept a
+driver-evidence record with **no cohort attached, no gene, or an evidence claim with nothing
+supporting it**. Those are exactly the malformed states `contracts/driver_evidence.py` exists to
+name, and the schema can no longer see them.
+
+**The mitigation: the ingest adapter enforces it instead.**
+`core/ingest/producer_result_ingest.py` now applies a payload validator, looked up by
+`result_type` in `contracts/payload_registry.py`, in the same pre-write pass that checks
+provenance. A malformed driver payload is refused before anything is written, matching the
+adapter's existing all-or-nothing behaviour. The registry lives in `contracts/` rather than in
+the adapter so the adapter stays genuinely producer-neutral — it looks a validator up, and never
+learns any producer's payload shape.
+
+**What the mitigation gives up, stated plainly.** This **shifts a guarantee from the database to
+application code, deliberately**. Application enforcement is strictly weaker:
+
+- a `NOT NULL` cannot be bypassed; an adapter check can be, by any code that writes to
+  `producer_result` directly rather than through the adapter;
+- the schema enforces for every producer automatically, whereas the registry enforces only for
+  `result_type`s that have registered a validator. **A new producer gets provenance and
+  calibration enforcement for free and gets no payload enforcement until it registers.** That is
+  a known gap, documented in the registry module itself, and belongs on any new producer's
+  checklist.
+
+The guarantee is now pinned by tests rather than by the schema —
+`tests/test_drivers_producer.py` asserts the adapter refuses a driver record missing required
+payload fields and that nothing is written on rejection. That is where a reviewer should look to
+confirm the mitigation still holds, because the database will no longer tell them.
+
+If that trade is judged wrong, option **(b)** above — a typed table per producer — remains the
+defensible alternative, and this record should be overturned rather than patched.
+
 ## D-013 — IntOGen is CC0, and we are choosing not to commit it anyway
 Status: **PROPOSED — pending owner approval.**
 
