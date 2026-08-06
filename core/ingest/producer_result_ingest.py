@@ -12,6 +12,7 @@ the payload's shape. Read path is separate: read_producer_results().
 from __future__ import annotations
 import json
 
+from contracts.payload_registry import validate_payload
 from core.provenance.validate import require_provenance
 
 
@@ -22,12 +23,20 @@ def ingest_producer_results(con, records, result_type: str) -> int:
                   calibration_pending, provenance:{producer, producer_version,
                   method, reference, generated_at}}
 
-    Raises BEFORE writing anything if any record lacks provenance or carries an
-    invalid calibration status -- no partial bare facts, matching the
-    variant_effect adapter's behaviour.
+    Raises BEFORE writing anything if any record lacks provenance, carries an
+    invalid calibration status, OR fails its result_type's registered payload
+    validator -- no partial bare facts, matching the variant_effect adapter's
+    behaviour.
+
+    The payload check is the guarantee D-012 moved out of the schema. Under the
+    generic `producer_result` table the database cannot refuse a driver-evidence
+    record with no cohort attached; this adapter refuses it instead. That is a
+    deliberate shift from database enforcement to application enforcement, and
+    it is weaker -- writing to the table directly still bypasses it (D-012).
     """
     for r in records:
         require_provenance(r)
+        validate_payload(result_type, r.get("payload"), r.get("variant_id", "<unknown>"))
 
     n = 0
     for r in records:

@@ -317,7 +317,7 @@
       {
         "file": "tests/test_drivers_producer.py",
         "command": "python tests/test_drivers_producer.py",
-        "test_count": 14
+        "test_count": 16
       },
       {
         "file": "tests/test_eve_provider.py",

@@ -87,6 +87,49 @@ class DriverEvidence:
         }
 
 
+# The payload keys that must be present for a stored record to be interpretable.
+# These are exactly what the database can no longer enforce under D-012's generic
+# `producer_result` table, so the ingest adapter enforces them instead.
+REQUIRED_PAYLOAD_FIELDS = (
+    "gene", "cohort_scope", "gene_is_driver_in_scope",
+    "evidence_kinds", "supporting_cohorts", "absence_reason",
+)
+
+
+def validate_payload(payload, variant_id: str = "<unknown>") -> None:
+    """Validate a RAW payload dict on its way into the core.
+
+    `to_payload()` validates on the way out of the dataclass, but nothing stops a
+    caller assembling a dict by hand and handing it to the ingest adapter. This
+    is the check that runs at the write boundary -- the guarantee D-012 moved out
+    of the schema and into application code, deliberately and with its weakness
+    stated (it can still be bypassed by writing to the table directly).
+    """
+    if not isinstance(payload, dict):
+        raise DriverEvidenceError(
+            f"{variant_id}: driver evidence payload must be a dict, got {type(payload).__name__}")
+    missing = [k for k in REQUIRED_PAYLOAD_FIELDS if k not in payload]
+    if missing:
+        raise DriverEvidenceError(
+            f"{variant_id}: driver evidence payload is missing required field(s) {missing}. "
+            "Under decision D-012 the generic producer_result table cannot enforce these as "
+            "NOT NULL columns, so they are enforced here at the write boundary instead.")
+    # Reuse the dataclass rules rather than restating them, so the two can't drift.
+    validate_evidence(DriverEvidence(
+        variant_id=variant_id,
+        gene=payload["gene"],
+        residue=payload.get("residue"),
+        cohort_scope=payload["cohort_scope"] or "",
+        gene_is_driver_in_scope=bool(payload["gene_is_driver_in_scope"]),
+        role_in_scope=payload.get("role_in_scope"),
+        evidence_kinds=tuple(payload["evidence_kinds"] or ()),
+        supporting_cohorts=tuple(payload["supporting_cohorts"] or ()),
+        n_cohorts_in_scope=payload.get("n_cohorts_in_scope", 0),
+        best_qvalue=payload.get("best_qvalue"),
+        absence_reason=payload.get("absence_reason"),
+    ))
+
+
 def validate_evidence(ev: DriverEvidence) -> None:
     """The payload checks the schema can no longer make (D-012).
 

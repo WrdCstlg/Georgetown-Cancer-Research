@@ -49,7 +49,7 @@ Test suites (standard-library only, direct execution — the supported path):
 - `python tests/test_consensus_two_providers.py` — 5 tests
 - `python tests/test_core_ingest.py` — 4 tests
 - `python tests/test_core_integrity.py` — 2 tests
-- `python tests/test_drivers_producer.py` — 14 tests
+- `python tests/test_drivers_producer.py` — 16 tests
 - `python tests/test_eve_provider.py` — 12 tests
 - `python tests/test_query_read_api.py` — 16 tests
 - `python tests/test_status_ui_shim.py` — 5 tests
