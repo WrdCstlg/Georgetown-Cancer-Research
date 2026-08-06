@@ -1,5 +1,11 @@
-# Drivers producer — what the driver axis adds, and what it does not
+# Drivers producer — run record (SPEC-028)
 
+> **This is a run record, not a findings document.** The interpretation of these numbers — what
+> the driver axis adds, the six-and-six correspondence, the H1047R cohort-scope argument, and
+> what none of it establishes — lives in [`docs/FINDINGS.md`](../FINDINGS.md), which is
+> **canonical**. This file exists so a reviewer can check a measured number against the run that
+> produced it. It deliberately makes no argument.
+>
 > **Measured, not asserted.** Every number comes from `python tests/test_drivers_producer.py`
 > and the fixture it gates. **Run 2026-08-02**, IntOGen release `2024-06-18_IntOGen-Drivers`,
 > cohort scope **COAD/READ**.
@@ -32,67 +38,48 @@
 | v19 | CTNNB1 | p.T41A | pathogenic | pathogenic | no_positional_evidence | |
 | v20 | BRAF | p.V600E | pathogenic | pathogenic | 2D + 3D + domain | |
 
-## 2 · What it adds beyond the pathogenicity axis
+**`new?`** marks a variant carrying positional driver evidence where the pathogenicity consensus
+did *not* reach `pathogenic`. Six rows: `v02 v03 v04 v07 v12 v16`. What that correspondence means
+is argued in [`docs/FINDINGS.md`](../FINDINGS.md) §5, not here.
 
-**Six variants carry positional driver evidence where the pathogenicity consensus did *not*
-reach `pathogenic`** — and they are *exactly* the six abstention disagreements from decision
-**D-010**:
+## 2 · Measured splits
 
-> KRAS G12D · KRAS G13D · KRAS A146T · TP53 R175H · TP53 R248Q · PIK3CA E545K
+| Outcome | n |
+|---|---:|
+| Residue inside a significant domain / 2D cluster / 3D cluster | 10 |
+| Gene is a driver, residue in no significant cluster (`no_positional_evidence`) | 5 |
+| Not a missense change (`not_missense`) | 5 |
 
-Every one is a case where AlphaMissense said pathogenic, EVE declined to commit, and consensus
-therefore left the variant VUS. On all six, an independent, methodologically unrelated line of
-evidence — recurrent somatic clustering in colorectal cohorts — supports them.
+`gene_is_driver_in_scope` is `true` for **all 20** variants — the gene-level signal is constant
+on this fixture and carries no information. All discrimination is positional.
 
-That is a genuinely different axis doing what a different axis should: speaking where the first
-axis was deadlocked. **It does not resolve them**, and deliberately so — this evidence is not
-routed into the variant_effect consensus, `min_agree` is untouched, and driver evidence is not a
-pathogenicity vote. Whether it *should* count is a domain question (A8/A13), not ours.
+## 3 · PIK3CA H1047R — the measured scope rows
 
-**The gene-level signal, by contrast, adds nothing at all.** `gene_is_driver_in_scope` is `true`
-for all 20 golden variants. A gene-level driver producer would have emitted a constant and been
-worth building only as a lesson. All the information is positional: 10 with evidence, 5 in a
-driver gene with no positional support, 5 not missense.
+| Scope | PIK3CA a driver? | Residue 1047 in a significant cluster? |
+|---|---|---|
+| COAD / READ (colorectal) | yes — Act, 2 cohorts | **no — 0 of 2 rows** |
+| Pan-cancer | yes — 109 cohorts | yes — 35 of 109 rows |
 
-## 3 · PIK3CA H1047R — the direct D-008 test
+Colorectal PIK3CA clusters as published: `2D = 542:546`, `3D = {542, 545, 546}`.
 
-| Axis | Verdict on H1047R |
-|---|---|
-| AlphaMissense (structural) | `uncertain` |
-| EVE (evolutionary) | `benign` |
-| **IntOGen, colorectal (COAD/READ)** | gene **is** a driver; residue 1047 in **no** significant cluster |
-| IntOGen, pan-cancer | residue 1047 flagged in **35 of 109** cohort rows |
+Interpretation — including the 178-hotspot null that bounds it — is in
+[`docs/FINDINGS.md`](../FINDINGS.md) §6. Scope is questionnaire **A13**; decision **D-008**
+addendum 2.
 
-**A driver-oriented signal does not rescue H1047R either — under colorectal scope.** The
-colorectal clusters IntOGen publishes for PIK3CA are `2D = 542:546` and `3D = {542,545,546}`,
-the helical-domain hotspot. Residue 1047 (kinase domain) is absent from both colorectal cohorts.
+## 4 · Scope of this run
 
-The finding is therefore **not** "the tools have a driver blind spot" — the 178-hotspot probe
-tested that and it failed (p = 0.31 / 0.75). It is that **H1047R's driver status is strongly
-cohort-dependent**: overwhelming pan-cancer, unestablished in colorectal cohorts of the size
-IntOGen has. Consistent with CRC PIK3CA mutation being helical-domain-weighted, and now measured
-from a citable in-repo source rather than assumed. Recorded as D-008 addendum 2; the scope choice
-is questionnaire **A13**.
+20-variant golden fixture plus 4 controls. **Not** a cohort; no real patient data has touched
+this system. Every result is stamped `calibration_pending`. Running IntOGen over this project's
+own mutations is SPEC-020, which is GATED (decision D-011).
 
-## 4 · What this producer does NOT establish
+The three "nothing found" states — `gene_not_a_driver_in_scope`, `no_positional_evidence`,
+`not_missense` — are distinct and **none of them means "not a driver"**. The reasoning is in
+[`producers/drivers/README.md`](../../producers/drivers/README.md); the consequences for a reader
+are in [`docs/FINDINGS.md`](../FINDINGS.md) §7 and §10.
 
-Stated explicitly, because each is a conclusion someone could wrongly draw:
+## 5 · Reproducing
 
-1. **It does not establish that any variant is a driver.** It reports evidence. There is no
-   `is_driver` field in the contract, by construction.
-2. **`no_positional_evidence` is not evidence against a variant.** IntOGen's clusters are
-   significant relative to the mutation spectrum of overwhelmingly European-ancestry cohorts, so
-   absence is **uninformative, not negative** — especially for African-ancestry variants, where
-   a residue may fail significance for lack of power rather than lack of importance. Treating
-   absence as negative would convert a sampling artifact into a finding, in the direction that
-   most disadvantages the populations this study exists to serve. This is why every result is
-   `calibration_pending` (questionnaire A12).
-3. **It says nothing about pathogenicity**, and is not wired into the variant_effect consensus.
-4. **It has not run on this project's cohort.** This is IntOGen's *published* compendium,
-   computed on other people's cohorts. Running IntOGen over our own mutations is SPEC-020, which
-   is **GATED** — no cohort data exists (D-011).
-5. **Coverage is partial.** IntOGen has no colorectal rows for 5 of the grant's 15 driver genes
-   (MLH1, MSH2, MSH6, PMS2, TGFBR2). Those variants get "no evidence in scope", which is again
-   not "not a driver".
-6. **It is a 20-variant fixture plus 4 controls**, not a cohort. No real patient data has
-   touched this system.
+```powershell
+python tools\intogen\fetch_compendium.py
+python tests\test_drivers_producer.py
+```
